@@ -10,5 +10,6 @@ class MapController extends Controller
     public function index()
     {
         $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->get();
+        return view('map', ['tracks' => $tracks]);
     }
 }
