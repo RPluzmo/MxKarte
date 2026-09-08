@@ -24,5 +24,17 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
+
+        
+        const tracks = @json($tracks);
+
+        tracks.forEach(track => {
+            L.marker([track.lat, track.lng])
+            .addTo(map)
+            .bindPopup(`
+                <strong>${track.name}</strong><br>
+                ${track.description ?? ''}
+            `);
+        });
     </script>
 </x-layout>
