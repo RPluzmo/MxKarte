@@ -28,10 +28,10 @@
         
         const tracks = @json($tracks);
 
-        tracks.forEach(track => {
+        tracks.forEach(track => { /* katrai trasei pievienot marķieri pēc lat-lng un attēleot*/
             L.marker([track.lat, track.lng])
             .addTo(map)
-            .bindPopup(`
+            .bindPopup(`<!-- popups ar trases info--> 
                 <strong>${track.name}</strong><br>
                 ${track.description ?? ''}
             `);
