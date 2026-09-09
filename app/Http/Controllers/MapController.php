@@ -12,4 +12,9 @@ class MapController extends Controller
         $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->get();
         return view('map', ['tracks' => $tracks]);
     }
+
+     public function show(Track $track)
+    {
+        return view('tracks.show', compact('track'));
+    }
 }

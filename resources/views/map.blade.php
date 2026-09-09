@@ -34,7 +34,10 @@
             .bindPopup(`<!-- popups ar trases info--> 
                 <strong>${track.name}</strong><br>
                 ${track.description ?? ''}
+                <a class="popup-link" href="/tracks/${track.id}">Apskatīt</a>
             `);
         });
+
+
     </script>
 </x-layout>
