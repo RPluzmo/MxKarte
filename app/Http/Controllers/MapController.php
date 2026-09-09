@@ -9,7 +9,7 @@ class MapController extends Controller
 {
     public function index()
     {
-        $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->get();
+        $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->withCount('riders')->get();
         return view('map', ['tracks' => $tracks]);
     }
 

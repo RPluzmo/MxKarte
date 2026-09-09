@@ -10,6 +10,22 @@
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""
         />
+        <style>
+            .track-marker {
+                align-items: center;
+                background: red;
+                border: 3px solid white;
+                border-radius: 50%;
+
+                color: white;
+                display: flex;
+                font-size: 14px;
+                font-weight: 700;
+                height: 32px;
+                justify-content: center;
+                width: 32px;
+            }
+        </style>
     @endpush
 
     <h1>MxKarte</h1>
@@ -29,7 +45,14 @@
         const tracks = @json($tracks);
 
         tracks.forEach(track => { /* katrai trasei pievienot marķieri pēc lat-lng un attēleot*/
-            L.marker([track.lat, track.lng])
+            const trackIcon = L.divIcon({
+                className: '',
+                html: `<span class="track-marker">${track.riders_count}</span>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+            });
+
+            L.marker([track.lat, track.lng], { icon: trackIcon })
             .addTo(map)
             .bindPopup(`<!-- popups ar trases info--> 
                 <strong>${track.name}</strong><br>

@@ -95,14 +95,6 @@ class TrackSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Grobina',
-                'lat' => 56.538301,
-                'lng' => 21.1155682,
-                'description' => 'Grobiņas mototrase',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'name' => 'Gulbene',
                 'lat' => 57.12819,
                 'lng' => 26.70070,
