@@ -15,6 +15,9 @@ class MapController extends Controller
 
      public function show(Track $track)
     {
+        $track->load('riders');
+
         return view('tracks.show', compact('track'));
     }
+
 }

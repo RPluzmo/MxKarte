@@ -12,4 +12,10 @@ class Track extends Model
         'lng',
         'description',
     ];
+
+     public function riders()
+    {
+        return $this->hasMany(Rider::class);
+    }
+
 }

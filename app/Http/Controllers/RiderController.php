@@ -19,5 +19,9 @@ class RiderController extends Controller
             'ride_time' => ['required', 'date_format:H:i'],
         ]);
 
+        $track->riders()->create($validated);
+
+        return redirect()
+            ->route('tracks.show', $track);
     }
 }

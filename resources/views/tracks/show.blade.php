@@ -2,6 +2,7 @@
     <a href="/">Atpakaļ</a>
     
     <h1>{{ $track->name }}</h1>
+
     
     <div>
         <p><strong>Apraksts:</strong> {{ $track->description }}</p>
@@ -11,7 +12,7 @@
 
         <div>
             <h3>Pieteikties treniņam</h3>
-            <form method="POST">
+            <form method="POST" action="{{ route('riders.store', $track) }}">
                 @csrf
                 <div>
                     <label>Jūsu vārds</label><br>
@@ -20,7 +21,7 @@
 
                 <div>
                     <label>Jūsu uzvārds</label><br>
-                    <input type="text" name="name" required>
+                    <input type="text" name="surname" required>
                 </div>
                 
                 <div>
@@ -54,11 +55,28 @@
 
                 <div>
                     <label>Ierašanās laiks</label><br>
-                    <input type="text" name="ride_time" required>
+                    <input type="time" name="ride_time" required>
                 </div>
 
                 <button type="submit" >Pieteikties</button>
             </form>
+        </div>
+
+        <div>
+            <h3>Pieteikušies sportisti</h3>
+
+            @forelse($track->riders as $rider)
+                <div>
+                    <strong>{{ $rider->name }} {{ $rider->surname }}</strong>
+                    <span>{{ $rider->category }}, {{ $rider->experience_level }}</span>
+                    <span>{{ $rider->ride_time }}</span>
+                    @if($rider->club)
+                        <span>{{ $rider->club }}</span>
+                    @endif
+                </div>
+            @empty
+                <p>Neveins neplāno ierasties.</p>
+            @endforelse
         </div>
     </div>
 
