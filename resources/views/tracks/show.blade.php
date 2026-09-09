@@ -52,6 +52,11 @@
                     </select>
                 </div>
 
+                <div>
+                    <label>Ierašanās laiks</label><br>
+                    <input type="text" name="ride_time" required>
+                </div>
+
                 <button type="submit" >Pieteikties</button>
             </form>
         </div>
