@@ -37,6 +37,6 @@ class SessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('map');
+        return redirect()->route('home');
     }
 }

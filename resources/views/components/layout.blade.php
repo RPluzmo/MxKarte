@@ -8,7 +8,7 @@
     @stack('styles')
 </head>
 <body>
-    
+    <x-navbar />
 
     <main class="main-content">
         {{ $slot }}

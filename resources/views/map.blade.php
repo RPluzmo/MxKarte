@@ -60,16 +60,5 @@
                 <a class="popup-link" href="/tracks/${track.id}">Apskatīt</a>
             `);
         });
-
-
     </script>
-
-     <li>
-                   
-                        @csrf
-                        <button type="submit">Iziet</button>
-                    </form>
-                </li>
-                <li><a href="{{ route('login') }}">Ienakt</a></li>
-                <li><a href="{{ route('register') }}">Registraties</a></li>
 </x-layout>
