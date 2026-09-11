@@ -6,6 +6,7 @@
                 <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
+                        <li><a href="{{ route('profile.edit') }}">Profils</a></li>
                         <button type="submit">Iziet</button>
                     </form>
                 </li>
