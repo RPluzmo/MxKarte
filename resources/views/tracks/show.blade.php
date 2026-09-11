@@ -14,48 +14,53 @@
             <h3>Pieteikties treniņam</h3>
             <form method="POST" action="{{ route('riders.store', $track) }}">
                 @csrf
+                @php
+                    $authUser = auth()->user();
+                @endphp
                 <div>
-                    <label>Jūsu vārds</label><br>
-                    <input type="text" name="name" required>
+                    <label>Vārds</label><br>
+                    <input type="text" name="name" value="{{ old('name', $authUser?->name ?? '') }}" required>
                 </div>
 
                 <div>
-                    <label>Jūsu uzvārds</label><br>
-                    <input type="text" name="surname" required>
+                    <label>Uzvārds</label><br>
+                    <input type="text" name="surname" value="{{ old('surname', $authUser?->surname ?? '') }}" required>
                 </div>
                 
                 <div>
                     <label>Klubs (neobligāti)</label><br>
-                    <input type="text" name="club">
+                    <input type="text" name="club" value="{{ old('club', $authUser?->club ?? '') }}">
                 </div>
 
                 <div>
                     <label>Klase</label><br>
                     <select name="category" required>
-                        <option value="MX 50">MX 50</option>
-                        <option value="MX 65">MX 65</option>
-                        <option value="MX 85">MX 85</option>
-                        <option value="MX 125">MX 125</option>
-                        <option value="MX 250">MX 250</option>
-                        <option value="MX 450">MX 450</option>
-                        <option value="Kvadri">Kvadri</option>
-                        <option value="Blakusvāģi">Blakusvāģi</option>
+                        <option value="">Izvēlieties</option>
+                        <option value="MX 50" {{ old('category', $authUser?->category) === 'MX 50' ? 'selected' : '' }}>MX 50</option>
+                        <option value="MX 65" {{ old('category', $authUser?->category) === 'MX 65' ? 'selected' : '' }}>MX 65</option>
+                        <option value="MX 85" {{ old('category', $authUser?->category) === 'MX 85' ? 'selected' : '' }}>MX 85</option>
+                        <option value="MX 125" {{ old('category', $authUser?->category) === 'MX 125' ? 'selected' : '' }}>MX 125</option>
+                        <option value="MX 250" {{ old('category', $authUser?->category) === 'MX 250' ? 'selected' : '' }}>MX 250</option>
+                        <option value="MX 450" {{ old('category', $authUser?->category) === 'MX 450' ? 'selected' : '' }}>MX 450</option>
+                        <option value="Kvadri" {{ old('category', $authUser?->category) === 'Kvadri' ? 'selected' : '' }}>Kvadri</option>
+                        <option value="Blakusvāģi" {{ old('category', $authUser?->category) === 'Blakusvāģi' ? 'selected' : '' }}>Blakusvāģi</option>
                     </select>
                 </div>
 
                 <div>
                     <label>Pieredze</label><br>
                     <select name="experience_level" required>
-                        <option value="Iesācējs">Iesācējs</option>
-                        <option value="Amatieris">Amatieris</option>
-                        <option value="Veterāns">Veterāns</option>
-                        <option value="Profesionālis">Profesionālis</option>
+                        <option value="">Izvēlieties</option>
+                        <option value="Iesācējs" {{ old('experience_level', $authUser?->experience_level) === 'Iesācējs' ? 'selected' : '' }}>Iesācējs</option>
+                        <option value="Amatieris" {{ old('experience_level', $authUser?->experience_level) === 'Amatieris' ? 'selected' : '' }}>Amatieris</option>
+                        <option value="Veterāns" {{ old('experience_level', $authUser?->experience_level) === 'Veterāns' ? 'selected' : '' }}>Veterāns</option>
+                        <option value="Profesionālis" {{ old('experience_level', $authUser?->experience_level) === 'Profesionālis' ? 'selected' : '' }}>Profesionālis</option>
                     </select>
                 </div>
 
                 <div>
                     <label>Ierašanās laiks</label><br>
-                    <input type="time" name="ride_time" required>
+                    <input type="time" name="ride_time" value="{{ old('ride_time') }}" required>
                 </div>
 
                 <button type="submit" >Pieteikties</button>

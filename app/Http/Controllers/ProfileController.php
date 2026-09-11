@@ -24,7 +24,10 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:30'],
             'surname' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'email', Rule::unique(User::class, 'email')->ignore($user->id)],
-            'password' => ['nullable', 'string', 'min:1', 'confirmed'],
+            'club' => ['nullable', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'experience_level' => ['nullable', 'string', 'max:255'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
         if (! empty($validated['password'])) {
