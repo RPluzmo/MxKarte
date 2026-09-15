@@ -10,12 +10,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'surname', 'email', 'password', 'club', 'category', 'experience_level'])]
+#[Fillable(['name', 'surname', 'email', 'password', 'role', 'club', 'category', 'experience_level'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function riders()
+    {
+        return $this->hasMany(Rider::class);
+    }
+
+    public function tracks()
+    {
+        return $this->hasMany(Track::class);
+    }
 
     /**
      * Get the attributes that should be cast.

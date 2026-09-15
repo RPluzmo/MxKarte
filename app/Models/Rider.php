@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 {
     protected $fillable = [
         'track_id',
+        'user_id',
         'name',
         'surname',
         'club',
@@ -19,6 +20,11 @@ use Illuminate\Database\Eloquent\Model;
     public function track()
     {
         return $this->belongsTo(Track::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
 

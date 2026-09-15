@@ -12,65 +12,18 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
- public function run(): void
-    {
-        User::updateOrCreate(
-            ['email' => 'admin@mxkarte.lv'],
-            [
-                'name' => 'Admin',
-                'surname' => 'Admin',
-                'password' => Hash::make('1'),
-                'role' => 'admin',
-                'category' => '',
-                'experience_level' => '',
-            ]
-        );
-
-        $owners = [
-            'aizpute' => 'Aizputes',
-            'aloja' => 'Alojas',
-            'ape' => 'Apes',
-            'adazi' => 'Ādažu',
-            'adazupol' => 'Ādažupol',
-            'burtnieki' => 'Burtnieku',
-            'cēsis' => 'Cēsu',
-            'daugavpils' => 'Daugavpils',
-            'dobele' => 'Dobeles',
-            'elkšņi' => 'Elkšņu',
-            'gulbene' => 'Gulbenes',
-            'jaunmarupe' => 'Jaunmārupes',
-            'jaunpils' => 'Jaunpils',
-            'jurkalne' => 'Jurkalnes',
-            'kegums' => 'Ķeguma',
-            'liepaja' => 'Liepājas',
-            'limbaži' => 'Limbažu',
-            'lubana' => 'Lubanās',
-            'madona' => 'Madonas',
-            'nereta' => 'Neretas',
-            'pilsblidene' => 'Pilsblīdenes',
-            'rauna' => 'Raunas',
-            'rujiena' => 'Rūjienas',
-            'saldus' => 'Saldus',
-            'sigulda' => 'Siguldas',
-            'staicele' => 'Staiceles',
-            'stameriena' => 'Stamerienes',
-            'stelpe' => 'Stelpes',
-            'stende' => 'Stendes',
-            'vaveres' => 'Vāveres',
-        ];
-
-        foreach ($owners as $emailPrefix => $firstName) {
+    public function run(): void
+        {
             User::updateOrCreate(
-                ['email' => $emailPrefix . '@mxkarte.lv'],
+                ['email' => 'admin@mxkarte.lv'],
                 [
-                    'name' => $firstName,
-                    'surname' => 'Saimnieks',
+                    'name' => 'Admin',
+                    'surname' => 'Admin',
                     'password' => Hash::make('1'),
-                    'role' => 'owner', 
+                    'role' => 'admin',
                     'category' => '',
                     'experience_level' => '',
                 ]
             );
         }
-    }
 }

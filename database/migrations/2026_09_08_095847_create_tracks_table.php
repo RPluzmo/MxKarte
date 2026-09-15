@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tracks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->decimal('lat', 7, 5);//7cipari kopā , 5cipari aiz komata
             $table->decimal('lng', 7, 5);
