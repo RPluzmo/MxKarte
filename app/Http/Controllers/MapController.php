@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Club;
 use App\Models\Track;
 
 class MapController extends Controller
@@ -16,8 +17,9 @@ class MapController extends Controller
      public function show(Track $track)
     {
         $track->load('riders');
+        $clubs = Club::orderBy('name')->get();
 
-        return view('tracks.show', compact('track'));
+        return view('tracks.show', compact('track', 'clubs'));
     }
 
 }

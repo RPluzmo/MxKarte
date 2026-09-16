@@ -39,7 +39,14 @@
 
         <p>
             <label>Klubs
-                <input type="text" name="club" value="{{ old('club', $user->club ?? '') }}">
+                <select name="club">
+                    <option value="">Nav izvēlēts</option>
+                    @foreach ($clubs as $club)
+                        <option value="{{ $club->name }}" {{ old('club', $user->club) === $club->name ? 'selected' : '' }}>
+                            {{ $club->name }}
+                        </option>
+                    @endforeach
+                </select>
             </label>
         </p>
 

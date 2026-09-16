@@ -29,7 +29,14 @@
                 
                 <div>
                     <label>Klubs (neobligāti)</label><br>
-                    <input type="text" name="club" value="{{ old('club', $authUser?->club ?? '') }}">
+                    <select name="club">
+                        <option value="">Nav izvēlēts</option>
+                        @foreach ($clubs as $club)
+                            <option value="{{ $club->name }}" {{ old('club', $authUser?->club) === $club->name ? 'selected' : '' }}>
+                                {{ $club->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>

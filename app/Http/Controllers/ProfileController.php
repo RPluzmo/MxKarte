@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Club;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -13,6 +14,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'clubs' => Club::orderBy('name')->get(),
         ]);
     }
 
@@ -24,7 +26,7 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:30'],
             'surname' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'email', Rule::unique(User::class, 'email')->ignore($user->id)],
-            'club' => ['nullable', 'string', 'max:255'],
+            'club' => ['nullable', 'string', 'exists:clubs,name'],
             'category' => ['nullable', 'string', 'max:255'],
             'experience_level' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
