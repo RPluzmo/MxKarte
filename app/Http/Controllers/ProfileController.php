@@ -27,8 +27,8 @@ class ProfileController extends Controller
             'surname' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'email', Rule::unique(User::class, 'email')->ignore($user->id)],
             'club' => ['nullable', 'string', 'exists:clubs,name'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'experience_level' => ['nullable', 'string', 'max:255'],
+            'category' => ['required', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi']),],
+            'experience_level' => ['required', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis']),],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
