@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 Route::get('/', [MapController::class, 'index'])->name('home');
 
 Route::get('/tracks/{track}', [MapController::class, 'show'])->name('tracks.show');
+    Route::post('/tracks/{track}', [RiderController::class, 'store'])->name('riders.store');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
@@ -21,7 +22,6 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
-    Route::post('/tracks/{track}', [RiderController::class, 'store'])->name('riders.store');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
