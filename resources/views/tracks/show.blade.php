@@ -3,6 +3,16 @@
     
     <h1>{{ $track->name }}</h1>
 
+    @if (session('status'))
+        <p>{{ session('status') }}</p>
+    @endif
+
+    @auth
+        @if ($track->user_id === auth()->id())
+            <p><a href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a></p>
+        @endif
+    @endauth
+
     
     <div>
         <p><strong>Apraksts:</strong> {{ $track->description }}</p>
