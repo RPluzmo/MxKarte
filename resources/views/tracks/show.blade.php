@@ -101,6 +101,38 @@
             @endforelse
         </div>
     </div>
+ <section>
+            <h3>Komentāri</h3>
+            @auth
+                <form method="POST" action="{{ route('comments.store', $track) }}">
+                    @csrf
+                    <label for="comment-body">Pievienot komentāru</label><br>
+                    <textarea id="comment-body" name="body" rows="4" maxlength="2000" required>{{ old('body') }}</textarea><br>
+                    <button type="submit">Publicēt</button>
+                </form>
+            @else
+                <p><a href="{{ route('login') }}">Ielogojies</a>, lai publicētu komentāru.</p>
+            @endauth
 
+            @forelse($track->comments as $comment)
+                <article>
+                    {{ $comment->user->name }} {{ $comment->user->surname }}
+                    {{ $comment->created_at->format('d.m.Y H:i') }}
+                    <p>{{ $comment->body }}</p>
+
+                    @auth
+                        @if ($comment->user_id === auth()->id() || $track->user_id === auth()->id() || auth()->user()->role === 'admin')
+                            <form method="POST" action="{{ route('comments.destroy', $comment) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Dzēst</button>
+                            </form>
+                        @endif
+                    @endauth
+                </article>
+            @empty
+                <p>Trasē vēl nav publicētu komentāru.</p>
+            @endforelse
+        </section>
 
 </x-layout>
