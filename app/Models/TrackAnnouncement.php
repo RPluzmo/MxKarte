@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TrackAnnouncement extends Model
@@ -40,7 +41,8 @@ class TrackAnnouncement extends Model
         return $query->where('published_at', '<=', now())
             ->where(function (Builder $query)
             {$query->whereNull('expires_at')
-            ->orWhere('expires_at', '>', now());});
+            ->orWhere('expires_at', '>', now());
+            });
     }
 }
 

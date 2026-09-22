@@ -72,6 +72,32 @@
 
     <div id="map" style="height: 600px;"></div>
 
+    <section>
+        <h2>Trašu paziņojumi</h2>
+
+        @forelse ($announcements as $announcement)
+            <article>
+                <h3>
+                    @if ($announcement->is_pinned)
+                        [Svarīgi]
+                    @endif
+                    {{ $announcement->title }}
+                </h3>
+                <p><strong>{{ $announcement->track->name }}</strong></p>
+                <p>{{ $announcement->body }}</p>
+                <small>
+                    Publicēts {{ $announcement->published_at->format('d.m.Y H:i') }}
+                    @if ($announcement->expires_at)
+                        · Aktīvs līdz {{ $announcement->expires_at->format('d.m.Y H:i') }}
+                    @endif
+                </small>
+                <p><a href="{{ route('tracks.show', $announcement->track) }}">Atvērt trasi</a></p>
+            </article>
+        @empty
+            <p>Šobrīd nav trašu paziņojumu.</p>
+        @endforelse
+    </section>
+
     <!-- Leaflet JS bibliotēka kartes attēlošanau -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>

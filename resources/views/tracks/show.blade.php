@@ -20,6 +20,87 @@
         <p><strong>Segums:</strong> {{ $track->surface_type ?? 'bruh ganjau smiltis vai dubļi lmao' }}</p>
     </div>
 
+    <section>
+        <h2>Trases paziņojumi</h2>
+
+        @auth
+            @if ($track->user_id === auth()->id())
+                <h3>Publicēt paziņojumu</h3>
+                <form method="POST" action="{{ route('announcements.store', $track) }}">
+                    @csrf
+                    <p>
+                        <label>Virsraksts
+                            <input type="text" name="title" value="{{ old('title') }}" maxlength="255" required>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Ziņojums
+                            <textarea name="body" rows="5" maxlength="5000" required>{{ old('body') }}</textarea>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Rādīt līdz
+                            <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}">
+                        </label>
+                        <small>Atstāj tukšu, lai rādītu bez termiņa.</small>
+                    </p>
+                    <label>
+                        <input type="checkbox" name="is_pinned" value="1">
+                        Atzīmēt kā svarīgu
+                    </label>
+                    <button type="submit">Publicēt</button>
+                </form>
+            @endif
+        @endauth
+
+        @forelse ($track->announcements as $announcement)
+            <article>
+                <h3>
+                    @if ($announcement->is_pinned)
+                        [Svarīgi]
+                    @endif
+                    {{ $announcement->title }}
+                </h3>
+                <p>{{ $announcement->body }}</p>
+                <small>
+                    Publicēts {{ $announcement->published_at->format('d.m.Y H:i') }}
+                    @if ($announcement->expires_at)
+                        · Aktīvs līdz {{ $announcement->expires_at->format('d.m.Y H:i') }}
+                    @else
+                        · Bez termiņa
+                    @endif
+                </small>
+
+                @auth
+                    @if ($track->user_id === auth()->id())
+                        <details>
+                            <summary>Rediģēt</summary>
+                            <form method="POST" action="{{ route('announcements.update', $announcement) }}">
+                                @csrf
+                                @method('PUT')
+                                <input type="text" name="title" value="{{ $announcement->title }}" maxlength="255" required>
+                                <textarea name="body" rows="5" maxlength="5000" required>{{ $announcement->body }}</textarea>
+                                <input type="datetime-local" name="expires_at" value="{{ $announcement->expires_at?->format('Y-m-d\\TH:i') }}">
+                                <label>
+                                    <input type="checkbox" name="is_pinned" value="1" @checked($announcement->is_pinned)>
+                                    Svarīgs
+                                </label>
+                                <button type="submit">Saglabāt</button>
+                            </form>
+                            <form method="POST" action="{{ route('announcements.destroy', $announcement) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Dzēst</button>
+                            </form>
+                        </details>
+                    @endif
+                @endauth
+            </article>
+        @empty
+            <p>Šai trasei nav aktuālu paziņojumu.</p>
+        @endforelse
+    </section>
+
         <div>
             <h3>Pieteikties treniņam</h3>
             <form method="POST" action="{{ route('riders.store', $track) }}">

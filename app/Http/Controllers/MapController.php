@@ -6,12 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\Club;
 use App\Models\Rider;
 use App\Models\Track;
+use App\Models\TrackAnnouncement;
 
 class MapController extends Controller
 {
     public function index()
     {
         $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->withCount('riders')->get();
+        $announcements = TrackAnnouncement::with('track')
+            ->active()
+            ->orderByDesc('is_pinned')
+            ->orderByDesc('published_at')
+            ->get();
         $clubTrackIds = [];
         $clubName = auth()->user()?->club;
 
@@ -24,12 +30,17 @@ class MapController extends Controller
                 ->all();
         }
 
-        return view('map', compact('tracks', 'clubTrackIds', 'clubName'));
+        return view('map', compact('tracks', 'clubTrackIds', 'clubName', 'announcements'));
     }
 
      public function show(Track $track)
     {
         $track->load(['riders', 'comments.user']);
+        $track->load(['announcements' => function ($query) {
+            $query->active()
+                ->orderByDesc('is_pinned')
+                ->orderByDesc('published_at');
+        }]);
         $clubs = Club::orderBy('name')->get();
 
         return view('tracks.show', compact('track', 'clubs'));
