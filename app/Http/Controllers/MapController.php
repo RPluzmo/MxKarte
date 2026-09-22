@@ -29,7 +29,7 @@ class MapController extends Controller
 
      public function show(Track $track)
     {
-        $track->load('riders');
+        $track->load(['riders', 'comments.user']);
         $clubs = Club::orderBy('name')->get();
 
         return view('tracks.show', compact('track', 'clubs'));
