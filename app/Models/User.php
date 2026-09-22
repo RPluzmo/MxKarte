@@ -32,6 +32,11 @@ class User extends Authenticatable
         return $this->hasMany(TrackComment::class);
     }
 
+    public function announcements()
+    {
+        return $this->hasMany(TrackAnnouncement::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

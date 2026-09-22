@@ -28,4 +28,9 @@ class Track extends Model
     {
         return $this->hasMany(TrackComment::class);
     }
+    
+    public function announcements()
+    {
+        return $this->hasMany(TrackAnnouncement::class);
+    }
 }

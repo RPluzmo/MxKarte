@@ -8,6 +8,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\TrackCommentController;
+use App\Http\Controllers\TrackAnnouncementController;
 
 Route::get('/', [MapController::class, 'index'])->name('home');
 
@@ -30,4 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/tracks/{track}', [TrackController::class, 'update'])->name('tracks.update');
         Route::post('/tracks/{track}/comments', [TrackCommentController::class, 'store'])->name('comments.store');
         Route::delete('/comments/{comment}', [TrackCommentController::class, 'destroy'])->name('comments.destroy');
+            Route::post('/tracks/{track}/announcements', [TrackAnnouncementController::class, 'store'])->name('announcements.store');
+            Route::put('/announcements/{announcement}', [TrackAnnouncementController::class, 'update'])->name('announcements.update');
+            Route::delete('/announcements/{announcement}', [TrackAnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
