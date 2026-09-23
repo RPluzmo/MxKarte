@@ -50,7 +50,7 @@
                 height: 12px;
                 width: 12px;
             }
-
+            
         </style>
     @endpush
 
