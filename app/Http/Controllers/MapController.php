@@ -13,11 +13,45 @@ class MapController extends Controller
     public function index()
     {
         $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->withCount('riders')->get();
-        $announcements = TrackAnnouncement::with('track')
-            ->active()
+        $announcementQuery = TrackAnnouncement::with('track')->active();
+        $announcementSearch = trim((string) request('announcement_search', ''));
+        $announcementTrackId = request()->integer('track_id') ?: null;
+        $onlyPinned = request()->boolean('only_pinned');
+
+        if ($announcementSearch !== '') {
+            $announcementQuery->where(function ($query) use ($announcementSearch) {
+                $query->where('title', 'like', "%{$announcementSearch}%")
+                    ->orWhere('body', 'like', "%{$announcementSearch}%");
+            });
+        }
+
+        if ($announcementTrackId) {
+            $announcementQuery->where('track_id', $announcementTrackId);
+        }
+
+        if ($onlyPinned) {
+            $announcementQuery->where('is_pinned', true);
+        }
+
+        $preferredTrackIds = auth()->user()?->preferredTracks()
+            ->pluck('tracks.id')
+            ->map(fn ($trackId) => (int) $trackId)
+            ->all() ?? [];
+
+        if ($preferredTrackIds) {
+            $placeholders = implode(',', array_fill(0, count($preferredTrackIds), '?'));
+            $announcementQuery->orderByRaw(
+                "CASE WHEN track_id IN ({$placeholders}) THEN 0 ELSE 1 END",
+                $preferredTrackIds
+            );
+        }
+
+        $announcements = $announcementQuery
             ->orderByDesc('is_pinned')
             ->orderByDesc('published_at')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
+
         $clubTrackIds = [];
         $clubName = auth()->user()?->club;
 
@@ -30,7 +64,16 @@ class MapController extends Controller
                 ->all();
         }
 
-        return view('map', compact('tracks', 'clubTrackIds', 'clubName', 'announcements'));
+        return view('map', compact(
+            'tracks',
+            'clubTrackIds',
+            'clubName',
+            'announcements',
+            'announcementSearch',
+            'announcementTrackId',
+            'onlyPinned',
+            'preferredTrackIds'
+        ));
     }
 
      public function show(Track $track)

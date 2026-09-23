@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\TrackAnnouncementController;
+use App\Http\Controllers\TrackPreferenceController;
 
 Route::get('/', [MapController::class, 'index'])->name('home');
 
@@ -34,4 +35,5 @@ Route::middleware('auth')->group(function () {
             Route::post('/tracks/{track}/announcements', [TrackAnnouncementController::class, 'store'])->name('announcements.store');
             Route::put('/announcements/{announcement}', [TrackAnnouncementController::class, 'update'])->name('announcements.update');
             Route::delete('/announcements/{announcement}', [TrackAnnouncementController::class, 'destroy'])->name('announcements.destroy');
+                Route::put('/track-preferences', [TrackPreferenceController::class, 'update'])->name('track-preferences.update');
 });

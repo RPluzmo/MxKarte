@@ -36,6 +36,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(TrackAnnouncement::class);
     }
+    
+    public function preferredTracks()
+    {
+        return $this->belongsToMany(Track::class, 'user_track_preferences')
+            ->withTimestamps();
+    }
+
 
     /**
      * Get the attributes that should be cast.

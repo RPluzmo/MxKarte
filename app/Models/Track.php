@@ -33,4 +33,11 @@ class Track extends Model
     {
         return $this->hasMany(TrackAnnouncement::class);
     }
+
+    public function preferredByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_track_preferences')
+            ->withTimestamps();
+    }
+
 }

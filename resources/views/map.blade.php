@@ -50,7 +50,7 @@
                 height: 12px;
                 width: 12px;
             }
-            
+
         </style>
     @endpush
 
@@ -74,6 +74,63 @@
 
     <section>
         <h2>Trašu paziņojumi</h2>
+<form method="GET" action="{{ route('home') }}">
+            <p>
+                <label for="announcement-search">Meklēt paziņojumos</label><br>
+                <input
+                    id="announcement-search"
+                    type="search"
+                    name="announcement_search"
+                    value="{{ $announcementSearch }}"
+                    placeholder="Piemēram, slēgta vai lietus"
+                >
+            </p>
+
+            <p>
+                <label for="announcement-track">Trase</label><br>
+                <select id="announcement-track" name="track_id">
+                    <option value="">Visas trases</option>
+                    @foreach ($tracks as $track)
+                        <option value="{{ $track->id }}" @selected($announcementTrackId === $track->id)>
+                            {{ $track->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </p>
+
+            <label>
+                <input type="checkbox" name="only_pinned" value="1" @checked($onlyPinned)>
+                Rādīt tikai svarīgos
+            </label>
+
+            <button type="submit">Meklēt</button>
+            <a href="{{ route('home') }}">Notīrīt filtrus</a>
+        </form>
+
+        @auth
+            <details>
+                <summary>Prioritārās trases</summary>
+                <form method="POST" action="{{ route('track-preferences.update') }}">
+                    @csrf
+                    @method('PUT')
+
+                    <p>Atzīmētās trases paziņojumi tiks rādīti pirmie.</p>
+                    @foreach ($tracks as $track)
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="track_ids[]"
+                                value="{{ $track->id }}"
+                                @checked(in_array($track->id, $preferredTrackIds, true))
+                            >
+                            {{ $track->name }}
+                        </label><br>
+                    @endforeach
+
+                    <button type="submit">Saglabāt prioritātes</button>
+                </form>
+            </details>
+        @endauth
 
         @forelse ($announcements as $announcement)
             <article>
@@ -96,6 +153,8 @@
         @empty
             <p>Šobrīd nav trašu paziņojumu.</p>
         @endforelse
+
+        {{ $announcements->links() }}
     </section>
 
     <!-- Leaflet JS bibliotēka kartes attēlošanau -->
