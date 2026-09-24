@@ -32,6 +32,6 @@ class TrackController extends Controller
 
     private function authorizeOwner(Request $request, Track $track): void
     {
-        abort_unless($track->user_id === $request->user()->id, 403);
+        abort_unless((int) $track->user_id === (int) $request->user()->id, 403);
     }
 }
