@@ -1,27 +1,137 @@
 <x-layout>
-    <div style="max-width: 1200px; margin: 0 auto; padding: 20px 16px 40px;">
-        <a href="/">Atpakaļ</a>
+    @push('styles')
+        <style>
+            body {
+                margin: 0;
+            }
 
+            .page-shell {
+                margin: 0 auto;
+                max-width: 1200px;
+                padding: 20px 16px 40px;
+            }
+
+            .track-panel {
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                margin-top: 12px;
+                padding: 12px;
+            }
+
+            .track-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 12px;
+            }
+
+            .track-grid > .track-panel {
+                flex: 1 1 320px;
+                margin-top: 0;
+            }
+
+            .track-panel article {
+                border-top: 1px solid #e5e7eb;
+                margin-top: 12px;
+                padding-top: 12px;
+            }
+
+            .track-panel h2,
+            .track-panel h3,
+            .track-panel p {
+                margin-top: 0;
+            }
+
+            @media (max-width: 640px) {
+                .page-shell {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                }
+            }
+        </style>
+    @endpush
+
+    <div class="page-shell">
+        <a href="/">Atpakaļ</a>
         <h1>{{ $track->name }}</h1>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
-
-    @auth
-        @if ($track->user_id === auth()->id())
-            <p><a href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a></p>
+        @if (session('status'))
+            <p>{{ session('status') }}</p>
         @endif
-    @endauth
 
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
-            <section style="flex: 1 1 320px; border: 1px solid #d1d5db; padding: 12px;">
-                <h2>Informācija</h2>
+        @auth
+            @if ($track->user_id === auth()->id())
+                <p><a href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a></p>
+            @endif
+        @endauth
+
+        <div class="track-grid">
+            <section class="track-panel">
+                <h2>Pieteikties treniņam</h2>
+                <form method="POST" action="{{ route('riders.store', $track) }}">
+                    @csrf
+                    @php($authUser = auth()->user())
+
+                    <p>
+                        <label>Vārds<br>
+                            <input type="text" name="name" value="{{ old('name', $authUser?->name ?? '') }}" required>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Uzvārds<br>
+                            <input type="text" name="surname" value="{{ old('surname', $authUser?->surname ?? '') }}" required>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Klubs (neobligāti)<br>
+                            <select name="club">
+                                <option value="">Nav izvēlēts</option>
+                                @foreach ($clubs as $club)
+                                    <option value="{{ $club->name }}" {{ old('club', $authUser?->club) === $club->name ? 'selected' : '' }}>
+                                        {{ $club->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Klase<br>
+                            <select name="category" required>
+                                <option value="">Izvēlieties</option>
+                                @foreach (['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'] as $category)
+                                    <option value="{{ $category }}" {{ old('category', $authUser?->category) === $category ? 'selected' : '' }}>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Pieredze<br>
+                            <select name="experience_level" required>
+                                <option value="">Izvēlieties</option>
+                                @foreach (['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'] as $experienceLevel)
+                                    <option value="{{ $experienceLevel }}" {{ old('experience_level', $authUser?->experience_level) === $experienceLevel ? 'selected' : '' }}>{{ $experienceLevel }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </p>
+                    <p>
+                        <label>Ierašanās laiks<br>
+                            <input type="time" name="ride_time" value="{{ old('ride_time') }}" required>
+                        </label>
+                    </p>
+                    <button type="submit">Pieteikties</button>
+                </form>
+            </section>
+
+            <section class="track-panel">
+                <h2>Trases informācija</h2>
                 <p><strong>Apraksts:</strong> {{ $track->description }}</p>
                 <p><strong>Segums:</strong> {{ $track->surface_type ?? 'Nav norādīts' }}</p>
             </section>
+        </div>
 
-            <section style="flex: 1 1 320px; border: 1px solid #d1d5db; padding: 12px;">
+        <div class="track-grid">
+            <section class="track-panel">
                 <h2>Trases paziņojumi</h2>
 
                 @auth
@@ -42,7 +152,7 @@
                             <p>
                                 <label>Rādīt līdz<br>
                                     <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}">
-                                </label>
+                                </label><br>
                                 <small>Atstāj tukšu, lai rādītu bez termiņa.</small>
                             </p>
                             <label>
@@ -55,7 +165,7 @@
                 @endauth
 
                 @forelse ($track->announcements as $announcement)
-                    <article style="border-top: 1px solid #e5e7eb; margin-top: 12px; padding-top: 12px;">
+                    <article>
                         <h3>
                             @if ($announcement->is_pinned)
                                 [Svarīgi]
@@ -101,122 +211,57 @@
                     <p>Šai trasei nav aktuālu paziņojumu.</p>
                 @endforelse
             </section>
-        </div>
 
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
-            <section style="flex: 1 1 320px; border: 1px solid #d1d5db; padding: 12px;">
-                <h3>Pieteikties treniņam</h3>
-                <form method="POST" action="{{ route('riders.store', $track) }}">
-                    @csrf
-                    @php
-                        $authUser = auth()->user();
-                    @endphp
-                    <div>
-                        <label>Vārds</label><br>
-                        <input type="text" name="name" value="{{ old('name', $authUser?->name ?? '') }}" required>
-                    </div>
+            <section class="track-panel">
+                <h2>Komentāri</h2>
 
-                    <div>
-                        <label>Uzvārds</label><br>
-                        <input type="text" name="surname" value="{{ old('surname', $authUser?->surname ?? '') }}" required>
-                    </div>
+                @auth
+                    <form method="POST" action="{{ route('comments.store', $track) }}">
+                        @csrf
+                        <label for="comment-body">Pievienot komentāru</label><br>
+                        <textarea id="comment-body" name="body" rows="4" maxlength="2000" required>{{ old('body') }}</textarea><br>
+                        <button type="submit">Publicēt</button>
+                    </form>
+                @else
+                    <p><a href="{{ route('login') }}">Ielogojies</a>, lai publicētu komentāru.</p>
+                @endauth
 
-                    <div>
-                        <label>Klubs (neobligāti)</label><br>
-                        <select name="club">
-                            <option value="">Nav izvēlēts</option>
-                            @foreach ($clubs as $club)
-                                <option value="{{ $club->name }}" {{ old('club', $authUser?->club) === $club->name ? 'selected' : '' }}>
-                                    {{ $club->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                @forelse($track->comments as $comment)
+                    <article>
+                        <strong>{{ $comment->user->name }} {{ $comment->user->surname }}</strong>
+                        <small>{{ $comment->created_at->format('d.m.Y H:i') }}</small>
+                        <p>{{ $comment->body }}</p>
 
-                    <div>
-                        <label>Klase</label><br>
-                        <select name="category" required>
-                            <option value="">Izvēlieties</option>
-                            <option value="MX 50" {{ old('category', $authUser?->category) === 'MX 50' ? 'selected' : '' }}>MX 50</option>
-                            <option value="MX 65" {{ old('category', $authUser?->category) === 'MX 65' ? 'selected' : '' }}>MX 65</option>
-                            <option value="MX 85" {{ old('category', $authUser?->category) === 'MX 85' ? 'selected' : '' }}>MX 85</option>
-                            <option value="MX 125" {{ old('category', $authUser?->category) === 'MX 125' ? 'selected' : '' }}>MX 125</option>
-                            <option value="MX 250" {{ old('category', $authUser?->category) === 'MX 250' ? 'selected' : '' }}>MX 250</option>
-                            <option value="MX 450" {{ old('category', $authUser?->category) === 'MX 450' ? 'selected' : '' }}>MX 450</option>
-                            <option value="Kvadri" {{ old('category', $authUser?->category) === 'Kvadri' ? 'selected' : '' }}>Kvadri</option>
-                            <option value="Blakusvāģi" {{ old('category', $authUser?->category) === 'Blakusvāģi' ? 'selected' : '' }}>Blakusvāģi</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label>Pieredze</label><br>
-                        <select name="experience_level" required>
-                            <option value="">Izvēlieties</option>
-                            <option value="Iesācējs" {{ old('experience_level', $authUser?->experience_level) === 'Iesācējs' ? 'selected' : '' }}>Iesācējs</option>
-                            <option value="Amatieris" {{ old('experience_level', $authUser?->experience_level) === 'Amatieris' ? 'selected' : '' }}>Amatieris</option>
-                            <option value="Veterāns" {{ old('experience_level', $authUser?->experience_level) === 'Veterāns' ? 'selected' : '' }}>Veterāns</option>
-                            <option value="Profesionālis" {{ old('experience_level', $authUser?->experience_level) === 'Profesionālis' ? 'selected' : '' }}>Profesionālis</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label>Ierašanās laiks</label><br>
-                        <input type="time" name="ride_time" value="{{ old('ride_time') }}" required>
-                    </div>
-
-                    <button type="submit">Pieteikties</button>
-                </form>
-            </section>
-
-            <section style="flex: 1 1 320px; border: 1px solid #d1d5db; padding: 12px;">
-                <h3>Pieteikušies sportisti</h3>
-
-                @forelse($track->riders as $rider)
-                    <div style="border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 8px;">
-                        <strong>{{ $rider->name }} {{ $rider->surname }}</strong><br>
-                        <span>{{ $rider->category }}, {{ $rider->experience_level }}</span><br>
-                        <span>{{ $rider->ride_time }}</span>
-                        @if($rider->club)
-                            <span> · {{ $rider->club }}</span>
-                        @endif
-                    </div>
+                        @auth
+                            @if ($comment->user_id === auth()->id() || $track->user_id === auth()->id() || auth()->user()->role === 'admin')
+                                <form method="POST" action="{{ route('comments.destroy', $comment) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit">Dzēst</button>
+                                </form>
+                            @endif
+                        @endauth
+                    </article>
                 @empty
-                    <p>Neviens neplāno ierasties.</p>
+                    <p>Trasē vēl nav publicētu komentāru.</p>
                 @endforelse
             </section>
         </div>
 
-        <section style="border: 1px solid #d1d5db; padding: 12px; margin-top: 16px;">
-            <h3>Komentāri</h3>
-            @auth
-                <form method="POST" action="{{ route('comments.store', $track) }}">
-                    @csrf
-                    <label for="comment-body">Pievienot komentāru</label><br>
-                    <textarea id="comment-body" name="body" rows="4" maxlength="2000" required>{{ old('body') }}</textarea><br>
-                    <button type="submit">Publicēt</button>
-                </form>
-            @else
-                <p><a href="{{ route('login') }}">Ielogojies</a>, lai publicētu komentāru.</p>
-            @endauth
+        <section class="track-panel">
+            <h2>Pieteikušies sportisti</h2>
 
-            @forelse($track->comments as $comment)
-                <article style="border-top: 1px solid #e5e7eb; margin-top: 12px; padding-top: 12px;">
-                    <strong>{{ $comment->user->name }} {{ $comment->user->surname }}</strong>
-                    <small>{{ $comment->created_at->format('d.m.Y H:i') }}</small>
-                    <p>{{ $comment->body }}</p>
-
-                    @auth
-                        @if ($comment->user_id === auth()->id() || $track->user_id === auth()->id() || auth()->user()->role === 'admin')
-                            <form method="POST" action="{{ route('comments.destroy', $comment) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit">Dzēst</button>
-                            </form>
-                        @endif
-                    @endauth
+            @forelse($track->riders as $rider)
+                <article>
+                    <strong>{{ $rider->name }} {{ $rider->surname }}</strong><br>
+                    <span>{{ $rider->category }}, {{ $rider->experience_level }}</span><br>
+                    <span>{{ $rider->ride_time }}</span>
+                    @if($rider->club)
+                        <span> · {{ $rider->club }}</span>
+                    @endif
                 </article>
             @empty
-                <p>Trasē vēl nav publicētu komentāru.</p>
+                <p>Neviens neplāno ierasties.</p>
             @endforelse
         </section>
     </div>
