@@ -7,12 +7,16 @@ use App\Models\Club;
 use App\Models\Rider;
 use App\Models\Track;
 use App\Models\TrackAnnouncement;
+use App\Models\TrackImage;
 
 class MapController extends Controller
 {
     public function index()
     {
-        $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')->withCount('riders')->get();
+        $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')
+            ->with(['images' => fn ($query) => $query->where('type', 'cover')])
+            ->withCount('riders')
+            ->get();
         $announcementQuery = TrackAnnouncement::with('track')->active();
         $announcementSearch = trim((string) request('announcement_search', ''));
         $announcementTrackId = request()->integer('track_id') ?: null;

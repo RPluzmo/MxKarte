@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('track_images', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('track_id')->constrained()->cascadeOnDelete();
+            $table->enum('type', ['cover', 'gallery']);
+            $table->string('path');
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->unique(['track_id', 'type', 'sort_order']);
             $table->timestamps();
         });
     }

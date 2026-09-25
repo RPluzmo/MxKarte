@@ -282,6 +282,7 @@
         }).addTo(map);
 
         const tracks = @json($tracks);
+        const storageUrl = @json(asset('storage'));
         const clubTrackIds = @json($clubTrackIds);
         const clubName = @json($clubName);
         const clubMarkersToggle = document.getElementById('toggle-club-markers');
@@ -297,11 +298,16 @@
         }
 
         const trackMarkers = tracks.map(track => {
+            const coverImage = track.images?.[0];
+            const coverMarkup = coverImage
+                ? `<img src="${storageUrl}/${coverImage.path}" alt="${track.name}" style="height: 120px; object-fit: cover; width: 180px;">`
+                : '';
             const marker = L.marker([track.lat, track.lng], {
                 icon: createTrackIcon(track),
             })
                 .addTo(map)
                 .bindPopup(`
+                    ${coverMarkup}
                     <strong>${track.name}</strong><br>
                     ${track.description ?? ''}
                     <a class="popup-link" href="/tracks/${track.id}">Apskatīt</a>

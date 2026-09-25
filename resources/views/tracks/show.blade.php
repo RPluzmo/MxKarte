@@ -36,6 +36,26 @@
                 padding-top: 12px;
             }
 
+            .track-cover {
+                display: block;
+                height: 280px;
+                object-fit: cover;
+                width: 100%;
+            }
+
+            .track-gallery {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .track-gallery img {
+                flex: 1 1 180px;
+                height: 180px;
+                object-fit: cover;
+                width: 180px;
+            }
+
             .track-panel h2,
             .track-panel h3,
             .track-panel p {
@@ -64,6 +84,13 @@
                 <p><a href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a></p>
             @endif
         @endauth
+
+        @php($coverImage = $track->images->firstWhere('type', 'cover'))
+        @if ($coverImage)
+            <section class="track-panel">
+                <img class="track-cover" src="{{ asset('storage/' . $coverImage->path) }}" alt="{{ $track->name }}">
+            </section>
+        @endif
 
         <div class="track-grid">
             <section class="track-panel">
@@ -214,6 +241,15 @@
 
             <section class="track-panel">
                 <h2>Komentāri</h2>
+
+                @php($galleryImages = $track->images->where('type', 'gallery'))
+                @if ($galleryImages->isNotEmpty())
+                    <div class="track-gallery">
+                        @foreach ($galleryImages as $galleryImage)
+                            <img src="{{ asset('storage/' . $galleryImage->path) }}" alt="{{ $track->name }} galerijas attēls">
+                        @endforeach
+                    </div>
+                @endif
 
                 @auth
                     <form method="POST" action="{{ route('comments.store', $track) }}">
