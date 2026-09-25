@@ -27,6 +27,7 @@ class TrackOwnerSeeder extends Seeder
             'Jaunmārupe' => 'jaunmarupe',
             'Jaunpils' => 'jaunpils',
             'Jurkalne' => 'jurkalne',
+            'Kandava' => 'kandava',
             'Ķegums' => 'kegums',
             'Liepāja' => 'liepaja',
             'Limbaži' => 'limbaži',

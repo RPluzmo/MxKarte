@@ -127,6 +127,14 @@ class TrackSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'Kandava',
+                'lat' => 57.06103,
+                'lng' => 22.79215,
+                'description' => 'Kandavas motoparks',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'Ķegums',
                 'lat' => 56.75074,
                 'lng' => 24.74242,
