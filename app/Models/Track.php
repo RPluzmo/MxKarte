@@ -39,5 +39,10 @@ class Track extends Model
         return $this->belongsToMany(User::class, 'user_track_preferences')
             ->withTimestamps();
     }
+    
+    public function images()
+    {
+        return $this->hasMany(TrackImage::class)->orderBy('sort_order');
+    }
 
 }

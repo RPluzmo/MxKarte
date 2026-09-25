@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('lat', 7, 5);//7cipari kopā , 5cipari aiz komata
             $table->decimal('lng', 7, 5);
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->timestamps();
         }); 
