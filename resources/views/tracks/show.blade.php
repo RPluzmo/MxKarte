@@ -242,15 +242,6 @@
             <section class="track-panel">
                 <h2>Komentāri</h2>
 
-                @php($galleryImages = $track->images->where('type', 'gallery'))
-                @if ($galleryImages->isNotEmpty())
-                    <div class="track-gallery">
-                        @foreach ($galleryImages as $galleryImage)
-                            <img src="{{ asset('storage/' . $galleryImage->path) }}" alt="{{ $track->name }} galerijas attēls">
-                        @endforeach
-                    </div>
-                @endif
-
                 @auth
                     <form method="POST" action="{{ route('comments.store', $track) }}">
                         @csrf
@@ -283,6 +274,18 @@
                 @endforelse
             </section>
         </div>
+
+        @php($galleryImages = $track->images->where('type', 'gallery'))
+        @if ($galleryImages->isNotEmpty())
+            <section class="track-panel">
+                <h2>Trases attēli</h2>
+                <div class="track-gallery">
+                    @foreach ($galleryImages as $galleryImage)
+                        <img src="{{ asset('storage/' . $galleryImage->path) }}" alt="{{ $track->name }} trases foto">
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
         <section class="track-panel">
             <h2>Pieteikušies sportisti</h2>
