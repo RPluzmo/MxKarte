@@ -53,6 +53,16 @@
                 background: #2563eb;
             }
 
+            .color-vision-mode .track-marker:not(.club-marker) {
+                background: #0400fc;
+                color: #ffffff;
+            }
+
+            .color-vision-mode .track-marker.club-marker {
+                background: #f0e442;
+                color: #111827;
+            }
+
             .map-controls {
                 align-items: center;
                 display: flex;
@@ -286,7 +296,28 @@
         const clubTrackIds = @json($clubTrackIds);
         const clubName = @json($clubName);
         const clubMarkersToggle = document.getElementById('toggle-club-markers');
+        const colorVisionToggle = document.getElementById('toggle-color-vision');
         let clubMarkersEnabled = false;
+        let colorVisionMode = localStorage.getItem('mxkarte-color-vision') === 'true';
+
+        function setColorVisionMode(enabled) {
+            colorVisionMode = enabled;
+            document.body.classList.toggle('color-vision-mode', colorVisionMode);
+
+            if (colorVisionToggle) {
+                colorVisionToggle.setAttribute('aria-pressed', String(colorVisionMode));
+                colorVisionToggle.textContent = colorVisionMode
+                    ? 'Krāsu pieejamības režīms: ieslēgts'
+                    : 'Krāsu pieejamības režīms: izslēgts';
+            }
+        }
+
+        setColorVisionMode(colorVisionMode);
+
+        colorVisionToggle?.addEventListener('click', () => {
+            setColorVisionMode(!colorVisionMode);
+            localStorage.setItem('mxkarte-color-vision', String(colorVisionMode));
+        });
 
         function createTrackIcon(track, isClubMarker = false) {
             return L.divIcon({

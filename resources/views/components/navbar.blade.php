@@ -12,6 +12,14 @@
         padding: 0;
     }
 
+    .site-nav {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
     .site-nav-list li + li {
         border-left: 1px solid #9ca3af;
         margin-left: 12px;
@@ -31,10 +39,26 @@
     .site-nav-list form {
         margin: 0;
     }
+
+    .site-nav-accessibility {
+        border-left: 1px solid #9ca3af;
+        margin-left: auto;
+        padding-left: 12px;
+    }
+
+    .site-nav-accessibility button {
+        background: none;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+        text-decoration: underline;
+    }
 </style>
 
 <header class="site-header">
-    <nav aria-label="Galvenā navigācija">
+    <nav class="site-nav" aria-label="Galvenā navigācija">
         <ul class="site-nav-list">
             <li><a href="{{ route('home') }}">Karte</a></li>
 
@@ -51,5 +75,13 @@
                 <li><a href="{{ route('register') }}">Reģistrēties</a></li>
             @endauth
         </ul>
+
+        @if (request()->routeIs('home'))
+            <div class="site-nav-accessibility">
+                <button id="toggle-color-vision" type="button" aria-pressed="false">
+                    Krāsu pieejamības režīms: izslēgts
+                </button>
+            </div>
+        @endif
     </nav>
 </header>
