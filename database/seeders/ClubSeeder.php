@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Club;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class ClubSeeder extends Seeder
 {
@@ -103,7 +104,7 @@ class ClubSeeder extends Seeder
         foreach ($clubs as $club) {
             $logoPath = $club['logo_path'];
 
-            if (!empty($logoPath) && !file_exists(public_path($logoPath))) {
+            if (!empty($logoPath) && !Storage::disk('public')->exists($logoPath)) {
                 $logoPath = null;
             }
 

@@ -82,7 +82,7 @@ class MapController extends Controller
 
      public function show(Track $track)
     {
-        $track->load(['riders', 'comments.user']);
+        $track->load(['riders.clubModel', 'comments.user', 'images']);
         $track->load(['announcements' => function ($query) {
             $query->active()
                 ->orderByDesc('is_pinned')

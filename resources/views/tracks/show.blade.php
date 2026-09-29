@@ -56,6 +56,18 @@
                 width: 180px;
             }
 
+            .rider-club {
+                align-items: center;
+                display: inline-flex;
+                gap: 8px;
+            }
+
+            .rider-club-logo {
+                height: 40px;
+                object-fit: contain;
+                width: 40px;
+            }
+
             .track-panel h2,
             .track-panel h3,
             .track-panel p {
@@ -295,8 +307,18 @@
                     <strong>{{ $rider->name }} {{ $rider->surname }}</strong><br>
                     <span>{{ $rider->category }}, {{ $rider->experience_level }}</span><br>
                     <span>{{ $rider->ride_time }}</span>
-                    @if($rider->club)
-                        <span> · {{ $rider->club }}</span>
+                    @if ($rider->club)
+                        <div class="rider-club">
+                            @if ($rider->clubModel?->logo_path)
+                                <img
+                                    class="rider-club-logo"
+                                    src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
+                                    alt="{{ $rider->club }} logo"
+                                    loading="lazy"
+                                >
+                            @endif
+                            <span>{{ $rider->club }}</span>
+                        </div>
                     @endif
                 </article>
             @empty

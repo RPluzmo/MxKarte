@@ -26,6 +26,11 @@ use Illuminate\Database\Eloquent\Model;
     {
         return $this->belongsTo(User::class);
     }
+
+    public function clubModel()
+    {
+        return $this->belongsTo(Club::class, 'club', 'name');
+    }
 }
 
 
