@@ -285,7 +285,16 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const latviaCenter = [56.8796, 24.6032];
-        const map = L.map('map').setView(latviaCenter, 7); // varbūt nomainīt uz .fitBounds
+        const latviaBounds = L.latLngBounds(
+            [55.6, 20.8],
+            [58.1, 28.3]
+        );
+        const map = L.map('map', {
+            maxBounds: latviaBounds,
+            maxBoundsViscosity: 1,
+            minZoom: 7,
+            maxZoom: 18,
+        }).setView(latviaCenter, 7);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
@@ -338,7 +347,7 @@
             })
                 .addTo(map)
                 .bindPopup(`
-                    ${coverMarkup}
+                    ${coverMarkup}<br>
                     <strong>${track.name}</strong><br>
                     ${track.description ?? ''}
                     <a class="popup-link" href="/tracks/${track.id}">Apskatīt</a>
