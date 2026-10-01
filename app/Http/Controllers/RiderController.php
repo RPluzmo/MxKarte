@@ -21,6 +21,8 @@ class RiderController extends Controller
             'ride_time' => ['required', 'date_format:H:i'],
         ]);
 
+        $validated['club'] = $validated['club'] ?? 'Privāti';
+
         $track->riders()->create([
             ...$validated,
             'track_id' => $track->id,

@@ -15,6 +15,7 @@ class ClubSeeder extends Seeder
     public function run(): void
     {
          $clubs = [
+            ['name' => 'Privāti', 'logo_path' => 'clubs/privati.png'],
             ['name' => 'MX Ādaži', 'logo_path' => 'clubs/mxadazi.png'],
             ['name' => 'AG XTREME', 'logo_path' => 'clubs/agxtreme.png'],
             ['name' => 'Tukuma motoklubs', 'logo_path' => 'clubs/tukumamotoklubs.png'],

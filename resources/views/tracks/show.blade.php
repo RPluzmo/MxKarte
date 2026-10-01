@@ -301,29 +301,48 @@
 
         <section class="track-panel">
             <h2>Pieteikušies sportisti</h2>
-
+<table style="width: 100%; border-collapse: collapse;" border="1" align="center">
+    <thead>
+        <tr>
+            <th>Vārds</th>
+            <th>Uzvārds</th>
+            <th>Klase</th>
+            <th>Pieredzes līmenis</th>
+            <th>Ierašanās laiks</th>
+            <th>Moto klubs</th>
+        </tr>
+    </thead>
+    <tbody>
             @forelse($track->riders as $rider)
-                <article>
-                    <strong>{{ $rider->name }} {{ $rider->surname }}</strong><br>
-                    <span>{{ $rider->category }}, {{ $rider->experience_level }}</span><br>
-                    <span>{{ $rider->ride_time }}</span>
-                    @if ($rider->club)
-                        <div class="rider-club">
-                            @if ($rider->clubModel?->logo_path)
-                                <img
-                                    class="rider-club-logo"
-                                    src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
-                                    alt="{{ $rider->club }} logo"
-                                    loading="lazy"
-                                >
-                            @endif
-                            <span>{{ $rider->club }}</span>
-                        </div>
-                    @endif
-                </article>
+                <tr>
+                    <td>{{ $rider->name }}</td>
+                    <td>{{ $rider->surname }}</td>
+                    <td>{{ $rider->category }}</td>
+                    <td>{{ $rider->experience_level }}</td>
+                    <td>{{ substr($rider->ride_time, 0, 5) }}</td>
+                    <td>
+                        @if ($rider->club)
+                            <div class="rider-club">
+                                @if ($rider->clubModel?->logo_path)
+                                    <img
+                                        class="rider-club-logo"
+                                        src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
+                                        alt="{{ $rider->club }} logo"
+                                        loading="lazy"
+                                    >
+                                @endif
+                                <span>{{ $rider->club }}</span>
+                            </div>
+                        @else
+                            <span>Privāti</span>
+                        @endif
+                    </td>
+                </tr>
             @empty
                 <p>Neviens neplāno ierasties.</p>
             @endforelse
+        </tbody>
+    </table>
         </section>
     </div>
 </x-layout>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->string('surname');
-            $table->string('club')->nullable();
+            $table->string('club')->nullable()->default('Privāti');
             $table->string('category');
             $table->string('experience_level');
             $table->time('ride_time');

@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TrackOwnerSeeder::class);
         $this->call(ClubSeeder::class);
         $this->call(TrackImageSeeder::class);
+        $this->call(RiderSeeder::class);
     }
 }
