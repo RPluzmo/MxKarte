@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ClubSeeder::class);
         $this->call(TrackImageSeeder::class);
         $this->call(RiderSeeder::class);
+        $this->call(TrackAnnouncementSeeder::class);
     }
 }

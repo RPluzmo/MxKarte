@@ -153,6 +153,11 @@
                 margin-top: auto;
             }
 
+            .announcements-panel nav[role="navigation"] svg {
+                height: 1em;
+                width: 1em;
+            }
+
             @media (max-width: 640px) {
                 .page-shell {
                     padding-left: 12px;
@@ -305,7 +310,7 @@
         const clubTrackIds = @json($clubTrackIds);
         const clubName = @json($clubName);
         const clubMarkersToggle = document.getElementById('toggle-club-markers');
-        const colorVisionToggle = document.getElementById('toggle-color-vision');
+        const colorVisionToggle = document.getElementById('toggle-color-vision')
         let clubMarkersEnabled = false;
         let colorVisionMode = localStorage.getItem('mxkarte-color-vision') === 'true';
 
