@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TrackController as AdminTrackController;
 use App\Http\Controllers\Admin\SiteAnnouncementController as AdminSiteAnnouncementController;
+use App\Http\Controllers\Admin\TrackAnnouncementController as AdminTrackAnnouncementController;
 use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', [MapController::class, 'index'])->name('home');
@@ -48,4 +49,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::cla
         Route::resource('users', AdminUserController::class)->except('show');
         Route::resource('tracks', AdminTrackController::class)->except('show');
         Route::resource('announcements', AdminSiteAnnouncementController::class)->except('show');
+        Route::resource('track-announcements', AdminTrackAnnouncementController::class)->except('show');
     });
