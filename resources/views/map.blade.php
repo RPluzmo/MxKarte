@@ -188,6 +188,26 @@
             <div id="map" style="height: 600px;"></div>
         </div>
 
+        @if ($siteAnnouncements->isNotEmpty())
+            <section class="announcements-panel">
+                <h2>Sistēmas paziņojumi</h2>
+                <div class="announcement-list">
+                    @foreach ($siteAnnouncements as $siteAnnouncement)
+                        <article class="announcement-card">
+                            <h3>{{ $siteAnnouncement->title }}</h3>
+                            <p>{{ $siteAnnouncement->body }}</p>
+                            <small class="meta">
+                                Publicēts {{ $siteAnnouncement->published_at->format('d.m.Y H:i') }}
+                                @if ($siteAnnouncement->expires_at)
+                                    · Aktīvs līdz {{ $siteAnnouncement->expires_at->format('d.m.Y H:i') }}
+                                @endif
+                            </small>
+                        </article>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
         <section class="announcements-panel">
             <h2>Trašu paziņojumi</h2>
 

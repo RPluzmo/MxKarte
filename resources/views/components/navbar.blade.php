@@ -64,6 +64,9 @@
 
             @auth
                 <li><a href="{{ route('profile.edit') }}">Profils</a></li>
+                @if (auth()->user()->role === 'admin')
+                    <li><a href="{{ route('admin.dashboard') }}">Admin</a></li>
+                @endif
                 <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

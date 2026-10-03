@@ -10,6 +10,11 @@ use App\Http\Controllers\TrackController;
 use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\TrackAnnouncementController;
 use App\Http\Controllers\TrackPreferenceController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\TrackController as AdminTrackController;
+use App\Http\Controllers\Admin\SiteAnnouncementController as AdminSiteAnnouncementController;
+use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', [MapController::class, 'index'])->name('home');
 
@@ -37,3 +42,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/announcements/{announcement}', [TrackAnnouncementController::class, 'destroy'])->name('announcements.destroy');
                 Route::put('/track-preferences', [TrackPreferenceController::class, 'update'])->name('track-preferences.update');
 });
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::class])->group(function () {
+        Route::get('/', AdminDashboardController::class)->name('dashboard');
+        Route::resource('users', AdminUserController::class)->except('show');
+        Route::resource('tracks', AdminTrackController::class)->except('show');
+        Route::resource('announcements', AdminSiteAnnouncementController::class)->except('show');
+    });

@@ -8,6 +8,7 @@ class Track extends Model
 {
     protected $fillable = [
         'name',
+        'slug',
         'lat',
         'lng',
         'description',

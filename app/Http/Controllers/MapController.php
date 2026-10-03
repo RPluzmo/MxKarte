@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Club;
 use App\Models\Rider;
+use App\Models\SiteAnnouncement;
 use App\Models\Track;
 use App\Models\TrackAnnouncement;
 use App\Models\TrackImage;
@@ -13,6 +14,11 @@ class MapController extends Controller
 {
     public function index()
     {
+        $siteAnnouncements = SiteAnnouncement::active()
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get();
+
         $tracks = Track::select('id', 'name', 'lat', 'lng', 'description')
             ->with(['images' => fn ($query) => $query->where('type', 'cover')])
             ->withCount('riders')
@@ -70,6 +76,7 @@ class MapController extends Controller
 
         return view('map', compact(
             'tracks',
+            'siteAnnouncements',
             'clubTrackIds',
             'clubName',
             'announcements',
