@@ -111,48 +111,62 @@
                     @csrf
                     @php($authUser = auth()->user())
 
+                    @auth
+                        <p><strong>Vārds:</strong> {{ $authUser->name }}</p>
+                        <p><strong>Uzvārds:</strong> {{ $authUser->surname ?: '-' }}</p>
+                        <p><strong>Klubs:</strong> {{ $authUser->club ?: 'Privāti' }}</p>
+                        <p><strong>Klase:</strong> {{ $authUser->category ?: '-' }}</p>
+                        <p><strong>Pieredze:</strong> {{ $authUser->experience_level ?: '-' }}</p>
+                        <p>Datus var mainīt <a href="{{ route('profile.edit') }}">profilā</a>.</p>
+                    @else
                     <p>
                         <label>Vārds<br>
-                            <input type="text" name="name" value="{{ old('name', $authUser?->name ?? '') }}" required>
+                            <input type="text" name="name" value="{{ old('name') }}" required>
                         </label>
                     </p>
                     <p>
                         <label>Uzvārds<br>
-                            <input type="text" name="surname" value="{{ old('surname', $authUser?->surname ?? '') }}" required>
+                            <input type="text" name="surname" value="{{ old('surname') }}" required>
                         </label>
                     </p>
-                    <p>
-                        <label>Klubs (neobligāti)<br>
-                            <select name="club">
-                                <option value="">Nav izvēlēts</option>
-                                @foreach ($clubs as $club)
-                                    <option value="{{ $club->name }}" {{ old('club', $authUser?->club) === $club->name ? 'selected' : '' }}>
-                                        {{ $club->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </label>
-                    </p>
-                    <p>
-                        <label>Klase<br>
-                            <select name="category" required>
-                                <option value="">Izvēlieties</option>
-                                @foreach (['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'] as $category)
-                                    <option value="{{ $category }}" {{ old('category', $authUser?->category) === $category ? 'selected' : '' }}>{{ $category }}</option>
-                                @endforeach
-                            </select>
-                        </label>
-                    </p>
-                    <p>
-                        <label>Pieredze<br>
-                            <select name="experience_level" required>
-                                <option value="">Izvēlieties</option>
-                                @foreach (['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'] as $experienceLevel)
-                                    <option value="{{ $experienceLevel }}" {{ old('experience_level', $authUser?->experience_level) === $experienceLevel ? 'selected' : '' }}>{{ $experienceLevel }}</option>
-                                @endforeach
-                            </select>
-                        </label>
-                    </p>
+                    <x-choice-picker
+                        key="club"
+                        name="club"
+                        label="Klubs (neobligāti)"
+                        title="Izvēlies motoklubu"
+                        search="Meklēt klubu"
+                        button="Atzīmēt motokluba piederību"
+                        empty="Klubi nav atrasti."
+                        none="Privāti"
+                        none-hint="Nav kluba logo"
+                        :options="$clubs"
+                        :selected="old('club')"
+                    />
+                    <x-choice-picker
+                        key="category"
+                        name="category"
+                        label="Klase"
+                        title="Izvēlies motocikla kategoriju"
+                        search="Meklēt kategoriju"
+                        button="Izvēlēties kategoriju"
+                        empty="Kategorijas nav atrastas."
+                        :show-image="false"
+                        :options="$categories"
+                        :selected="old('category')"
+                    />
+                    <x-choice-picker
+                        key="experience"
+                        name="experience_level"
+                        label="Pieredze"
+                        title="Izvēlies pieredzes līmeni"
+                        search="Meklēt pieredzi"
+                        button="Izvēlēties pieredzi"
+                        empty="Pieredzes līmeņi nav atrasti."
+                        :show-image="false"
+                        :options="$experienceLevels"
+                        :selected="old('experience_level')"
+                    />
+                    @endauth
                     <p>
                         <label>Ierašanās laiks<br>
                             <input type="time" name="ride_time" value="{{ old('ride_time') }}" required>

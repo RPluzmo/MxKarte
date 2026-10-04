@@ -13,5 +13,7 @@
     <main class="main-content">
         {{ $slot }}
     </main>
+
+    @stack('dialogs')
 </body>
 </html>

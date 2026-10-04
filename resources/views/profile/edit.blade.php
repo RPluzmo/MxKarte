@@ -1,13 +1,6 @@
 <x-layout>
     <x-slot:title>Profils</x-slot:title>
 
-    @php($selectedClub = old('club', $user->club))
-    @php($selectedClubModel = $clubs->firstWhere('name', $selectedClub))
-    @php($selectedCategory = old('category', $user->category))
-    @php($selectedCategoryData = collect($categories)->firstWhere('name', $selectedCategory))
-    @php($selectedExperience = old('experience_level', $user->experience_level))
-    @php($selectedExperienceData = collect($experienceLevels)->firstWhere('name', $selectedExperience))
-
     <main class="profile-page">
         <section class="profile-panel">
             <h1>Profils</h1>
@@ -40,56 +33,47 @@
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
                 </label>
 
-                <div class="profile-field">
-                    <span>Kluba piederība</span>
-                    <input id="profile-club-value" type="hidden" name="club" value="{{ $selectedClub }}">
-                    <div class="profile-club-control">
-                        <div class="profile-selected-choice">
-                            <img
-                                id="selected-club-logo"
-                                src="{{ $selectedClubModel?->logo_path ? asset('storage/' . $selectedClubModel->logo_path) : '' }}"
-                                alt=""
-                                @if (!$selectedClubModel?->logo_path) hidden @endif
-                            >
-                            <output id="selected-club-label">{{ $selectedClub ?: 'Privāti' }}</output>
-                        </div>
-                        <button id="open-club-picker" type="button">Atzīmēt motokluba piederību</button>
-                    </div>
-                </div>
+                <x-choice-picker
+                    key="club"
+                    name="club"
+                    label="Kluba piederība"
+                    title="Izvēlies motoklubu"
+                    search="Meklēt klubu"
+                    button="Atzīmēt motokluba piederību"
+                    empty="Klubi nav atrasti."
+                    none="Privāti"
+                    none-hint="Nav kluba logo"
+                    :options="$clubs"
+                    :selected="old('club', $user->club)"
+                />
 
-                <div class="profile-field">
-                    <span>Motocikla kategorija</span>
-                    <input id="profile-category-value" type="hidden" name="category" value="{{ $selectedCategory }}">
-                    <div class="profile-club-control">
-                        <div class="profile-selected-choice">
-                            <img
-                                id="selected-category-image"
-                                src="{{ $selectedCategoryData['image_url'] ?? '' }}"
-                                alt=""
-                                @if (!$selectedCategoryData || !$selectedCategoryData['image_url']) hidden @endif
-                            >
-                            <output id="selected-category-label">{{ $selectedCategory ?: 'Nav izvēlēts' }}</output>
-                        </div>
-                        <button id="open-category-picker" type="button">Izvēlēties kategoriju</button>
-                    </div>
-                </div>
+                <x-choice-picker
+                    key="category"
+                    name="category"
+                    label="Motocikla kategorija"
+                    title="Izvēlies motocikla kategoriju"
+                    search="Meklēt kategoriju"
+                    button="Izvēlēties kategoriju"
+                    empty="Kategorijas nav atrastas."
+                    none="Nav izvēlēts"
+                    :show-image="false"
+                    :options="$categories"
+                    :selected="old('category', $user->category)"
+                />
 
-                <div class="profile-field">
-                    <span>Pieredze</span>
-                    <input id="profile-experience-value" type="hidden" name="experience_level" value="{{ $selectedExperience }}">
-                    <div class="profile-club-control">
-                        <div class="profile-selected-choice">
-                            <img
-                                id="selected-experience-image"
-                                src="{{ $selectedExperienceData['image_url'] ?? '' }}"
-                                alt=""
-                                @if (!$selectedExperienceData || !$selectedExperienceData['image_url']) hidden @endif
-                            >
-                            <output id="selected-experience-label">{{ $selectedExperience ?: 'Nav izvēlēts' }}</output>
-                        </div>
-                        <button id="open-experience-picker" type="button">Izvēlēties pieredzi</button>
-                    </div>
-                </div>
+                <x-choice-picker
+                    key="experience"
+                    name="experience_level"
+                    label="Pieredze"
+                    title="Izvēlies pieredzes līmeni"
+                    search="Meklēt pieredzi"
+                    button="Izvēlēties pieredzi"
+                    empty="Pieredzes līmeņi nav atrasti."
+                    none="Nav izvēlēts"
+                    :show-image="false"
+                    :options="$experienceLevels"
+                    :selected="old('experience_level', $user->experience_level)"
+                />
 
                 <label class="profile-field">Jauna parole
                     <input type="password" name="password">
@@ -102,125 +86,5 @@
                 <button type="submit">Saglabāt</button>
             </form>
         </section>
-
-        <dialog id="club-picker-dialog" class="profile-dialog" aria-labelledby="club-picker-title">
-            <div class="profile-dialog-header">
-                <h2 id="club-picker-title">Izvēlies motoklubu</h2>
-                <form method="dialog">
-                    <button type="submit">Aizvērt</button>
-                </form>
-            </div>
-
-            <label class="profile-field" for="club-search">Meklēt klubu</label>
-            <input id="club-search" class="choice-search" type="search" placeholder="Ieraksti kluba nosaukumu">
-
-            <div class="choice-grid">
-                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Privāti" data-choice-image="" aria-pressed="{{ $selectedClub ? 'false' : 'true' }}">
-                    <span class="choice-option-placeholder">Nav kluba logo</span>
-                    <span class="choice-option-label">Privāti</span>
-                </button>
-
-                @foreach ($clubs as $club)
-                    <button
-                        class="choice-option"
-                        type="button"
-                        data-choice-option
-                        data-choice-value="{{ $club->name }}"
-                        data-choice-name="{{ $club->name }}"
-                        data-choice-image="{{ $club->logo_path ? asset('storage/' . $club->logo_path) : '' }}"
-                        aria-pressed="{{ $selectedClub === $club->name ? 'true' : 'false' }}"
-                    >
-                        @if ($club->logo_path)
-                            <img src="{{ asset('storage/' . $club->logo_path) }}" alt="" loading="lazy">
-                        @else
-                            <span class="choice-option-placeholder">Nav logo</span>
-                        @endif
-                        <span class="choice-option-label">{{ $club->name }}</span>
-                    </button>
-                @endforeach
-            </div>
-
-            <p id="club-search-empty" hidden>Klubi nav atrasti.</p>
-        </dialog>
-
-        <dialog id="category-picker-dialog" class="profile-dialog" aria-labelledby="category-picker-title">
-            <div class="profile-dialog-header">
-                <h2 id="category-picker-title">Izvēlies motocikla kategoriju</h2>
-                <form method="dialog">
-                    <button type="submit">Aizvērt</button>
-                </form>
-            </div>
-
-            <label class="profile-field" for="category-search">Meklēt kategoriju</label>
-            <input id="category-search" class="choice-search" type="search" placeholder="Ieraksti kategoriju">
-
-            <div class="choice-grid">
-                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Nav izvēlēts" data-choice-image="" aria-pressed="{{ $selectedCategory ? 'false' : 'true' }}">
-                    <span class="choice-option-placeholder">Nav attēla</span>
-                    <span class="choice-option-label">Nav izvēlēts</span>
-                </button>
-
-                @foreach ($categories as $category)
-                    <button
-                        class="choice-option"
-                        type="button"
-                        data-choice-option
-                        data-choice-value="{{ $category['name'] }}"
-                        data-choice-name="{{ $category['name'] }}"
-                        data-choice-image="{{ $category['image_url'] ?? '' }}"
-                        aria-pressed="{{ $selectedCategory === $category['name'] ? 'true' : 'false' }}"
-                    >
-                        @if ($category['image_url'])
-                            <img src="{{ $category['image_url'] }}" alt="{{ $category['name'] }} motocikls" loading="lazy">
-                        @else
-                            <span class="choice-option-placeholder">Attēls tiks pievienots</span>
-                        @endif
-                        <span class="choice-option-label">{{ $category['name'] }}</span>
-                    </button>
-                @endforeach
-            </div>
-
-            <p id="category-search-empty" hidden>Kategorijas nav atrastas.</p>
-        </dialog>
-
-        <dialog id="experience-picker-dialog" class="profile-dialog" aria-labelledby="experience-picker-title">
-            <div class="profile-dialog-header">
-                <h2 id="experience-picker-title">Izvēlies pieredzes līmeni</h2>
-                <form method="dialog">
-                    <button type="submit">Aizvērt</button>
-                </form>
-            </div>
-
-            <label class="profile-field" for="experience-search">Meklēt pieredzi</label>
-            <input id="experience-search" class="choice-search" type="search" placeholder="Ieraksti pieredzes līmeni">
-
-            <div class="choice-grid">
-                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Nav izvēlēts" data-choice-image="" aria-pressed="{{ $selectedExperience ? 'false' : 'true' }}">
-                    <span class="choice-option-placeholder">Nav attēla</span>
-                    <span class="choice-option-label">Nav izvēlēts</span>
-                </button>
-
-                @foreach ($experienceLevels as $level)
-                    <button
-                        class="choice-option"
-                        type="button"
-                        data-choice-option
-                        data-choice-value="{{ $level['name'] }}"
-                        data-choice-name="{{ $level['name'] }}"
-                        data-choice-image="{{ $level['image_url'] ?? '' }}"
-                        aria-pressed="{{ $selectedExperience === $level['name'] ? 'true' : 'false' }}"
-                    >
-                        @if ($level['image_url'])
-                            <img src="{{ $level['image_url'] }}" alt="{{ $level['name'] }} braucējs" loading="lazy">
-                        @else
-                            <span class="choice-option-placeholder">Attēls tiks pievienots</span>
-                        @endif
-                        <span class="choice-option-label">{{ $level['name'] }}</span>
-                    </button>
-                @endforeach
-            </div>
-
-            <p id="experience-search-empty" hidden>Pieredzes līmeņi nav atrasti.</p>
-        </dialog>
     </main>
 </x-layout>

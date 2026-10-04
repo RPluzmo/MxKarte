@@ -11,7 +11,16 @@ class RiderController extends Controller
 {
     public function store(Request $request, Track $track)
     {
-        
+        if ($user = $request->user()) {
+            $request->merge([
+                'name' => $user->name,
+                'surname' => $user->surname,
+                'club' => $user->club,
+                'category' => $user->category,
+                'experience_level' => $user->experience_level,
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],

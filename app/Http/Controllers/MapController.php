@@ -9,6 +9,7 @@ use App\Models\SiteAnnouncement;
 use App\Models\Track;
 use App\Models\TrackAnnouncement;
 use App\Models\TrackImage;
+use App\Support\RiderChoices;
 
 class MapController extends Controller
 {
@@ -95,9 +96,12 @@ class MapController extends Controller
                 ->orderByDesc('is_pinned')
                 ->orderByDesc('published_at');
         }]);
-        $clubs = Club::orderBy('name')->get();
-
-        return view('tracks.show', compact('track', 'clubs'));
+        return view('tracks.show', [
+            'track' => $track,
+            'clubs' => RiderChoices::clubs(),
+            'categories' => RiderChoices::categories(),
+            'experienceLevels' => RiderChoices::experienceLevels(),
+        ]);
     }
 
 }

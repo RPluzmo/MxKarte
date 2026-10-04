@@ -1,15 +1,10 @@
-function setupChoicePicker({ dialogId, openButtonId, inputId, labelId, imageId, searchId, emptyMessageId }) {
-    const dialog = document.getElementById(dialogId);
-
-    if (!dialog) {
-        return;
-    }
-
-    const valueInput = document.getElementById(inputId);
-    const selectedLabel = document.getElementById(labelId);
-    const selectedImage = document.getElementById(imageId);
-    const searchInput = document.getElementById(searchId);
-    const emptyMessage = document.getElementById(emptyMessageId);
+function setupChoicePicker(dialog) {
+    const key = dialog.dataset.choiceDialog;
+    const valueInput = document.getElementById(`${key}-value`);
+    const selectedLabel = document.getElementById(`${key}-label`);
+    const selectedImage = document.getElementById(`${key}-image`);
+    const searchInput = document.getElementById(`${key}-search`);
+    const emptyMessage = document.getElementById(`${key}-search-empty`);
     const options = [...dialog.querySelectorAll('[data-choice-option]')];
     const normalize = (value) => value.toLocaleLowerCase('lv').trim();
 
@@ -18,9 +13,11 @@ function setupChoicePicker({ dialogId, openButtonId, inputId, labelId, imageId, 
 
         valueInput.value = choiceValue;
         selectedLabel.textContent = choiceName;
-        selectedImage.src = choiceImage;
-        selectedImage.hidden = !choiceImage;
-        selectedImage.alt = choiceImage ? `${choiceName} attēls` : '';
+        if (selectedImage) {
+            selectedImage.src = choiceImage;
+            selectedImage.hidden = !choiceImage;
+            selectedImage.alt = choiceImage ? `${choiceName} attēls` : '';
+        }
 
         options.forEach((item) => {
             item.setAttribute('aria-pressed', String(item === option));
@@ -29,7 +26,7 @@ function setupChoicePicker({ dialogId, openButtonId, inputId, labelId, imageId, 
         dialog.close();
     };
 
-    document.getElementById(openButtonId)?.addEventListener('click', () => {
+    document.getElementById(`open-${key}-picker`)?.addEventListener('click', () => {
         dialog.showModal();
         searchInput.focus();
     });
@@ -56,32 +53,4 @@ function setupChoicePicker({ dialogId, openButtonId, inputId, labelId, imageId, 
     });
 }
 
-setupChoicePicker({
-    dialogId: 'club-picker-dialog',
-    openButtonId: 'open-club-picker',
-    inputId: 'profile-club-value',
-    labelId: 'selected-club-label',
-    imageId: 'selected-club-logo',
-    searchId: 'club-search',
-    emptyMessageId: 'club-search-empty',
-});
-
-setupChoicePicker({
-    dialogId: 'category-picker-dialog',
-    openButtonId: 'open-category-picker',
-    inputId: 'profile-category-value',
-    labelId: 'selected-category-label',
-    imageId: 'selected-category-image',
-    searchId: 'category-search',
-    emptyMessageId: 'category-search-empty',
-});
-
-setupChoicePicker({
-    dialogId: 'experience-picker-dialog',
-    openButtonId: 'open-experience-picker',
-    inputId: 'profile-experience-value',
-    labelId: 'selected-experience-label',
-    imageId: 'selected-experience-image',
-    searchId: 'experience-search',
-    emptyMessageId: 'experience-search-empty',
-});
+document.querySelectorAll('[data-choice-dialog]').forEach(setupChoicePicker);
