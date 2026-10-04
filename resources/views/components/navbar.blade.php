@@ -1,10 +1,12 @@
 <header class="site-header">
     <nav class="site-nav" aria-label="Galvenā navigācija">
+        <a class="site-brand" href="{{ route('home') }}">MxKarte</a>
+
         <ul class="site-nav-list">
-            <li><a href="{{ route('home') }}">Karte</a></li>
+            <li><a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif>Karte</a></li>
 
             @auth
-                <li><a href="{{ route('profile.edit') }}">Profils</a></li>
+                <li><a href="{{ route('profile.edit') }}" @if (request()->routeIs('profile.edit')) aria-current="page" @endif>Profils</a></li>
                 @if (auth()->user()->role === 'admin')
                     <li><a href="{{ route('admin.dashboard') }}">Admin</a></li>
                 @endif

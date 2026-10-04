@@ -1,95 +1,9 @@
 <x-layout>
-    @push('styles')
-        <style>
-            body {
-                margin: 0;
-            }
-
-            .page-shell {
-                margin: 0 auto;
-                max-width: 1200px;
-                padding: 20px 16px 40px;
-            }
-
-            .track-panel {
-                border: 1px solid #d1d5db;
-                border-radius: 8px;
-                margin-top: 12px;
-                padding: 12px;
-            }
-
-            .track-grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                margin-top: 12px;
-            }
-
-            .track-grid > .track-panel {
-                flex: 1 1 320px;
-                margin-top: 0;
-            }
-
-            .track-panel article {
-                border-top: 1px solid #e5e7eb;
-                margin-top: 12px;
-                padding-top: 12px;
-            }
-
-            .track-cover {
-                display: block;
-                height: 280px;
-                object-fit: cover;
-                width: 100%;
-            }
-
-            .track-gallery {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-
-            .track-gallery img {
-                flex: 1 1 180px;
-                height: 180px;
-                object-fit: cover;
-                width: 180px;
-            }
-
-            .rider-club {
-                align-items: center;
-                display: inline-flex;
-                gap: 8px;
-            }
-
-            .rider-club-logo {
-                height: 40px;
-                object-fit: contain;
-                width: 40px;
-            }
-
-            .track-panel h2,
-            .track-panel h3,
-            .track-panel p {
-                margin-top: 0;
-            }
-
-            @media (max-width: 640px) {
-                .page-shell {
-                    padding-left: 12px;
-                    padding-right: 12px;
-                }
-            }
-        </style>
-    @endpush
-
     <div class="page-shell">
         <a href="/">Atpakaļ</a>
         <h1>{{ $track->name }}</h1>
 
-        @if (session('status'))
-            <p>{{ session('status') }}</p>
-        @endif
+        <x-alerts />
 
         @auth
             @if ($track->user_id === auth()->id())
@@ -315,7 +229,8 @@
 
         <section class="track-panel">
             <h2>Pieteikušies sportisti</h2>
-<table style="width: 100%; border-collapse: collapse;" border="1" align="center">
+<div class="table-scroll">
+<table>
     <thead>
         <tr>
             <th>Vārds</th>
@@ -353,10 +268,11 @@
                     </td>
                 </tr>
             @empty
-                <p>Neviens neplāno ierasties.</p>
+                <tr><td colspan="6">Neviens neplāno ierasties.</td></tr>
             @endforelse
         </tbody>
     </table>
+    </div>
         </section>
     </div>
 </x-layout>

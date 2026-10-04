@@ -1,0 +1,49 @@
+.admin-nav {
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+}
+
+.admin-nav a {
+    background: var(--surface-muted);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    padding: 0.5rem 0.875rem;
+    text-decoration: none;
+}
+
+.admin-nav a:hover {
+    background: var(--red-100);
+}
+
+.inline-form {
+    display: inline;
+}
+
+.stat-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(11.25rem, 1fr));
+    margin: 0;
+}
+
+.stat-card {
+    background: var(--surface-muted);
+    border-left: 4px solid var(--red-700);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+.stat-card dt {
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+}
+
+.stat-card dd {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+}

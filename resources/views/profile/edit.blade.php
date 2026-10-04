@@ -1,36 +1,26 @@
 <x-layout>
     <x-slot:title>Profils</x-slot:title>
 
-    <main class="profile-page">
-        <section class="profile-panel">
+    <div class="page-shell page-shell-narrow">
+        <section class="panel">
             <h1>Profils</h1>
 
-            @if (session('status'))
-                <p>{{ session('status') }}</p>
-            @endif
-
-            <form class="profile-form" action="{{ route('profile.update') }}" method="POST">
+            <form class="stack-form" action="{{ route('profile.update') }}" method="POST">
                 @csrf
                 @method('PUT')
 
-                @if ($errors->any())
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                @endif
+                <x-alerts />
 
-                <label class="profile-field">Vārds
-                    <input name="name" value="{{ old('name', $user->name) }}" required>
+                <label class="field">Vārds
+                    <input name="name" value="{{ old('name', $user->name) }}" autocomplete="given-name" required>
                 </label>
 
-                <label class="profile-field">Uzvārds
-                    <input name="surname" value="{{ old('surname', $user->surname ?? '') }}">
+                <label class="field">Uzvārds
+                    <input name="surname" value="{{ old('surname', $user->surname ?? '') }}" autocomplete="family-name">
                 </label>
 
-                <label class="profile-field">E-pasts
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
+                <label class="field">E-pasts
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" autocomplete="email" required>
                 </label>
 
                 <x-choice-picker
@@ -75,16 +65,16 @@
                     :selected="old('experience_level', $user->experience_level)"
                 />
 
-                <label class="profile-field">Jauna parole
-                    <input type="password" name="password">
+                <label class="field">Jauna parole
+                    <input type="password" name="password" autocomplete="new-password">
                 </label>
 
-                <label class="profile-field">Jauna parole atkārtoti
-                    <input type="password" name="password_confirmation">
+                <label class="field">Jauna parole atkārtoti
+                    <input type="password" name="password_confirmation" autocomplete="new-password">
                 </label>
 
                 <button type="submit">Saglabāt</button>
             </form>
         </section>
-    </main>
+    </div>
 </x-layout>

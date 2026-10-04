@@ -1,11 +1,9 @@
 <x-layout>
-    <main style="max-width: 1200px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell"><section class="panel">
         <h1>Admin ziņojumi</h1>
         @include('admin.partials.nav')
 
-        @if (session('status'))
-            <p>{{ session('status') }}</p>
-        @endif
+        <x-alerts />
 
         <p><a href="{{ route('admin.announcements.create') }}">Publicēt ziņojumu</a></p>
 
@@ -22,7 +20,7 @@
                         <td>{{ $announcement->expires_at?->format('d.m.Y H:i') ?? 'Bez termiņa' }}</td>
                         <td>
                             <a href="{{ route('admin.announcements.edit', $announcement) }}">Rediģēt</a>
-                            <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" style="display: inline;" onsubmit="return confirm('Dzēst šo admin ziņojumu?');">
+                            <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" class="inline-form" onsubmit="return confirm('Dzēst šo admin ziņojumu?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit">Dzēst</button>
@@ -37,5 +35,5 @@
         </table>
 
         {{ $announcements->links() }}
-    </main>
+    </section></div>
 </x-layout>

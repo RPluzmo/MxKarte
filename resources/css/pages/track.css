@@ -1,0 +1,54 @@
+.track-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.track-grid > .track-panel {
+    flex: 1 1 20rem;
+    margin-top: 0;
+}
+
+.track-panel article {
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.track-panel p {
+    margin-top: 0;
+}
+
+.track-cover {
+    border-radius: var(--radius-sm);
+    display: block;
+    height: clamp(12.5rem, 40vw, 22.5rem);
+    object-fit: cover;
+    width: 100%;
+}
+
+.track-gallery {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
+}
+
+.track-gallery img {
+    border-radius: var(--radius-sm);
+    height: 11.25rem;
+    object-fit: cover;
+    width: 100%;
+}
+
+.rider-club {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.5rem;
+}
+
+.rider-club-logo {
+    height: 2.5rem;
+    object-fit: contain;
+    width: 2.5rem;
+}

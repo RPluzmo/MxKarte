@@ -1,6 +1,9 @@
+@import './base.css';
 @import './components/navbar.css';
-@import './pages/profile.css';
-
-body {
-    margin: 0;
-}
+@import './components/forms.css';
+@import './components/panel.css';
+@import './components/pagination.css';
+@import './components/choice-picker.css';
+@import './pages/map.css';
+@import './pages/track.css';
+@import './pages/admin.css';

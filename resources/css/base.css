@@ -1,0 +1,85 @@
+:root {
+    --red-950: #2b0a0e;
+    --red-900: #4a0f16;
+    --red-800: #6e1520;
+    --red-700: #8f1b28;
+    --red-600: #b3202f;
+    --red-100: #fbe9eb;
+
+    --surface: #ffffff;
+    --surface-muted: #f7f3f2;
+    --ink: #241617;
+    --ink-muted: #6a5a5c;
+    --border: #e5dada;
+    --border-strong: #cdbfc0;
+    --focus: #f5b301;
+    --success-bg: #e8f5ec;
+    --success-ink: #14532d;
+
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 18%);
+    --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+    font-size: 140%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--red-900) linear-gradient(180deg, var(--red-950), var(--red-900) 22.5rem) no-repeat;
+    color: var(--ink);
+    font-family: var(--font);
+    line-height: 1.55;
+    margin: 0;
+    min-height: 100vh;
+}
+
+h1 {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    line-height: 1.2;
+    margin: 0 0 1rem;
+}
+
+h2 {
+    font-size: 1.3rem;
+    margin: 0 0 0.75rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.5rem;
+}
+
+a {
+    color: var(--red-700);
+}
+
+a:hover {
+    color: var(--red-600);
+}
+
+small,
+.meta {
+    color: var(--ink-muted);
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+img {
+    max-width: 100%;
+}
+
+:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}

@@ -1,15 +1,9 @@
 <x-layout>
-    <main style="max-width: 800px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell page-shell-narrow"><section class="panel">
         <h1>{{ $announcement->exists ? 'Rediģēt admin ziņojumu' : 'Publicēt admin ziņojumu' }}</h1>
         @include('admin.partials.nav')
 
-        @if ($errors->any())
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
+        <x-alerts />
 
         <form method="POST" action="{{ $announcement->exists ? route('admin.announcements.update', $announcement) : route('admin.announcements.store') }}">
             @csrf
@@ -26,5 +20,5 @@
                 <a href="{{ route('admin.announcements.index') }}">Atcelt</a>
             </p>
         </form>
-    </main>
+    </section></div>
 </x-layout>

@@ -1,15 +1,9 @@
 <x-layout>
-    <main style="max-width: 800px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell page-shell-narrow"><section class="panel">
         <h1>{{ $user->exists ? 'Rediģēt lietotāju' : 'Izveidot lietotāju' }}</h1>
         @include('admin.partials.nav')
 
-        @if ($errors->any())
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
+        <x-alerts />
 
         <form method="POST" action="{{ $user->exists ? route('admin.users.update', $user) : route('admin.users.store') }}">
             @csrf
@@ -70,5 +64,5 @@
             <button type="submit">Saglabāt</button>
             <a href="{{ route('admin.users.index') }}">Atcelt</a>
         </form>
-    </main>
+    </section></div>
 </x-layout>

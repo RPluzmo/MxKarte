@@ -1,0 +1,125 @@
+.map-canvas {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    height: clamp(22.5rem, 65vh, 40rem);
+    overflow: hidden;
+}
+
+.map-panel {
+    padding: 0.75rem;
+}
+
+.map-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+}
+
+.map-legend {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    gap: 0.375rem;
+}
+
+.map-legend-swatch {
+    background: #2563eb;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+    height: 0.875rem;
+    width: 0.875rem;
+}
+
+.track-marker {
+    align-items: center;
+    background: #ef4444;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 35%);
+    color: #ffffff;
+    display: flex;
+    font-size: 0.875rem;
+    font-weight: 700;
+    height: 2rem;
+    justify-content: center;
+    width: 2rem;
+}
+
+.track-marker.club-marker {
+    background: #2563eb;
+}
+
+.color-vision-mode .track-marker:not(.club-marker) {
+    background: #0400fc;
+}
+
+.color-vision-mode .track-marker.club-marker {
+    background: #f0e442;
+    color: #111827;
+}
+
+.popup-cover {
+    border-radius: var(--radius-sm);
+    height: 7.5rem;
+    object-fit: cover;
+    width: 11.25rem;
+}
+
+.popup-link {
+    display: inline-block;
+    margin-top: 0.375rem;
+}
+
+.announcement-toolbar {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.125rem;
+}
+
+.announcement-toolbar > div {
+    flex: 1 1 11.25rem;
+}
+
+.announcement-toolbar .button,
+.announcement-toolbar button {
+    width: 100%;
+}
+
+.inline-checkbox {
+    align-items: center;
+    display: inline-flex;
+    min-height: 2.75rem;
+}
+
+.announcement-list {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(16.25rem, 1fr));
+    margin-top: 0.75rem;
+}
+
+.announcement-card {
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red-700);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem;
+}
+
+.announcement-card h3,
+.announcement-card p,
+.announcement-card small {
+    margin: 0;
+}
+
+.announcement-card a {
+    margin-top: auto;
+}

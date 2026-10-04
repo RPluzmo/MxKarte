@@ -15,11 +15,11 @@
 
 @php($selectedOption = collect($options)->firstWhere('name', $selected))
 
-<div class="profile-field">
+<div class="field">
     <span>{{ $label }}</span>
     <input id="{{ $key }}-value" type="hidden" name="{{ $name }}" value="{{ $selected }}">
-    <div class="profile-club-control">
-        <div class="profile-selected-choice">
+    <div class="choice-control">
+        <div class="choice-selected">
             @if ($showImage)
                 <img
                     id="{{ $key }}-image"
@@ -30,20 +30,20 @@
             @endif
             <output id="{{ $key }}-label">{{ $selected ?: ($none ?? 'Izvēlieties') }}</output>
         </div>
-        <button id="open-{{ $key }}-picker" type="button">{{ $button }}</button>
+        <button id="open-{{ $key }}-picker" class="button-secondary" type="button">{{ $button }}</button>
     </div>
 </div>
 
 @push('dialogs')
-    <dialog id="{{ $key }}-picker-dialog" class="profile-dialog" data-choice-dialog="{{ $key }}" aria-labelledby="{{ $key }}-picker-title">
-        <div class="profile-dialog-header">
+    <dialog id="{{ $key }}-picker-dialog" class="choice-dialog" data-choice-dialog="{{ $key }}" aria-labelledby="{{ $key }}-picker-title">
+        <div class="choice-dialog-header">
             <h2 id="{{ $key }}-picker-title">{{ $title }}</h2>
             <form method="dialog">
-                <button type="submit">Aizvērt</button>
+                <button class="button-secondary" type="submit">Aizvērt</button>
             </form>
         </div>
 
-        <label class="profile-field" for="{{ $key }}-search">{{ $search }}</label>
+        <label for="{{ $key }}-search">{{ $search }}</label>
         <input id="{{ $key }}-search" class="choice-search" type="search">
 
         <div class="choice-grid">

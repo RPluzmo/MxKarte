@@ -1,15 +1,9 @@
 <x-layout>
-    <main style="max-width: 800px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell page-shell-narrow"><section class="panel">
         <h1>{{ $track->exists ? 'Rediģēt trasi' : 'Izveidot trasi' }}</h1>
         @include('admin.partials.nav')
 
-        @if ($errors->any())
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
+        <x-alerts />
 
         <form method="POST" action="{{ $track->exists ? route('admin.tracks.update', $track) : route('admin.tracks.store') }}">
             @csrf
@@ -39,5 +33,5 @@
             <button type="submit">Saglabāt</button>
             <a href="{{ route('admin.tracks.index') }}">Atcelt</a>
         </form>
-    </main>
+    </section></div>
 </x-layout>

@@ -1,29 +1,23 @@
 <x-layout>
+    <div class="page-shell page-shell-narrow">
+    <section class="panel">
     <h1>Ienākt</h1>
 
-    <form action="{{ route('login') }}" method="POST">
+    <form class="stack-form" action="{{ route('login') }}" method="POST">
         @csrf
 
-        @if ($errors->any())
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
+        <x-alerts />
 
-        <p>
-            <label>E-pasts
-                <input type="email" name="email" value="{{ old('email') }}" required>
-            </label>
-        </p>
+        <label>E-pasts
+            <input type="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+        </label>
 
-        <p>
-            <label>Parole
-                <input type="password" name="password" required>
-            </label>
-        </p>
+        <label>Parole
+            <input type="password" name="password" autocomplete="current-password" required>
+        </label>
 
         <button type="submit">Ienākt</button>
     </form>
+    </section>
+    </div>
 </x-layout>

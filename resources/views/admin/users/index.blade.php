@@ -1,11 +1,9 @@
 <x-layout>
-    <main style="max-width: 1200px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell"><section class="panel">
         <h1>Lietotāji</h1>
         @include('admin.partials.nav')
 
-        @if (session('status'))
-            <p>{{ session('status') }}</p>
-        @endif
+        <x-alerts />
 
         <p><a href="{{ route('admin.users.create') }}">Izveidot lietotāju</a></p>
 
@@ -22,7 +20,7 @@
                         <td>{{ $user->tracks_count }}</td>
                         <td>
                             <a href="{{ route('admin.users.edit', $user) }}">Rediģēt</a>
-                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display: inline;" onsubmit="return confirm('Dzēst šo lietotāju?');">
+                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="inline-form" onsubmit="return confirm('Dzēst šo lietotāju?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit">Dzēst</button>
@@ -34,5 +32,5 @@
         </table>
 
         {{ $users->links() }}
-    </main>
+    </section></div>
 </x-layout>

@@ -1,11 +1,15 @@
 <x-layout>
-    <main style="max-width: 1200px; margin: 0 auto; padding: 20px 16px;">
+    <div class="page-shell">
+        <section class="panel">
         <h1>Administratora panelis</h1>
         @include('admin.partials.nav')
 
-        <p>Lietotāji: {{ $usersCount }}</p>
-        <p>Trases: {{ $tracksCount }}</p>
-        <p>Trases ziņojumi: {{ $announcementsCount }}</p>
-        <p>Admin ziņojumi: {{ $siteAnnouncementsCount }}</p>
-    </main>
+        <dl class="stat-grid">
+            <div class="stat-card"><dt>Lietotāji</dt><dd>{{ $usersCount }}</dd></div>
+            <div class="stat-card"><dt>Trases</dt><dd>{{ $tracksCount }}</dd></div>
+            <div class="stat-card"><dt>Trases ziņojumi</dt><dd>{{ $announcementsCount }}</dd></div>
+            <div class="stat-card"><dt>Admin ziņojumi</dt><dd>{{ $siteAnnouncementsCount }}</dd></div>
+        </dl>
+        </section>
+    </div>
 </x-layout>
