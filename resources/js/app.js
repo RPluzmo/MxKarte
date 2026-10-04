@@ -1,1 +1,1 @@
-import './profile-club-picker.js';
+import './profile-choice-picker.js';

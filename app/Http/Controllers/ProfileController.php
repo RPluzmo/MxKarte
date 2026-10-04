@@ -6,15 +6,35 @@ use App\Models\User;
 use App\Models\Club;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
     public function edit(Request $request)
     {
+        $categories = [
+            ['name' => 'MX 50', 'image' => 'categories/mx-50.png'],
+            ['name' => 'MX 65', 'image' => 'categories/mx-65.png'],
+            ['name' => 'MX 85', 'image' => 'categories/mx-85.png'],
+            ['name' => 'MX 125', 'image' => 'categories/mx-125.png'],
+            ['name' => 'MX 250', 'image' => 'categories/mx-250.png'],
+            ['name' => 'MX 450', 'image' => 'categories/mx-450.png'],
+            ['name' => 'Kvadri', 'image' => 'categories/kvadri.png'],
+            ['name' => 'Blakusvāģi', 'image' => 'categories/blakusvagi.png'],
+        ];
+
+        foreach ($categories as &$category) {
+            $category['image_url'] = Storage::disk('public')->exists($category['image'])
+                ? Storage::disk('public')->url($category['image'])
+                : null;
+        }
+        unset($category);
+
         return view('profile.edit', [
             'user' => $request->user(),
             'clubs' => Club::orderBy('name')->get(),
+            'categories' => $categories,
         ]);
     }
 

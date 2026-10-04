@@ -3,6 +3,8 @@
 
     @php($selectedClub = old('club', $user->club))
     @php($selectedClubModel = $clubs->firstWhere('name', $selectedClub))
+    @php($selectedCategory = old('category', $user->category))
+    @php($selectedCategoryData = collect($categories)->firstWhere('name', $selectedCategory))
 
     <main class="profile-page">
         <section class="profile-panel">
@@ -40,7 +42,7 @@
                     <span>Kluba piederība</span>
                     <input id="profile-club-value" type="hidden" name="club" value="{{ $selectedClub }}">
                     <div class="profile-club-control">
-                        <div class="profile-selected-club">
+                        <div class="profile-selected-choice">
                             <img
                                 id="selected-club-logo"
                                 src="{{ $selectedClubModel?->logo_path ? asset('storage/' . $selectedClubModel->logo_path) : '' }}"
@@ -53,14 +55,22 @@
                     </div>
                 </div>
 
-                <label class="profile-field">Kategorija
-                    <select name="category">
-                        <option value="">Nav izvēlēts</option>
-                        @foreach (['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'] as $category)
-                            <option value="{{ $category }}" @selected(old('category', $user->category) === $category)>{{ $category }}</option>
-                        @endforeach
-                    </select>
-                </label>
+                <div class="profile-field">
+                    <span>Motocikla kategorija</span>
+                    <input id="profile-category-value" type="hidden" name="category" value="{{ $selectedCategory }}">
+                    <div class="profile-club-control">
+                        <div class="profile-selected-choice">
+                            <img
+                                id="selected-category-image"
+                                src="{{ $selectedCategoryData['image_url'] ?? '' }}"
+                                alt=""
+                                @if (!$selectedCategoryData || !$selectedCategoryData['image_url']) hidden @endif
+                            >
+                            <output id="selected-category-label">{{ $selectedCategory ?: 'Nav izvēlēts' }}</output>
+                        </div>
+                        <button id="open-category-picker" type="button">Izvēlēties kategoriju</button>
+                    </div>
+                </div>
 
                 <label class="profile-field">Pieredze
                     <select name="experience_level">
@@ -92,35 +102,75 @@
             </div>
 
             <label class="profile-field" for="club-search">Meklēt klubu</label>
-            <input id="club-search" class="club-search" type="search" placeholder="Ieraksti kluba nosaukumu">
+            <input id="club-search" class="choice-search" type="search" placeholder="Ieraksti kluba nosaukumu">
 
-            <div class="club-grid">
-                <button class="club-option" type="button" data-club-option data-club-value="" data-club-name="Privāti" aria-pressed="{{ $selectedClub ? 'false' : 'true' }}">
-                    <span class="club-option-placeholder">Nav kluba logo</span>
-                    <span class="club-option-label">Privāti</span>
+            <div class="choice-grid">
+                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Privāti" data-choice-image="" aria-pressed="{{ $selectedClub ? 'false' : 'true' }}">
+                    <span class="choice-option-placeholder">Nav kluba logo</span>
+                    <span class="choice-option-label">Privāti</span>
                 </button>
 
                 @foreach ($clubs as $club)
                     <button
-                        class="club-option"
+                        class="choice-option"
                         type="button"
-                        data-club-option
-                        data-club-value="{{ $club->name }}"
-                        data-club-name="{{ $club->name }}"
-                        data-club-logo="{{ $club->logo_path ? asset('storage/' . $club->logo_path) : '' }}"
+                        data-choice-option
+                        data-choice-value="{{ $club->name }}"
+                        data-choice-name="{{ $club->name }}"
+                        data-choice-image="{{ $club->logo_path ? asset('storage/' . $club->logo_path) : '' }}"
                         aria-pressed="{{ $selectedClub === $club->name ? 'true' : 'false' }}"
                     >
                         @if ($club->logo_path)
                             <img src="{{ asset('storage/' . $club->logo_path) }}" alt="" loading="lazy">
                         @else
-                            <span class="club-option-placeholder">Nav logo</span>
+                            <span class="choice-option-placeholder">Nav logo</span>
                         @endif
-                        <span class="club-option-label">{{ $club->name }}</span>
+                        <span class="choice-option-label">{{ $club->name }}</span>
                     </button>
                 @endforeach
             </div>
 
             <p id="club-search-empty" hidden>Klubi nav atrasti.</p>
+        </dialog>
+
+        <dialog id="category-picker-dialog" class="profile-dialog" aria-labelledby="category-picker-title">
+            <div class="profile-dialog-header">
+                <h2 id="category-picker-title">Izvēlies motocikla kategoriju</h2>
+                <form method="dialog">
+                    <button type="submit">Aizvērt</button>
+                </form>
+            </div>
+
+            <label class="profile-field" for="category-search">Meklēt kategoriju</label>
+            <input id="category-search" class="choice-search" type="search" placeholder="Ieraksti kategoriju">
+
+            <div class="choice-grid">
+                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Nav izvēlēts" data-choice-image="" aria-pressed="{{ $selectedCategory ? 'false' : 'true' }}">
+                    <span class="choice-option-placeholder">Nav attēla</span>
+                    <span class="choice-option-label">Nav izvēlēts</span>
+                </button>
+
+                @foreach ($categories as $category)
+                    <button
+                        class="choice-option"
+                        type="button"
+                        data-choice-option
+                        data-choice-value="{{ $category['name'] }}"
+                        data-choice-name="{{ $category['name'] }}"
+                        data-choice-image="{{ $category['image_url'] ?? '' }}"
+                        aria-pressed="{{ $selectedCategory === $category['name'] ? 'true' : 'false' }}"
+                    >
+                        @if ($category['image_url'])
+                            <img src="{{ $category['image_url'] }}" alt="{{ $category['name'] }} motocikls" loading="lazy">
+                        @else
+                            <span class="choice-option-placeholder">Attēls tiks pievienots</span>
+                        @endif
+                        <span class="choice-option-label">{{ $category['name'] }}</span>
+                    </button>
+                @endforeach
+            </div>
+
+            <p id="category-search-empty" hidden>Kategorijas nav atrastas.</p>
         </dialog>
     </main>
 </x-layout>
