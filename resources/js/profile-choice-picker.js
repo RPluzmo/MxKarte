@@ -75,3 +75,13 @@ setupChoicePicker({
     searchId: 'category-search',
     emptyMessageId: 'category-search-empty',
 });
+
+setupChoicePicker({
+    dialogId: 'experience-picker-dialog',
+    openButtonId: 'open-experience-picker',
+    inputId: 'profile-experience-value',
+    labelId: 'selected-experience-label',
+    imageId: 'selected-experience-image',
+    searchId: 'experience-search',
+    emptyMessageId: 'experience-search-empty',
+});

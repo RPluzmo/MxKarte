@@ -5,6 +5,8 @@
     @php($selectedClubModel = $clubs->firstWhere('name', $selectedClub))
     @php($selectedCategory = old('category', $user->category))
     @php($selectedCategoryData = collect($categories)->firstWhere('name', $selectedCategory))
+    @php($selectedExperience = old('experience_level', $user->experience_level))
+    @php($selectedExperienceData = collect($experienceLevels)->firstWhere('name', $selectedExperience))
 
     <main class="profile-page">
         <section class="profile-panel">
@@ -72,14 +74,22 @@
                     </div>
                 </div>
 
-                <label class="profile-field">Pieredze
-                    <select name="experience_level">
-                        <option value="">Nav izvēlēts</option>
-                        @foreach (['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'] as $level)
-                            <option value="{{ $level }}" @selected(old('experience_level', $user->experience_level) === $level)>{{ $level }}</option>
-                        @endforeach
-                    </select>
-                </label>
+                <div class="profile-field">
+                    <span>Pieredze</span>
+                    <input id="profile-experience-value" type="hidden" name="experience_level" value="{{ $selectedExperience }}">
+                    <div class="profile-club-control">
+                        <div class="profile-selected-choice">
+                            <img
+                                id="selected-experience-image"
+                                src="{{ $selectedExperienceData['image_url'] ?? '' }}"
+                                alt=""
+                                @if (!$selectedExperienceData || !$selectedExperienceData['image_url']) hidden @endif
+                            >
+                            <output id="selected-experience-label">{{ $selectedExperience ?: 'Nav izvēlēts' }}</output>
+                        </div>
+                        <button id="open-experience-picker" type="button">Izvēlēties pieredzi</button>
+                    </div>
+                </div>
 
                 <label class="profile-field">Jauna parole
                     <input type="password" name="password">
@@ -171,6 +181,46 @@
             </div>
 
             <p id="category-search-empty" hidden>Kategorijas nav atrastas.</p>
+        </dialog>
+
+        <dialog id="experience-picker-dialog" class="profile-dialog" aria-labelledby="experience-picker-title">
+            <div class="profile-dialog-header">
+                <h2 id="experience-picker-title">Izvēlies pieredzes līmeni</h2>
+                <form method="dialog">
+                    <button type="submit">Aizvērt</button>
+                </form>
+            </div>
+
+            <label class="profile-field" for="experience-search">Meklēt pieredzi</label>
+            <input id="experience-search" class="choice-search" type="search" placeholder="Ieraksti pieredzes līmeni">
+
+            <div class="choice-grid">
+                <button class="choice-option" type="button" data-choice-option data-choice-value="" data-choice-name="Nav izvēlēts" data-choice-image="" aria-pressed="{{ $selectedExperience ? 'false' : 'true' }}">
+                    <span class="choice-option-placeholder">Nav attēla</span>
+                    <span class="choice-option-label">Nav izvēlēts</span>
+                </button>
+
+                @foreach ($experienceLevels as $level)
+                    <button
+                        class="choice-option"
+                        type="button"
+                        data-choice-option
+                        data-choice-value="{{ $level['name'] }}"
+                        data-choice-name="{{ $level['name'] }}"
+                        data-choice-image="{{ $level['image_url'] ?? '' }}"
+                        aria-pressed="{{ $selectedExperience === $level['name'] ? 'true' : 'false' }}"
+                    >
+                        @if ($level['image_url'])
+                            <img src="{{ $level['image_url'] }}" alt="{{ $level['name'] }} braucējs" loading="lazy">
+                        @else
+                            <span class="choice-option-placeholder">Attēls tiks pievienots</span>
+                        @endif
+                        <span class="choice-option-label">{{ $level['name'] }}</span>
+                    </button>
+                @endforeach
+            </div>
+
+            <p id="experience-search-empty" hidden>Pieredzes līmeņi nav atrasti.</p>
         </dialog>
     </main>
 </x-layout>

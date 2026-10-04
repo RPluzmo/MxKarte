@@ -24,18 +24,28 @@ class ProfileController extends Controller
             ['name' => 'Blakusvāģi', 'image' => 'categories/blakusvagi.png'],
         ];
 
-        foreach ($categories as &$category) {
-            $category['image_url'] = Storage::disk('public')->exists($category['image'])
-                ? Storage::disk('public')->url($category['image'])
-                : null;
-        }
-        unset($category);
+        $experienceLevels = [
+            ['name' => 'Iesācējs', 'image' => 'experience/iesacejs.png'],
+            ['name' => 'Amatieris', 'image' => 'experience/amatieris.png'],
+            ['name' => 'Veterāns', 'image' => 'experience/veterans.png'],
+            ['name' => 'Profesionālis', 'image' => 'experience/profesionalis.png'],
+        ];
 
         return view('profile.edit', [
             'user' => $request->user(),
             'clubs' => Club::orderBy('name')->get(),
-            'categories' => $categories,
+            'categories' => $this->withImageUrls($categories),
+            'experienceLevels' => $this->withImageUrls($experienceLevels),
         ]);
+    }
+
+    private function withImageUrls(array $choices): array
+    {
+        return array_map(fn (array $choice) => $choice + [
+            'image_url' => Storage::disk('public')->exists($choice['image'])
+                ? Storage::disk('public')->url($choice['image'])
+                : null,
+        ], $choices);
     }
 
     public function update(Request $request)
