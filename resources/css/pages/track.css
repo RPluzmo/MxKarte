@@ -28,10 +28,19 @@
     width: 100%;
 }
 
+.js-track-image {
+    cursor: zoom-in;
+}
+
+.js-track-image:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
+
 .track-gallery {
     display: grid;
     gap: 0.75rem;
-    grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(11.25rem, 1fr));
 }
 
 .track-gallery img {
@@ -39,6 +48,39 @@
     height: 11.25rem;
     object-fit: cover;
     width: 100%;
+}
+
+.track-image-viewer {
+    align-items: center;
+    background: rgb(20 12 13 / 96%);
+    border: 0;
+    color: #ffffff;
+    height: 100dvh;
+    justify-content: center;
+    max-height: none;
+    max-width: none;
+    overflow: hidden;
+    padding: 1rem;
+    width: 100vw;
+}
+
+.track-image-viewer[open] {
+    display: flex;
+}
+
+.track-image-viewer::backdrop {
+    background: rgb(20 12 13 / 92%);
+}
+
+.track-image-viewer > img {
+    cursor: zoom-out;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+}
+
+.rider-table thead th {
+    background: var(--surface);
 }
 
 .rider-club {

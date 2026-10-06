@@ -14,7 +14,7 @@
         @php($coverImage = $track->images->firstWhere('type', 'cover'))
         @if ($coverImage)
             <section class="track-panel">
-                <img class="track-cover" src="{{ asset('storage/' . $coverImage->path) }}" alt="{{ $track->name }}">
+                <img class="track-cover js-track-image" src="{{ asset('storage/' . $coverImage->path) }}" alt="{{ $track->name }}" role="button" tabindex="0" aria-label="Atvērt attēlu pilnekrānā">
             </section>
         @endif
 
@@ -221,7 +221,7 @@
                 <h2>Trases attēli</h2>
                 <div class="track-gallery">
                     @foreach ($galleryImages as $galleryImage)
-                        <img src="{{ asset('storage/' . $galleryImage->path) }}" alt="{{ $track->name }} trases foto">
+                        <img class="js-track-image" src="{{ asset('storage/' . $galleryImage->path) }}" alt="{{ $track->name }} trases foto" role="button" tabindex="0" aria-label="Atvērt attēlu pilnekrānā" loading="lazy">
                     @endforeach
                 </div>
             </section>
@@ -230,7 +230,7 @@
         <section class="track-panel">
             <h2>Pieteikušies sportisti</h2>
 <div class="table-scroll">
-<table>
+<table class="rider-table">
     <thead>
         <tr>
             <th>Vārds</th>
@@ -275,4 +275,8 @@
     </div>
         </section>
     </div>
+
+    <dialog id="track-image-viewer" class="track-image-viewer" aria-label="Trases attēls pilnekrānā">
+        <img id="track-image-viewer-image" alt="">
+    </dialog>
 </x-layout>
