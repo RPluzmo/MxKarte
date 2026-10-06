@@ -66,3 +66,47 @@
     background: #ffffff;
     color: var(--red-800);
 }
+
+.site-nav-accessibility {
+    position: relative;
+}
+
+.site-nav-accessibility .accessibility-toggle {
+    align-items: center;
+    display: flex;
+    height: 2.75rem;
+    justify-content: center;
+    padding: 0.5rem;
+    position: relative;
+    width: 2.75rem;
+}
+
+.accessibility-toggle svg {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.accessibility-toggle::after {
+    background: var(--ink);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    content: attr(data-tooltip);
+    font-size: 0.8rem;
+    font-weight: 500;
+    left: 50%;
+    opacity: 0;
+    padding: 0.5rem 0.75rem;
+    pointer-events: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    transform: translate(-50%, -0.25rem);
+    transition: opacity 0.15s, transform 0.15s;
+    white-space: nowrap;
+    z-index: 1200;
+}
+
+.accessibility-toggle:hover::after,
+.accessibility-toggle:focus-visible::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}

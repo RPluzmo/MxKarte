@@ -24,8 +24,18 @@
 
         @if (request()->routeIs('home'))
             <div class="site-nav-accessibility">
-                <button id="toggle-color-vision" type="button" aria-pressed="false">
-                    Krāsu pieejamības režīms: izslēgts
+                <button
+                    id="toggle-color-vision"
+                    class="accessibility-toggle"
+                    type="button"
+                    aria-label="Krāsu pieejamības režīms: izslēgts"
+                    aria-pressed="false"
+                    data-tooltip="Krāsu pieejamības režīms: izslēgts"
+                >
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 12s3.4-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.4 6.5-9.5 6.5S2.5 12 2.5 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                    </svg>
                 </button>
             </div>
         @endif

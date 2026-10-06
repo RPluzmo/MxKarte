@@ -183,9 +183,11 @@
 
             if (colorVisionToggle) {
                 colorVisionToggle.setAttribute('aria-pressed', String(colorVisionMode));
-                colorVisionToggle.textContent = colorVisionMode
+                const tooltip = colorVisionMode
                     ? 'Krāsu pieejamības režīms: ieslēgts'
                     : 'Krāsu pieejamības režīms: izslēgts';
+                colorVisionToggle.setAttribute('aria-label', tooltip);
+                colorVisionToggle.dataset.tooltip = tooltip;
             }
         }
 
