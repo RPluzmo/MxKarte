@@ -27,7 +27,7 @@ class MapController extends Controller
         $announcementQuery = TrackAnnouncement::with('track')->active();
         $announcementSearch = trim((string) request('announcement_search', ''));
         $announcementTrackId = request()->integer('track_id') ?: null;
-        $onlyPinned = request()->boolean('only_pinned');
+        $prioritizePinned = request()->boolean('prioritize_pinned');
 
         if ($announcementSearch !== '') {
             $announcementQuery->where(function ($query) use ($announcementSearch) {
@@ -38,10 +38,6 @@ class MapController extends Controller
 
         if ($announcementTrackId) {
             $announcementQuery->where('track_id', $announcementTrackId);
-        }
-
-        if ($onlyPinned) {
-            $announcementQuery->where('is_pinned', true);
         }
 
         $preferredTrackIds = auth()->user()?->preferredTracks()
@@ -58,9 +54,9 @@ class MapController extends Controller
         }
 
         $announcements = $announcementQuery
-            ->orderByDesc('is_pinned')
+            ->when($prioritizePinned, fn ($query) => $query->orderByDesc('is_pinned'))
             ->orderByDesc('published_at')
-            ->paginate(10)
+            ->paginate(12)
             ->withQueryString();
 
         $clubTrackIds = [];
@@ -83,7 +79,7 @@ class MapController extends Controller
             'announcements',
             'announcementSearch',
             'announcementTrackId',
-            'onlyPinned',
+            'prioritizePinned',
             'preferredTrackIds'
         ));
     }

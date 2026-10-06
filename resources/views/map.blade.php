@@ -53,6 +53,7 @@
 
         <section class="announcements-panel">
             <h2>Trašu paziņojumi</h2>
+            <x-alerts />
 
             <form method="GET" action="{{ route('home') }}" class="announcement-toolbar">
                 <div>
@@ -67,21 +68,17 @@
                 </div>
 
                 <div>
-                    <label for="announcement-track">Trase</label><br>
-                    <select id="announcement-track" name="track_id">
-                        <option value="">Visas trases</option>
-                        @foreach ($tracks as $track)
-                            <option value="{{ $track->id }}" @selected($announcementTrackId === $track->id)>
-                                {{ $track->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <span>Trase</span><br>
+                    <input id="announcement-track" type="hidden" name="track_id" value="{{ $announcementTrackId }}">
+                    <button id="open-track-picker" class="button-secondary" type="button" aria-haspopup="dialog" aria-controls="track-picker-dialog" aria-label="Trase: {{ $tracks->firstWhere('id', $announcementTrackId)?->name ?? 'Visas trases' }}">
+                        {{ $tracks->firstWhere('id', $announcementTrackId)?->name ?? 'Visas trases' }}
+                    </button>
                 </div>
 
                 <div class="inline-checkbox">
                     <label>
-                        <input type="checkbox" name="only_pinned" value="1" @checked($onlyPinned)>
-                        Rādīt tikai svarīgos
+                        <input type="checkbox" name="prioritize_pinned" value="1" @checked($prioritizePinned)>
+                        Rādīt svarīgos pirmos
                     </label>
                 </div>
 
@@ -94,53 +91,59 @@
                 </div>
             </form>
 
-            @auth
-                <details>
-                    <summary>Prioritārās trases</summary>
-                    <form method="POST" action="{{ route('track-preferences.update') }}">
-                        @csrf
-                        @method('PUT')
-
-                        <p>Atzīmētās trases paziņojumi tiks rādīti pirmie.</p>
-                        @foreach ($tracks as $track)
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="track_ids[]"
-                                    value="{{ $track->id }}"
-                                    @checked(in_array($track->id, $preferredTrackIds, true))
-                                >
-                                {{ $track->name }}
-                            </label><br>
-                        @endforeach
-
-                        <button type="submit">Saglabāt prioritātes</button>
-                    </form>
-                </details>
-            @endauth
-
             @if ($announcements->count() > 0)
-                <div class="announcement-list">
-                    @foreach ($announcements as $announcement)
-                        <article class="announcement-card">
-                            <h3>
-                                @if ($announcement->is_pinned)
-                                    [Svarīgi]
-                                @endif
-                                {{ $announcement->title }}
-                            </h3>
-                            <p><strong>{{ $announcement->track->name }}</strong></p>
-                            <p>{{ $announcement->body }}</p>
-                            <small class="meta">
-                                Publicēts {{ $announcement->published_at->format('d.m.Y H:i') }}
-                                @if ($announcement->expires_at)
-                                    · Aktīvs līdz {{ $announcement->expires_at->format('d.m.Y H:i') }}
-                                @endif
-                            </small>
-                            <a href="{{ route('tracks.show', $announcement->track) }}">Atvērt trasi</a>
-                        </article>
-                    @endforeach
-                </div>
+                @php
+                    $pageAnnouncements = $announcements->getCollection();
+                    $announcementSections = count($preferredTrackIds)
+                        ? [
+                            [
+                                'title' => 'Prioritāro trašu paziņojumi',
+                                'empty' => 'Šobrīd nav prioritāro trašu paziņojumu.',
+                                'items' => $pageAnnouncements->filter(fn ($announcement) => in_array((int) $announcement->track_id, $preferredTrackIds, true)),
+                            ],
+                            [
+                                'title' => 'Pārējo trašu paziņojumi',
+                                'empty' => 'Šobrīd nav paziņojumu no pārējām trasēm.',
+                                'items' => $pageAnnouncements->reject(fn ($announcement) => in_array((int) $announcement->track_id, $preferredTrackIds, true)),
+                            ],
+                        ]
+                        : [[
+                            'title' => 'Trašu paziņojumi',
+                            'empty' => 'Šobrīd nav trašu paziņojumu.',
+                            'items' => $pageAnnouncements,
+                        ]];
+                @endphp
+
+                @foreach ($announcementSections as $section)
+                    <section class="announcement-section">
+                        <h3>{{ $section['title'] }}</h3>
+                        @if ($section['items']->isNotEmpty())
+                            <div class="announcement-list">
+                                @foreach ($section['items'] as $announcement)
+                                    <article class="announcement-card">
+                                        <h3>
+                                            @if ($announcement->is_pinned)
+                                                [Svarīgi]
+                                            @endif
+                                            {{ $announcement->title }}
+                                        </h3>
+                                        <p><strong>{{ $announcement->track->name }}</strong></p>
+                                        <p>{{ $announcement->body }}</p>
+                                        <small class="meta">
+                                            Publicēts {{ $announcement->published_at->format('d.m.Y H:i') }}
+                                            @if ($announcement->expires_at)
+                                                · Aktīvs līdz {{ $announcement->expires_at->format('d.m.Y H:i') }}
+                                            @endif
+                                        </small>
+                                        <a href="{{ route('tracks.show', $announcement->track) }}">Atvērt trasi</a>
+                                    </article>
+                                @endforeach
+                            </div>
+                        @else
+                            <p>{{ $section['empty'] }}</p>
+                        @endif
+                    </section>
+                @endforeach
             @else
                 <p>Šobrīd nav trašu paziņojumu.</p>
             @endif
@@ -148,6 +151,66 @@
             {{ $announcements->links() }}
         </section>
     </div>
+
+    <dialog id="track-picker-dialog" class="choice-dialog track-picker-dialog" aria-labelledby="track-picker-title">
+        <div class="choice-dialog-header">
+            <h2 id="track-picker-title">Izvēlies trasi</h2>
+            <form method="dialog">
+                <button class="button-secondary" type="submit">Aizvērt</button>
+            </form>
+        </div>
+
+        <label for="track-picker-search">Meklēt trasi</label>
+        <input id="track-picker-search" class="choice-search" type="search" placeholder="Ieraksti trases nosaukumu">
+
+        @auth
+            <p>Atzīmē prioritārās trases, kuru paziņojumi tiks rādīti pirmie.</p>
+            <form id="track-preferences-form" method="POST" action="{{ route('track-preferences.update') }}">
+                @csrf
+                @method('PUT')
+            </form>
+        @endauth
+
+        <div class="track-picker-grid">
+            <article class="track-picker-card" data-track-search-option data-track-name="Visas trases">
+                <button class="track-picker-filter" type="button" data-track-filter data-track-id="" data-track-label="Visas trases" aria-pressed="{{ $announcementTrackId ? 'false' : 'true' }}">
+                    <span class="track-picker-placeholder">Rādīt paziņojumus no visām trasēm</span>
+                    <span class="track-picker-name">Visas trases</span>
+                </button>
+            </article>
+
+            @foreach ($tracks as $track)
+                @php($coverImage = $track->images->first())
+                <article class="track-picker-card" data-track-search-option data-track-name="{{ $track->name }}">
+                    <button class="track-picker-filter" type="button" data-track-filter data-track-id="{{ $track->id }}" data-track-label="{{ $track->name }}" aria-pressed="{{ $announcementTrackId === $track->id ? 'true' : 'false' }}">
+                        @if ($coverImage)
+                            <img class="track-picker-cover" src="{{ asset('storage/' . $coverImage->path) }}" alt="{{ $track->name }}" loading="lazy">
+                        @else
+                            <span class="track-picker-placeholder">Nav pievienots cover attēls</span>
+                        @endif
+                        <span class="track-picker-name">{{ $track->name }}</span>
+                    </button>
+                    @auth
+                        <label class="track-priority-toggle">
+                            <input
+                                type="checkbox"
+                                name="track_ids[]"
+                                value="{{ $track->id }}"
+                                form="track-preferences-form"
+                                @checked(in_array($track->id, $preferredTrackIds, true))
+                            >
+                            Prioritārā trase
+                        </label>
+                    @endauth
+                </article>
+            @endforeach
+        </div>
+
+        @auth
+            <button class="track-priority-save" type="submit" form="track-preferences-form">Saglabāt prioritātes</button>
+        @endauth
+        <p id="track-picker-empty" hidden>Trases nav atrastas.</p>
+    </dialog>
 
     <!-- Leaflet JS bibliotēka kartes attēlošanau -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
