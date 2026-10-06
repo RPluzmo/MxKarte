@@ -13,8 +13,6 @@
     @endpush
 
     <div class="page-shell">
-        <h1>MxKarte</h1>
-
         @auth
             @if ($clubName)
                 <div class="map-controls">
