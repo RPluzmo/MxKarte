@@ -83,6 +83,12 @@
     background: var(--surface);
 }
 
+.rider-period th {
+    background: var(--surface);
+    border-top: 2px solid var(--border);
+    color: var(--red-800);
+}
+
 .rider-club {
     align-items: center;
     display: inline-flex;

@@ -33,7 +33,7 @@ class RiderSeeder extends Seeder
             }
 
             foreach ($trackPeople as [$name, $surname]) {
-                $arrivalHour = random_int(8, 18);
+                $arrivalHour = random_int(6, 23);
                 $club = $clubs !== [] && random_int(1, 100) <= 70
                     ? $faker->randomElement($clubs)
                     : 'Privāti';

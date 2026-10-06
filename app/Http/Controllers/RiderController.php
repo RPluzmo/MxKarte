@@ -27,7 +27,7 @@ class RiderController extends Controller
             'club' => ['nullable', 'string', 'exists:clubs,name'],
             'category' => ['required', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi']),],
             'experience_level' => ['required', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis']),],
-            'ride_time' => ['required', 'date_format:H:i'],
+            'ride_time' => ['required', 'date_format:H:i', 'after_or_equal:06:00', 'before_or_equal:23:59'],
         ]);
 
         $validated['club'] = $validated['club'] ?? 'Privāti';

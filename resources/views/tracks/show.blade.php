@@ -83,7 +83,7 @@
                     @endauth
                     <p>
                         <label>Ierašanās laiks<br>
-                            <input type="time" name="ride_time" value="{{ old('ride_time') }}" required>
+                            <input type="time" name="ride_time" value="{{ old('ride_time') }}" min="06:00" max="23:59" required>
                         </label>
                     </p>
                     <button type="submit">Pieteikties</button>
@@ -242,34 +242,38 @@
         </tr>
     </thead>
     <tbody>
-            @forelse($track->riders as $rider)
-                <tr>
-                    <td>{{ $rider->name }}</td>
-                    <td>{{ $rider->surname }}</td>
-                    <td>{{ $rider->category }}</td>
-                    <td>{{ $rider->experience_level }}</td>
-                    <td>{{ substr($rider->ride_time, 0, 5) }}</td>
-                    <td>
-                        @if ($rider->club)
-                            <div class="rider-club">
-                                @if ($rider->clubModel?->logo_path)
-                                    <img
-                                        class="rider-club-logo"
-                                        src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
-                                        alt="{{ $rider->club }} logo"
-                                        loading="lazy"
-                                    >
-                                @endif
-                                <span>{{ $rider->club }}</span>
-                            </div>
-                        @else
-                            <span>Privāti</span>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="6">Neviens neplāno ierasties.</td></tr>
-            @endforelse
+            @php($ridersByPeriod = $track->riders->sortBy('ride_time')->groupBy('arrival_period'))
+            @foreach (['Rīts', 'Pusdienlaiks', 'Pēcpusdiena', 'Vakars'] as $period)
+                <tr class="rider-period"><th colspan="6">{{ $period }}</th></tr>
+                @forelse ($ridersByPeriod->get($period, collect()) as $rider)
+                    <tr>
+                        <td>{{ $rider->name }}</td>
+                        <td>{{ $rider->surname }}</td>
+                        <td>{{ $rider->category }}</td>
+                        <td>{{ $rider->experience_level }}</td>
+                        <td>{{ substr($rider->ride_time, 0, 5) }}</td>
+                        <td>
+                            @if ($rider->club)
+                                <div class="rider-club">
+                                    @if ($rider->clubModel?->logo_path)
+                                        <img
+                                            class="rider-club-logo"
+                                            src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
+                                            alt="{{ $rider->club }} logo"
+                                            loading="lazy"
+                                        >
+                                    @endif
+                                    <span>{{ $rider->club }}</span>
+                                </div>
+                            @else
+                                <span>Privāti</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="6">Šajā laikā nav pieteikumu.</td></tr>
+                @endforelse
+            @endforeach
         </tbody>
     </table>
     </div>

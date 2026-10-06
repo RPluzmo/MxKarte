@@ -17,6 +17,18 @@ use Illuminate\Database\Eloquent\Model;
         'ride_time',
     ];
 
+    public function getArrivalPeriodAttribute(): string
+    {
+        $hour = (int) substr($this->ride_time, 0, 2);
+
+        return match (true) {
+            $hour >= 6 && $hour <= 10 => 'Rīts',
+            $hour >= 11 && $hour <= 14 => 'Pusdienlaiks',
+            $hour >= 15 && $hour <= 17 => 'Pēcpusdiena',
+            default => 'Vakars',
+        };
+    }
+
     public function track()
     {
         return $this->belongsTo(Track::class);
