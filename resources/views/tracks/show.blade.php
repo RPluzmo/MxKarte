@@ -1,15 +1,18 @@
 <x-layout>
     <div class="page-shell">
-        <a href="/">Atpakaļ</a>
+        <div class="page-actions">
+            <a class="button button-ghost" href="{{ route('home') }}">&larr; Atpakaļ uz karti</a>
+
+            @auth
+                @if ($track->user_id === auth()->id())
+                    <a class="button button-light" href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a>
+                @endif
+            @endauth
+        </div>
+
         <h1>{{ $track->name }}</h1>
 
         <x-alerts />
-
-        @auth
-            @if ($track->user_id === auth()->id())
-                <p><a href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a></p>
-            @endif
-        @endauth
 
         @php($coverImage = $track->images->firstWhere('type', 'cover'))
         @if ($coverImage)
@@ -81,6 +84,15 @@
                         :selected="old('experience_level')"
                     />
                     @endauth
+                    <p>
+                        <label>Diena<br>
+                            <select name="ride_date" required>
+                                @foreach ($rideDates as $date => $label)
+                                    <option value="{{ $date }}" @selected(old('ride_date', array_key_first($rideDates)) === $date)>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </p>
                     <p>
                         <label>Ierašanās laiks<br>
                             <input type="time" name="ride_time" value="{{ old('ride_time') }}" min="06:00" max="23:59" required>
@@ -241,40 +253,54 @@
             <th>Moto klubs</th>
         </tr>
     </thead>
-    <tbody>
-            @php($ridersByPeriod = $track->riders->sortBy('ride_time')->groupBy('arrival_period'))
-            @foreach (['Rīts', 'Pusdienlaiks', 'Pēcpusdiena', 'Vakars'] as $period)
-                <tr class="rider-period"><th colspan="6">{{ $period }}</th></tr>
-                @forelse ($ridersByPeriod->get($period, collect()) as $rider)
-                    <tr>
-                        <td>{{ $rider->name }}</td>
-                        <td>{{ $rider->surname }}</td>
-                        <td>{{ $rider->category }}</td>
-                        <td>{{ $rider->experience_level }}</td>
-                        <td>{{ substr($rider->ride_time, 0, 5) }}</td>
-                        <td>
-                            @if ($rider->club)
-                                <div class="rider-club">
-                                    @if ($rider->clubModel?->logo_path)
-                                        <img
-                                            class="rider-club-logo"
-                                            src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
-                                            alt="{{ $rider->club }} logo"
-                                            loading="lazy"
-                                        >
-                                    @endif
-                                    <span>{{ $rider->club }}</span>
-                                </div>
-                            @else
-                                <span>Privāti</span>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="6">Šajā laikā nav pieteikumu.</td></tr>
-                @endforelse
-            @endforeach
-        </tbody>
+            @php($ridersByDate = $track->riders->groupBy(fn ($rider) => $rider->ride_date->toDateString()))
+            @forelse ($ridersByDate as $date => $dayRiders)
+                <tbody class="rider-day-group">
+                <tr class="rider-day">
+                    <th colspan="6">
+                        <div class="rider-day-title">
+                            <span>{{ $rideDates[$date] ?? \Illuminate\Support\Carbon::parse($date)->format('d.m.Y') }}</span>
+                            <span class="rider-day-count">Pieteikumi: {{ $dayRiders->count() }}</span>
+                        </div>
+                    </th>
+                </tr>
+                @php($ridersByPeriod = $dayRiders->sortBy('ride_time')->groupBy('arrival_period'))
+                @foreach (['Rīts', 'Pusdienlaiks', 'Pēcpusdiena', 'Vakars'] as $period)
+                    @continue (! $ridersByPeriod->has($period))
+                    <tr class="rider-period"><th colspan="6">{{ $period }}</th></tr>
+                    @foreach ($ridersByPeriod->get($period) as $rider)
+                        <tr>
+                            <td>{{ $rider->name }}</td>
+                            <td>{{ $rider->surname }}</td>
+                            <td>{{ $rider->category }}</td>
+                            <td>{{ $rider->experience_level }}</td>
+                            <td>{{ substr($rider->ride_time, 0, 5) }}</td>
+                            <td>
+                                @if ($rider->club)
+                                    <div class="rider-club">
+                                        @if ($rider->clubModel?->logo_path)
+                                            <img
+                                                class="rider-club-logo"
+                                                src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
+                                                alt="{{ $rider->club }} logo"
+                                                loading="lazy"
+                                            >
+                                        @endif
+                                        <span>{{ $rider->club }}</span>
+                                    </div>
+                                @else
+                                    <span>Privāti</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+                </tbody>
+            @empty
+                <tbody>
+                    <tr><td colspan="6">Neviens neplāno ierasties.</td></tr>
+                </tbody>
+            @endforelse
     </table>
     </div>
         </section>

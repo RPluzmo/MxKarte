@@ -79,14 +79,56 @@
     width: 100%;
 }
 
+.rider-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
 .rider-table thead th {
     background: var(--surface);
+    border-bottom: 2px solid var(--border-strong);
+}
+
+.rider-day-group + .rider-day-group .rider-day th {
+    background-clip: padding-box;
+    border-top: 1.25rem solid transparent;
+}
+
+.rider-day th {
+    background: var(--red-800);
+    border-bottom: 0;
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+}
+
+.rider-day-title {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.rider-day-count {
+    background: rgb(255 255 255 / 18%);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.625rem;
+    text-transform: none;
 }
 
 .rider-period th {
-    background: var(--surface);
-    border-top: 2px solid var(--border);
+    background: var(--red-100);
+    border-bottom: 0;
+    border-left: 4px solid var(--red-600);
     color: var(--red-800);
+    font-size: 0.8rem;
+}
+
+.rider-table td:nth-child(5) {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
 }
 
 .rider-club {

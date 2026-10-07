@@ -1,6 +1,7 @@
 <header class="site-header">
     <nav class="site-nav" aria-label="Galvenā navigācija">
         <a class="site-brand" href="{{ route('home') }}">MxKarte</a>
+        <time class="site-date" datetime="{{ today()->toDateString() }}">{{ ucfirst(now()->locale('lv')->translatedFormat('l')) }}, {{ now()->format('d.m.Y') }}</time>
 
         <ul class="site-nav-list">
             <li><a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif>Karte</a></li>

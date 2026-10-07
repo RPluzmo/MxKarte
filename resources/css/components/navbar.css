@@ -24,6 +24,11 @@
     text-decoration: none;
 }
 
+.site-date {
+    color: rgb(255 255 255 / 75%);
+    font-size: 0.875rem;
+}
+
 .site-nav-list {
     align-items: center;
     display: flex;

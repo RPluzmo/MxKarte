@@ -2,7 +2,9 @@
     <x-slot:title>Rediģēt trasi</x-slot:title>
 
     <div class="page-shell page-shell-narrow">
-        <a href="{{ route('tracks.show', $track) }}">Atpakaļ uz trasi</a>
+        <div class="page-actions">
+            <a class="button button-ghost" href="{{ route('tracks.show', $track) }}">&larr; Atpakaļ uz trasi</a>
+        </div>
 
         <section class="panel">
             <h1>Rediģēt trasi</h1>
@@ -21,7 +23,10 @@
                     <textarea name="description" rows="5">{{ old('description', $track->description) }}</textarea>
                 </label>
 
-                <button type="submit">Saglabāt izmaiņas</button>
+                <div class="form-actions">
+                    <button type="submit">Saglabāt izmaiņas</button>
+                    <a class="button button-secondary" href="{{ route('tracks.show', $track) }}">Atcelt</a>
+                </div>
             </form>
         </section>
     </div>

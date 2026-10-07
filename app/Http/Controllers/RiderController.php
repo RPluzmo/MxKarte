@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Rider;
 use App\Models\Track;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class RiderController extends Controller
 {
@@ -27,8 +28,13 @@ class RiderController extends Controller
             'club' => ['nullable', 'string', 'exists:clubs,name'],
             'category' => ['required', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi']),],
             'experience_level' => ['required', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis']),],
+            'ride_date' => ['required', 'date_format:Y-m-d', Rule::in(array_keys(Rider::bookableDates()))],
             'ride_time' => ['required', 'date_format:H:i', 'after_or_equal:06:00', 'before_or_equal:23:59'],
         ]);
+
+        if ($validated['ride_date'] === today()->toDateString() && $validated['ride_time'] <= now()->format('H:i')) {
+            throw ValidationException::withMessages(['ride_time' => 'Šodien nevar pieteikties jau pagājušam laikam.']);
+        }
 
         $validated['club'] = $validated['club'] ?? 'Privāti';
 

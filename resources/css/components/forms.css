@@ -41,13 +41,12 @@ button,
     padding: 0.625rem 1.125rem;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.15s, color 0.15s;
+    transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
 }
 
 button:hover,
 .button:hover {
-    background: var(--red-800);
-    color: #ffffff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
 }
 
 button:disabled {
@@ -56,14 +55,49 @@ button:disabled {
 }
 
 .button-secondary {
-    background: var(--surface);
-    color: var(--red-700);
+    background: var(--red-100);
+    border-color: var(--red-200);
+    color: var(--red-800);
 }
 
-.button-secondary:hover,
+.button-secondary:hover {
+    background: var(--red-200);
+    color: var(--red-800);
+}
+
 .button-secondary[aria-pressed='true'] {
-    background: var(--red-700);
+    background: var(--red-200);
+    border-color: var(--red-600);
+    color: var(--red-800);
+}
+
+.button-light {
+    background: var(--surface);
+    border-color: var(--surface);
+    color: var(--red-800);
+}
+
+.button-light:hover {
+    background: var(--red-100);
+    color: var(--red-800);
+}
+
+.button-ghost {
+    background: transparent;
+    border-color: rgb(255 255 255 / 45%);
     color: #ffffff;
+}
+
+.button-ghost:hover {
+    background: rgb(255 255 255 / 14%);
+    color: #ffffff;
+}
+
+.form-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .field {

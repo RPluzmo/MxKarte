@@ -86,7 +86,12 @@ class MapController extends Controller
 
      public function show(Track $track)
     {
-        $track->load(['riders.clubModel', 'comments.user', 'images']);
+        $track->load([
+            'riders' => fn ($query) => $query->upcoming()->orderBy('ride_date')->orderBy('ride_time'),
+            'riders.clubModel',
+            'comments.user',
+            'images',
+        ]);
         $track->load(['announcements' => function ($query) {
             $query->active()
                 ->orderByDesc('is_pinned')
@@ -97,6 +102,7 @@ class MapController extends Controller
             'clubs' => RiderChoices::clubs(),
             'categories' => RiderChoices::categories(),
             'experienceLevels' => RiderChoices::experienceLevels(),
+            'rideDates' => Rider::bookableDates(),
         ]);
     }
 

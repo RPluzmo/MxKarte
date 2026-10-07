@@ -20,8 +20,11 @@ return new class extends Migration
             $table->string('club')->nullable()->default('Privāti');
             $table->string('category');
             $table->string('experience_level');
+            $table->date('ride_date');
             $table->time('ride_time');
             $table->timestamps();
+
+            $table->index(['track_id', 'ride_date', 'ride_time']);
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
   class Rider extends Model
 {
@@ -14,8 +15,53 @@ use Illuminate\Database\Eloquent\Model;
         'club',
         'category',
         'experience_level',
+        'ride_date',
         'ride_time',
     ];
+
+    public const BOOKING_DAYS = 7;
+
+    protected function casts(): array
+    {
+        return ['ride_date' => 'date'];
+    }
+
+    /** @return array<string, string> datums (Y-m-d) => nosaukums */
+    public static function bookableDates(): array
+    {
+        $dates = [];
+
+        for ($i = 0; $i < self::BOOKING_DAYS; $i++) {
+            $date = now()->addDays($i)->locale('lv');
+            $prefix = match ($i) {
+                0 => 'Šodien, ',
+                1 => 'Rīt, ',
+                default => '',
+            };
+
+            $dates[$date->toDateString()] = $prefix . ucfirst($date->translatedFormat('l')) . ', ' . $date->format('d.m.Y');
+        }
+
+        return $dates;
+    }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('ride_date', '>=', today()->toDateString());
+    }
+
+    public static function deleteExpired(): int
+    {
+        return static::where('ride_date', '<', today()->toDateString())->delete();
+    }
+
+    /** Izpildās vienreiz dienā bez cron/schedule atbalsta. */
+    public static function deleteExpiredOncePerDay(): void
+    {
+        if (Cache::add('riders-pruned-' . today()->toDateString(), true, now()->endOfDay())) {
+            static::deleteExpired();
+        }
+    }
 
     public function getArrivalPeriodAttribute(): string
     {

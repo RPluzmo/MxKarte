@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Club;
+use App\Models\Rider;
 use App\Models\Track;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
@@ -48,6 +49,7 @@ class RiderSeeder extends Seeder
                         'club' => $club,
                         'category' => $faker->randomElement($categories),
                         'experience_level' => $faker->randomElement($experienceLevels),
+                        'ride_date' => $faker->randomElement(array_keys(Rider::bookableDates())),
                         'ride_time' => sprintf('%02d:00', $arrivalHour),
                     ]
                 );
