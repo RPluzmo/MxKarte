@@ -30,7 +30,7 @@
 
             <p>
                 <button type="submit">Saglabāt</button>
-                <a href="{{ route('admin.track-announcements.index') }}">Atcelt</a>
+                <a class="button button-secondary" href="{{ route('admin.track-announcements.index') }}">Atcelt</a>
             </p>
         </form>
     </section></div>

@@ -5,9 +5,9 @@
 
         <x-alerts />
 
-        <p><a href="{{ route('admin.announcements.create') }}">Publicēt ziņojumu</a></p>
+        <p><a class="button button-secondary" href="{{ route('admin.announcements.create') }}">Publicēt ziņojumu</a></p>
 
-        <table>
+        <table class="data-table data-table--interactive">
             <thead>
                 <tr><th>Virsraksts</th><th>Autors</th><th>Publicēts</th><th>Termiņš</th><th>Darbības</th></tr>
             </thead>
@@ -19,7 +19,7 @@
                         <td>{{ $announcement->published_at->format('d.m.Y H:i') }}</td>
                         <td>{{ $announcement->expires_at?->format('d.m.Y H:i') ?? 'Bez termiņa' }}</td>
                         <td>
-                            <a href="{{ route('admin.announcements.edit', $announcement) }}">Rediģēt</a>
+                            <a class="button button-secondary" href="{{ route('admin.announcements.edit', $announcement) }}">Rediģēt</a>
                             <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" class="inline-form" onsubmit="return confirm('Dzēst šo admin ziņojumu?');">
                                 @csrf
                                 @method('DELETE')

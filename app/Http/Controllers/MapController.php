@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Club;
 use App\Models\Rider;
 use App\Models\SiteAnnouncement;
 use App\Models\Track;
 use App\Models\TrackAnnouncement;
-use App\Models\TrackImage;
 use App\Support\RiderChoices;
 
 class MapController extends Controller
@@ -60,10 +57,11 @@ class MapController extends Controller
             ->withQueryString();
 
         $clubTrackIds = [];
-        $clubName = auth()->user()?->club;
+        $userClub = auth()->user()?->club;
+        $clubName = $userClub?->name;
 
-        if ($clubName) {
-            $clubTrackIds = Rider::where('club', $clubName)
+        if ($userClub) {
+            $clubTrackIds = Rider::where('club_id', $userClub->id)
                 ->pluck('track_id')
                 ->map(fn ($trackId) => (int) $trackId)
                 ->unique()
@@ -84,12 +82,9 @@ class MapController extends Controller
         ));
     }
 
-     public function show(Track $track)
+    public function show(Track $track)
     {
         $track->load([
-            'riders' => fn ($query) => $query->upcoming()->orderBy('ride_date')->orderBy('ride_time'),
-            'riders.clubModel',
-            'comments.user',
             'images',
         ]);
         $track->load(['announcements' => function ($query) {
@@ -97,13 +92,27 @@ class MapController extends Controller
                 ->orderByDesc('is_pinned')
                 ->orderByDesc('published_at');
         }]);
+        $riders = $track->riders()
+            ->upcoming()
+            ->with('clubModel')
+            ->orderBy('ride_date')
+            ->orderBy('ride_time')
+            ->paginate(50, ['*'], 'riders_page')
+            ->withQueryString();
+        $comments = $track->comments()
+            ->with('user')
+            ->latest()
+            ->paginate(25, ['*'], 'comments_page')
+            ->withQueryString();
+
         return view('tracks.show', [
             'track' => $track,
+            'riders' => $riders,
+            'comments' => $comments,
             'clubs' => RiderChoices::clubs(),
             'categories' => RiderChoices::categories(),
             'experienceLevels' => RiderChoices::experienceLevels(),
             'rideDates' => Rider::bookableDates(),
         ]);
     }
-
 }

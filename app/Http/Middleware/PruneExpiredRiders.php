@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Rider;
+use App\Support\ExpiredContentPruner;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +11,7 @@ class PruneExpiredRiders
 {
     public function handle(Request $request, Closure $next): Response
     {
-        Rider::deleteExpiredOncePerDay();
+        app(ExpiredContentPruner::class)->pruneOncePerDay();
 
         return $next($request);
     }

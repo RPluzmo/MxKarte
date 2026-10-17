@@ -5,9 +5,9 @@
 
         <x-alerts />
 
-        <p><a href="{{ route('admin.tracks.create') }}">Izveidot trasi</a></p>
+        <p><a class="button button-secondary" href="{{ route('admin.tracks.create') }}">Izveidot trasi</a></p>
 
-        <table>
+        <table class="data-table data-table--interactive">
             <thead>
                 <tr><th>Nosaukums</th><th>Slug</th><th>Saimnieks</th><th>Darbības</th></tr>
             </thead>
@@ -18,8 +18,8 @@
                         <td>{{ $track->slug }}</td>
                         <td>{{ $track->owner?->name ?? 'Nav piešķirts' }}</td>
                         <td>
-                            <a href="{{ route('tracks.show', $track) }}">Skatīt</a>
-                            <a href="{{ route('admin.tracks.edit', $track) }}">Rediģēt</a>
+                            <a class="button button-secondary" href="{{ route('tracks.show', $track) }}">Skatīt</a>
+                            <a class="button button-secondary" href="{{ route('admin.tracks.edit', $track) }}">Rediģēt</a>
                             <form method="POST" action="{{ route('admin.tracks.destroy', $track) }}" class="inline-form" onsubmit="return confirm('Dzēšot trasi, tiks dzēsti tās pieteikumi, komentāri un paziņojumi. Turpināt?');">
                                 @csrf
                                 @method('DELETE')

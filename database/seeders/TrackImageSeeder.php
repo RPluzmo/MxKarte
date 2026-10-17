@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Track;
 use App\Models\TrackImage;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class TrackImageSeeder extends Seeder
 {
@@ -25,7 +24,15 @@ class TrackImageSeeder extends Seeder
             ];
 
             foreach ($images as $image) {
-                $path = "tracks/{$track->slug}/{$image['filename']}";
+                $imageRecord = TrackImage::where('track_id', $track->id)
+                    ->where('type', $image['type'])
+                    ->where('sort_order', $image['sort_order'])
+                    ->first();
+                $path = $imageRecord?->path;
+
+                if (! $path || ! Storage::disk('public')->exists($path)) {
+                    $path = "tracks/{$track->slug}/{$image['filename']}";
+                }
 
                 if (! Storage::disk('public')->exists($path)) {
                     continue;

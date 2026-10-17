@@ -14,6 +14,9 @@
             <p><label>Vārds<br><input name="name" value="{{ old('name', $user->name) }}" required></label></p>
             <p><label>Uzvārds<br><input name="surname" value="{{ old('surname', $user->surname) }}" required></label></p>
             <p><label>E-pasts<br><input type="email" name="email" value="{{ old('email', $user->email) }}" required></label></p>
+            @if ($user->exists && auth()->id() === $user->id)
+                <p><label>Pašreizējā parole (nepieciešama, mainot e-pastu vai paroli)<br><input type="password" name="current_password" autocomplete="current-password"></label></p>
+            @endif
 
             <p>
                 <label>Loma<br>
@@ -27,10 +30,10 @@
 
             <p>
                 <label>Klubs<br>
-                    <select name="club">
+                    <select name="club_id">
                         <option value="">Nav izvēlēts</option>
                         @foreach ($clubs as $club)
-                            <option value="{{ $club->name }}" @selected(old('club', $user->club) === $club->name)>{{ $club->name }}</option>
+                            <option value="{{ $club->id }}" @selected((string) old('club_id', $user->club_id) === (string) $club->id)>{{ $club->name }}</option>
                         @endforeach
                     </select>
                 </label>
@@ -62,7 +65,7 @@
             <p><label>Parole atkārtoti<br><input type="password" name="password_confirmation" {{ $user->exists ? '' : 'required' }}></label></p>
 
             <button type="submit">Saglabāt</button>
-            <a href="{{ route('admin.users.index') }}">Atcelt</a>
+            <a class="button button-secondary" href="{{ route('admin.users.index') }}">Atcelt</a>
         </form>
     </section></div>
 </x-layout>

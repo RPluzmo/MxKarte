@@ -20,7 +20,7 @@ class RiderSeeder extends Seeder
             'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi',
         ];
         $experienceLevels = ['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'];
-        $clubs = Club::orderBy('name')->pluck('name')->all();
+        $clubs = Club::orderBy('name')->pluck('id')->all();
         $faker = Faker::create('lv_LV');
 
         foreach (Track::orderBy('slug')->get() as $track) {
@@ -30,14 +30,16 @@ class RiderSeeder extends Seeder
             while (count($trackPeople) < $riderCount) {
                 $name = $faker->firstName();
                 $surname = $faker->lastName();
-                $trackPeople[$name . '|' . $surname] = [$name, $surname];
+                $trackPeople[$name.'|'.$surname] = [$name, $surname];
             }
 
             foreach ($trackPeople as [$name, $surname]) {
                 $arrivalHour = random_int(6, 23);
-                $club = $clubs !== [] && random_int(1, 100) <= 70
+                $clubId = $clubs !== [] && random_int(1, 100) <= 70
                     ? $faker->randomElement($clubs)
-                    : 'Privāti';
+                    : null;
+
+                $rideDate = $faker->randomElement(array_keys(Rider::bookableDates()));
 
                 $track->riders()->firstOrCreate(
                     [
@@ -46,11 +48,17 @@ class RiderSeeder extends Seeder
                     ],
                     [
                         'user_id' => null,
-                        'club' => $club,
+                        'club_id' => $clubId,
                         'category' => $faker->randomElement($categories),
                         'experience_level' => $faker->randomElement($experienceLevels),
-                        'ride_date' => $faker->randomElement(array_keys(Rider::bookableDates())),
+                        'ride_date' => $rideDate,
                         'ride_time' => sprintf('%02d:00', $arrivalHour),
+                        'registration_key' => Rider::registrationKeyFor([
+                            'track_id' => $track->id,
+                            'ride_date' => $rideDate,
+                            'name' => $name,
+                            'surname' => $surname,
+                        ]),
                     ]
                 );
             }

@@ -31,7 +31,7 @@
                     @auth
                         <p><strong>Vārds:</strong> {{ $authUser->name }}</p>
                         <p><strong>Uzvārds:</strong> {{ $authUser->surname ?: '-' }}</p>
-                        <p><strong>Klubs:</strong> {{ $authUser->club ?: 'Privāti' }}</p>
+                        <p><strong>Klubs:</strong> {{ $authUser->club?->name ?? 'Privāti' }}</p>
                         <p><strong>Klase:</strong> {{ $authUser->category ?: '-' }}</p>
                         <p><strong>Pieredze:</strong> {{ $authUser->experience_level ?: '-' }}</p>
                         <p>Datus var mainīt <a href="{{ route('profile.edit') }}">profilā</a>.</p>
@@ -48,7 +48,7 @@
                     </p>
                     <x-choice-picker
                         key="club"
-                        name="club"
+                        name="club_id"
                         label="Klubs (neobligāti)"
                         title="Izvēlies motoklubu"
                         search="Meklēt klubu"
@@ -57,7 +57,7 @@
                         none="Privāti"
                         none-hint="Nav kluba logo"
                         :options="$clubs"
-                        :selected="old('club')"
+                        :selected="old('club_id')"
                     />
                     <x-choice-picker
                         key="category"
@@ -205,7 +205,7 @@
                     <p><a href="{{ route('login') }}">Ielogojies</a>, lai publicētu komentāru.</p>
                 @endauth
 
-                @forelse($track->comments as $comment)
+                @forelse($comments as $comment)
                     <article>
                         <strong>{{ $comment->user->name }} {{ $comment->user->surname }}</strong>
                         <small>{{ $comment->created_at->format('d.m.Y H:i') }}</small>
@@ -224,6 +224,7 @@
                 @empty
                     <p>Trasē vēl nav publicētu komentāru.</p>
                 @endforelse
+                {{ $comments->links() }}
             </section>
         </div>
 
@@ -242,7 +243,7 @@
         <section class="track-panel">
             <h2>Pieteikušies sportisti</h2>
 <div class="table-scroll">
-<table class="rider-table">
+<table class="data-table rider-table">
     <thead>
         <tr>
             <th>Vārds</th>
@@ -253,7 +254,7 @@
             <th>Moto klubs</th>
         </tr>
     </thead>
-            @php($ridersByDate = $track->riders->groupBy(fn ($rider) => $rider->ride_date->toDateString()))
+            @php($ridersByDate = $riders->getCollection()->groupBy(fn ($rider) => $rider->ride_date->toDateString()))
             @forelse ($ridersByDate as $date => $dayRiders)
                 <tbody class="rider-day-group">
                 <tr class="rider-day">
@@ -276,17 +277,17 @@
                             <td>{{ $rider->experience_level }}</td>
                             <td>{{ substr($rider->ride_time, 0, 5) }}</td>
                             <td>
-                                @if ($rider->club)
+                                @if ($rider->clubModel)
                                     <div class="rider-club">
                                         @if ($rider->clubModel?->logo_path)
                                             <img
                                                 class="rider-club-logo"
                                                 src="{{ asset('storage/' . $rider->clubModel->logo_path) }}"
-                                                alt="{{ $rider->club }} logo"
+                                                alt="{{ $rider->clubModel->name }} logo"
                                                 loading="lazy"
                                             >
                                         @endif
-                                        <span>{{ $rider->club }}</span>
+                                        <span>{{ $rider->clubModel->name }}</span>
                                     </div>
                                 @else
                                     <span>Privāti</span>
@@ -303,6 +304,7 @@
             @endforelse
     </table>
     </div>
+            {{ $riders->links() }}
         </section>
     </div>
 

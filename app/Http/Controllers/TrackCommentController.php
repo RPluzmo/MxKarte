@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Track;
 use App\Models\TrackComment;
+use Illuminate\Http\Request;
 
 class TrackCommentController extends Controller
 {
@@ -24,12 +24,7 @@ class TrackCommentController extends Controller
 
     public function destroy(Request $request, TrackComment $comment)
     {
-        abort_unless(
-            $comment->user_id === $request->user()->id
-                || $comment->track->user_id === $request->user()->id
-                || $request->user()->role === 'admin',
-            403
-        );
+        $this->authorize('delete', $comment);
 
         $comment->delete();
 

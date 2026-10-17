@@ -5,9 +5,9 @@
 
         <x-alerts />
 
-        <p><a href="{{ route('admin.track-announcements.create') }}">Izveidot trases paziņojumu</a></p>
+        <p><a class="button button-secondary" href="{{ route('admin.track-announcements.create') }}">Izveidot trases paziņojumu</a></p>
 
-        <table>
+        <table class="data-table data-table--interactive">
             <thead>
                 <tr><th>Trase</th><th>Virsraksts</th><th>Autors</th><th>Publicēts</th><th>Termiņš</th><th>Svarīgs</th><th>Darbības</th></tr>
             </thead>
@@ -21,7 +21,7 @@
                         <td>{{ $announcement->expires_at?->format('d.m.Y H:i') ?? 'Bez termiņa' }}</td>
                         <td>{{ $announcement->is_pinned ? 'Jā' : 'Nē' }}</td>
                         <td>
-                            <a href="{{ route('admin.track-announcements.edit', $announcement) }}">Rediģēt</a>
+                            <a class="button button-secondary" href="{{ route('admin.track-announcements.edit', $announcement) }}">Rediģēt</a>
                             <form method="POST" action="{{ route('admin.track-announcements.destroy', $announcement) }}" class="inline-form" onsubmit="return confirm('Dzēst šo trases paziņojumu?');">
                                 @csrf
                                 @method('DELETE')

@@ -274,19 +274,36 @@
 
         const trackMarkers = tracks.map(track => {
             const coverImage = track.images?.[0];
-            const coverMarkup = coverImage
-                ? `<img class="popup-cover" src="${storageUrl}/${coverImage.path}" alt="${track.name}">`
-                : '';
+            const popupContent = document.createElement('div');
+
+            if (coverImage) {
+                const image = document.createElement('img');
+                image.className = 'popup-cover';
+                image.src = `${storageUrl}/${coverImage.path}`;
+                image.alt = track.name;
+                popupContent.append(image);
+            }
+
+            const name = document.createElement('strong');
+            name.textContent = track.name;
+            popupContent.append(name, document.createElement('br'));
+
+            const description = document.createElement('p');
+            description.className = 'track-popup-description';
+            description.textContent = track.description ?? '';
+            popupContent.append(description);
+
+            const link = document.createElement('a');
+            link.className = 'popup-link';
+            link.href = `/tracks/${Number(track.id)}`;
+            link.textContent = 'Apskatīt';
+            popupContent.append(link);
+
             const marker = L.marker([track.lat, track.lng], {
                 icon: createTrackIcon(track),
             })
                 .addTo(map)
-                .bindPopup(`
-                    ${coverMarkup}<br>
-                    <strong>${track.name}</strong><br>
-                    ${track.description ?? ''}
-                    <a class="popup-link" href="/tracks/${track.id}">Apskatīt</a>
-                `);
+                .bindPopup(popupContent);
 
             return { track, marker };
         });

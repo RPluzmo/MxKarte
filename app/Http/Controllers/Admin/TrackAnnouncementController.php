@@ -21,7 +21,7 @@ class TrackAnnouncementController extends Controller
     public function create()
     {
         return view('admin.track-announcements.form', [
-            'announcement' => new TrackAnnouncement(),
+            'announcement' => new TrackAnnouncement,
             'tracks' => Track::orderBy('name')->get(),
         ]);
     }
@@ -75,7 +75,7 @@ class TrackAnnouncementController extends Controller
             'track_id' => ['required', 'integer', 'exists:tracks,id'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:5000'],
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'date', 'after:now'],
             'is_pinned' => ['sometimes', 'boolean'],
         ]);
     }

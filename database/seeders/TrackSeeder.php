@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Track;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use App\Models\Track;
 
 class TrackSeeder extends Seeder
 {
@@ -274,7 +273,7 @@ class TrackSeeder extends Seeder
                 'description' => 'Motorparks Dimanti',
                 'slug' => Str::slug('Stāmeriena'),
                 'created_at' => now(),
-                'updated_at' => now(),  
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Stelpe',
@@ -302,8 +301,8 @@ class TrackSeeder extends Seeder
                 'slug' => Str::slug('Vāveres'),
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
-    ];
+            ],
+        ];
 
         Track::insert($tracks);
     }

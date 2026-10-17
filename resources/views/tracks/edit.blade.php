@@ -23,6 +23,10 @@
                     <textarea name="description" rows="5">{{ old('description', $track->description) }}</textarea>
                 </label>
 
+                <label>Segums
+                    <input name="surface_type" value="{{ old('surface_type', $track->surface_type) }}" maxlength="255">
+                </label>
+
                 <div class="form-actions">
                     <button type="submit">Saglabāt izmaiņas</button>
                     <a class="button button-secondary" href="{{ route('tracks.show', $track) }}">Atcelt</a>

@@ -5,9 +5,9 @@
 
         <x-alerts />
 
-        <p><a href="{{ route('admin.users.create') }}">Izveidot lietotāju</a></p>
+        <p><a class="button button-secondary" href="{{ route('admin.users.create') }}">Izveidot lietotāju</a></p>
 
-        <table>
+        <table class="data-table data-table--interactive">
             <thead>
                 <tr><th>Vārds</th><th>E-pasts</th><th>Loma</th><th>Trases</th><th>Darbības</th></tr>
             </thead>
@@ -19,7 +19,7 @@
                         <td>{{ $user->role }}</td>
                         <td>{{ $user->tracks_count }}</td>
                         <td>
-                            <a href="{{ route('admin.users.edit', $user) }}">Rediģēt</a>
+                            <a class="button button-secondary" href="{{ route('admin.users.edit', $user) }}">Rediģēt</a>
                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="inline-form" onsubmit="return confirm('Dzēst šo lietotāju?');">
                                 @csrf
                                 @method('DELETE')

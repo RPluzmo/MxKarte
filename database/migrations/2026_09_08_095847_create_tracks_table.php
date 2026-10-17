@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
-            $table->decimal('lat', 7, 5);//7cipari kopā , 5cipari aiz komata
-            $table->decimal('lng', 7, 5);
+            $table->decimal('lat', 7, 5); // 7cipari kopā , 5cipari aiz komata
+            $table->decimal('lng', 8, 5);
             $table->string('slug')->unique();
             $table->text('description')->nullable();
+            $table->string('surface_type')->nullable();
             $table->timestamps();
-        }); 
+        });
     }
 
     /**

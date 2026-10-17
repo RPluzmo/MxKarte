@@ -13,7 +13,7 @@
     'showImage' => true,
 ])
 
-@php($selectedOption = collect($options)->firstWhere('name', $selected))
+@php($selectedOption = collect($options)->first(fn ($option) => (string) ($option['value'] ?? $option['name']) === (string) $selected))
 
 <div class="field">
     <span>{{ $label }}</span>
@@ -28,7 +28,7 @@
                     @if (empty($selectedOption['image_url'])) hidden @endif
                 >
             @endif
-            <output id="{{ $key }}-label">{{ $selected ?: ($none ?? 'Izvēlieties') }}</output>
+            <output id="{{ $key }}-label">{{ $selectedOption['name'] ?? ($none ?? 'Izvēlieties') }}</output>
         </div>
         <button id="open-{{ $key }}-picker" class="button-secondary" type="button">{{ $button }}</button>
     </div>
@@ -59,10 +59,10 @@
                     class="choice-option"
                     type="button"
                     data-choice-option
-                    data-choice-value="{{ $option['name'] }}"
+                    data-choice-value="{{ $option['value'] ?? $option['name'] }}"
                     data-choice-name="{{ $option['name'] }}"
                     data-choice-image="{{ $option['image_url'] ?? '' }}"
-                    aria-pressed="{{ $selected === $option['name'] ? 'true' : 'false' }}"
+                    aria-pressed="{{ (string) $selected === (string) ($option['value'] ?? $option['name']) ? 'true' : 'false' }}"
                 >
                     @if ($option['image_url'])
                         <img src="{{ $option['image_url'] }}" alt="{{ $option['alt'] }}" loading="lazy">

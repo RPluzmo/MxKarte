@@ -10,7 +10,7 @@ class TrackAnnouncementController extends Controller
 {
     public function store(Request $request, Track $track)
     {
-        $this->authorizeOwner($request, $track);
+        $this->authorize('createAnnouncement', $track);
 
         $validated = $this->validateAnnouncement($request);
 
@@ -26,7 +26,7 @@ class TrackAnnouncementController extends Controller
 
     public function update(Request $request, TrackAnnouncement $announcement)
     {
-        $this->authorizeOwner($request, $announcement->track);
+        $this->authorize('update', $announcement);
 
         $validated = $this->validateAnnouncement($request);
         $announcement->update([
@@ -39,7 +39,7 @@ class TrackAnnouncementController extends Controller
 
     public function destroy(Request $request, TrackAnnouncement $announcement)
     {
-        $this->authorizeOwner($request, $announcement->track);
+        $this->authorize('delete', $announcement);
         $announcement->delete();
 
         return back()->with('status', 'Trases paziņojums izdzēsts.');
@@ -53,10 +53,5 @@ class TrackAnnouncementController extends Controller
             'expires_at' => ['nullable', 'date', 'after:now'],
             'is_pinned' => ['sometimes', 'boolean'],
         ]);
-    }
-
-    private function authorizeOwner(Request $request, Track $track): void
-    {
-        abort_unless($track->user_id === $request->user()->id, 403);
     }
 }

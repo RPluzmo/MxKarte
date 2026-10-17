@@ -10,9 +10,10 @@ class RiderChoices
     public static function clubs(): array
     {
         return Club::orderBy('name')->get()->map(fn (Club $club) => [
+            'value' => $club->id,
             'name' => $club->name,
-            'image_url' => $club->logo_path ? asset('storage/' . $club->logo_path) : null,
-            'alt' => $club->name . ' logo',
+            'image_url' => $club->logo_path ? asset('storage/'.$club->logo_path) : null,
+            'alt' => $club->name.' logo',
             'hint' => 'Nav logo',
         ])->all();
     }
@@ -48,7 +49,7 @@ class RiderChoices
         return collect($files)->map(fn (string $path, string $name) => [
             'name' => $name,
             'image_url' => $disk->exists($path) ? $disk->url($path) : null,
-            'alt' => $name . $altSuffix,
+            'alt' => $name.$altSuffix,
             'hint' => 'Attēls tiks pievienots',
         ])->values()->all();
     }

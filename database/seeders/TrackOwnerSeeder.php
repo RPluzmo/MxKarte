@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Track;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class TrackOwnerSeeder extends Seeder
@@ -48,14 +47,14 @@ class TrackOwnerSeeder extends Seeder
 
         foreach ($trackOwners as $trackName => $emailPrefix) {
             $owner = User::updateOrCreate(
-                ['email' => $emailPrefix . '@mxkarte.lv'],
+                ['email' => $emailPrefix.'@mxkarte.lv'],
                 [
                     'name' => $trackName,
                     'surname' => 'Saimnieks',
                     'password' => Hash::make('1'),
                     'role' => 'owner',
-                    'category' => '',
-                    'experience_level' => '',
+                    'category' => null,
+                    'experience_level' => null,
                 ]
             );
 

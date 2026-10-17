@@ -9,18 +9,19 @@ class TrackController extends Controller
 {
     public function edit(Request $request, Track $track)
     {
-        $this->authorizeOwner($request, $track);
+        $this->authorize('update', $track);
 
         return view('tracks.edit', compact('track'));
     }
 
     public function update(Request $request, Track $track)
     {
-        $this->authorizeOwner($request, $track);
+        $this->authorize('update', $track);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'surface_type' => ['nullable', 'string', 'max:255'],
         ]);
 
         $track->update($validated);
@@ -28,10 +29,5 @@ class TrackController extends Controller
         return redirect()
             ->route('tracks.show', $track)
             ->with('status', 'Trases informācija atjaunota.');
-    }
-
-    private function authorizeOwner(Request $request, Track $track): void
-    {
-        abort_unless((int) $track->user_id === (int) $request->user()->id, 403);
     }
 }

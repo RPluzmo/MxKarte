@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Club;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +23,7 @@ class UserController extends Controller
     public function create()
     {
         return view('admin.users.form', [
-            'user' => new User(),
+            'user' => new User,
             'clubs' => Club::orderBy('name')->get(),
         ]);
     }
@@ -48,36 +50,60 @@ class UserController extends Controller
     {
         $validated = $this->validateUser($request, $user);
         $password = $validated['password'] ?? null;
-        unset($validated['password']);
+        $currentPassword = $validated['current_password'] ?? null;
+        unset($validated['password'], $validated['current_password']);
 
-        if ($user->is($request->user()) && $validated['role'] !== 'admin') {
-            abort(403, 'Admin nevar noņemt sev administratora lomu.');
-        }
+        DB::transaction(function () use ($request, $user, $validated, $password, $currentPassword): void {
+            $admins = User::where('role', 'admin')->orderBy('id')->lockForUpdate()->get(['id']);
+            $target = User::findOrFail($user->id);
 
-        if ($user->role === 'admin'
-            && $validated['role'] !== 'admin'
-            && User::where('role', 'admin')->count() <= 1) {
-            abort(422, 'Sistēmā jābūt vismaz vienam administratoram.');
-        }
+            if ($target->is($request->user()) && $validated['role'] !== 'admin') {
+                abort(403, 'Admin nevar noņemt sev administratora lomu.');
+            }
+
+            if ($target->role === 'admin'
+                && $validated['role'] !== 'admin'
+                && $admins->count() <= 1) {
+                abort(422, 'Sistēmā jābūt vismaz vienam administratoram.');
+            }
+
+            if ($password) {
+                if ($target->is($request->user())) {
+                    Auth::logoutOtherDevices($currentPassword);
+                }
+                $validated['password'] = Hash::make($password);
+            }
+
+            $target->update($validated);
+        });
+
+        $user->refresh();
 
         if ($password) {
-            $validated['password'] = Hash::make($password);
+            $sessions = DB::table('sessions')->where('user_id', $user->id);
+            if ($user->is($request->user())) {
+                $sessions->where('id', '<>', $request->session()->getId());
+            }
+            $sessions->delete();
         }
-
-        $user->update($validated);
 
         return redirect()->route('admin.users.index')->with('status', 'Lietotājs atjaunots.');
     }
 
     public function destroy(Request $request, User $user)
     {
-        abort_if($user->is($request->user()), 403, 'Admin nevar izdzēst pats savu kontu.');
+        DB::transaction(function () use ($request, $user): void {
+            $admins = User::where('role', 'admin')->orderBy('id')->lockForUpdate()->get(['id']);
+            $target = User::findOrFail($user->id);
 
-        if ($user->role === 'admin' && User::where('role', 'admin')->count() <= 1) {
-            abort(422, 'Sistēmā jābūt vismaz vienam administratoram.');
-        }
+            abort_if($target->is($request->user()), 403, 'Admin nevar izdzēst pats savu kontu.');
 
-        $user->delete();
+            if ($target->role === 'admin' && $admins->count() <= 1) {
+                abort(422, 'Sistēmā jābūt vismaz vienam administratoram.');
+            }
+
+            $target->delete();
+        });
 
         return redirect()->route('admin.users.index')->with('status', 'Lietotājs izdzēsts.');
     }
@@ -88,8 +114,14 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user?->id)],
+            'current_password' => [
+                Rule::requiredIf(fn () => $user?->is($request->user())
+                    && ($request->input('email') !== $user->email || $request->filled('password'))),
+                'nullable',
+                'current_password',
+            ],
             'role' => ['required', Rule::in(['user', 'owner', 'admin'])],
-            'club' => ['nullable', 'string', 'exists:clubs,name'],
+            'club_id' => ['nullable', 'integer', 'exists:clubs,id'],
             'category' => ['nullable', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'])],
             'experience_level' => ['nullable', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'])],
             'password' => [$user ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],

@@ -16,16 +16,20 @@
                 </label>
 
                 <label class="field">Uzvārds
-                    <input name="surname" value="{{ old('surname', $user->surname ?? '') }}" autocomplete="family-name">
+                    <input name="surname" value="{{ old('surname', $user->surname ?? '') }}" autocomplete="family-name" required>
                 </label>
 
                 <label class="field">E-pasts
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" autocomplete="email" required>
                 </label>
 
+                <label class="field">Pašreizējā parole (nepieciešama, mainot e-pastu vai paroli)
+                    <input type="password" name="current_password" autocomplete="current-password">
+                </label>
+
                 <x-choice-picker
                     key="club"
-                    name="club"
+                    name="club_id"
                     label="Kluba piederība"
                     title="Izvēlies motoklubu"
                     search="Meklēt klubu"
@@ -34,7 +38,7 @@
                     none="Privāti"
                     none-hint="Nav kluba logo"
                     :options="$clubs"
-                    :selected="old('club', $user->club)"
+                    :selected="old('club_id', $user->club_id)"
                 />
 
                 <x-choice-picker

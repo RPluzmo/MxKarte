@@ -17,13 +17,15 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->string('surname');
-            $table->string('club')->nullable()->default('Privāti');
+            $table->unsignedBigInteger('club_id')->nullable();
             $table->string('category');
             $table->string('experience_level');
             $table->date('ride_date');
             $table->time('ride_time');
+            $table->string('registration_key', 64);
             $table->timestamps();
 
+            $table->index('ride_date');
             $table->index(['track_id', 'ride_date', 'ride_time']);
         });
     }

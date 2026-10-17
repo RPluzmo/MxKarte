@@ -20,7 +20,7 @@ class SiteAnnouncementController extends Controller
     public function create()
     {
         return view('admin.announcements.form', [
-            'announcement' => new SiteAnnouncement(),
+            'announcement' => new SiteAnnouncement,
         ]);
     }
 
@@ -62,7 +62,7 @@ class SiteAnnouncementController extends Controller
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:5000'],
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'date', 'after:now'],
         ]);
     }
 }

@@ -3,20 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
-  class Rider extends Model
+class Rider extends Model
 {
     protected $fillable = [
         'track_id',
         'user_id',
         'name',
         'surname',
-        'club',
+        'club_id',
         'category',
         'experience_level',
         'ride_date',
         'ride_time',
+        'registration_key',
     ];
 
     public const BOOKING_DAYS = 7;
@@ -24,6 +24,30 @@ use Illuminate\Support\Facades\Cache;
     protected function casts(): array
     {
         return ['ride_date' => 'date'];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Rider $rider): void {
+            if (! $rider->registration_key) {
+                $rider->registration_key = self::registrationKeyFor($rider->getAttributes());
+            }
+        });
+    }
+
+    public static function registrationKeyFor(array $attributes): string
+    {
+        $identity = ! empty($attributes['user_id'])
+            ? 'user:'.$attributes['user_id']
+            : 'guest:'.mb_strtolower(trim($attributes['name'] ?? '')).':'.mb_strtolower(trim($attributes['surname'] ?? ''));
+
+        return hash('sha256', implode('|', [
+            $attributes['track_id'] ?? '',
+            $attributes['ride_date'] instanceof \DateTimeInterface
+                ? $attributes['ride_date']->format('Y-m-d')
+                : substr((string) ($attributes['ride_date'] ?? ''), 0, 10),
+            $identity,
+        ]));
     }
 
     /** @return array<string, string> datums (Y-m-d) => nosaukums */
@@ -39,7 +63,7 @@ use Illuminate\Support\Facades\Cache;
                 default => '',
             };
 
-            $dates[$date->toDateString()] = $prefix . ucfirst($date->translatedFormat('l')) . ', ' . $date->format('d.m.Y');
+            $dates[$date->toDateString()] = $prefix.ucfirst($date->translatedFormat('l')).', '.$date->format('d.m.Y');
         }
 
         return $dates;
@@ -53,14 +77,6 @@ use Illuminate\Support\Facades\Cache;
     public static function deleteExpired(): int
     {
         return static::where('ride_date', '<', today()->toDateString())->delete();
-    }
-
-    /** Izpildās vienreiz dienā bez cron/schedule atbalsta. */
-    public static function deleteExpiredOncePerDay(): void
-    {
-        if (Cache::add('riders-pruned-' . today()->toDateString(), true, now()->endOfDay())) {
-            static::deleteExpired();
-        }
     }
 
     public function getArrivalPeriodAttribute(): string
@@ -87,8 +103,6 @@ use Illuminate\Support\Facades\Cache;
 
     public function clubModel()
     {
-        return $this->belongsTo(Club::class, 'club', 'name');
+        return $this->belongsTo(Club::class, 'club_id');
     }
 }
-
-

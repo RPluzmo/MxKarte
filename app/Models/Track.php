@@ -12,10 +12,11 @@ class Track extends Model
         'lat',
         'lng',
         'description',
+        'surface_type',
         'user_id',
     ];
 
-     public function riders()
+    public function riders()
     {
         return $this->hasMany(Rider::class);
     }
@@ -24,12 +25,12 @@ class Track extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
     public function comments()
     {
         return $this->hasMany(TrackComment::class);
     }
-    
+
     public function announcements()
     {
         return $this->hasMany(TrackAnnouncement::class);
@@ -40,10 +41,9 @@ class Track extends Model
         return $this->belongsToMany(User::class, 'user_track_preferences')
             ->withTimestamps();
     }
-    
+
     public function images()
     {
         return $this->hasMany(TrackImage::class)->orderBy('sort_order');
     }
-
 }

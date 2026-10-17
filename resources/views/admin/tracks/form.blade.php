@@ -5,7 +5,7 @@
 
         <x-alerts />
 
-        <form method="POST" action="{{ $track->exists ? route('admin.tracks.update', $track) : route('admin.tracks.store') }}">
+        <form method="POST" enctype="multipart/form-data" action="{{ $track->exists ? route('admin.tracks.update', $track) : route('admin.tracks.store') }}">
             @csrf
             @if ($track->exists)
                 @method('PUT')
@@ -13,9 +13,30 @@
 
             <p><label>Nosaukums<br><input name="name" value="{{ old('name', $track->name) }}" required></label></p>
             <p><label>Slug (URL nosaukums)<br><input name="slug" value="{{ old('slug', $track->slug) }}" required></label></p>
-            <p><label>Platums (latitude)<br><input type="number" name="lat" step="0.00001" min="-90" max="90" value="{{ old('lat', $track->lat) }}" required></label></p>
-            <p><label>Garums (longitude)<br><input type="number" name="lng" step="0.00001" min="-180" max="180" value="{{ old('lng', $track->lng) }}" required></label></p>
+            <p><label>Platums (latitude)<br><input type="number" name="lat" step="0.00001" min="55.6" max="58.1" value="{{ old('lat', $track->lat) }}" required></label></p>
+            <p><label>Garums (longitude)<br><input type="number" name="lng" step="0.00001" min="20.8" max="28.3" value="{{ old('lng', $track->lng) }}" required></label></p>
             <p><label>Apraksts<br><textarea name="description" rows="4">{{ old('description', $track->description) }}</textarea></label></p>
+            <p><label>Segums<br><input name="surface_type" value="{{ old('surface_type', $track->surface_type) }}" maxlength="255"></label></p>
+
+            <p><label>Cover attēls<br><input type="file" name="cover_image" accept="image/*"></label></p>
+            @if ($track->exists && $track->images->firstWhere('type', 'cover'))
+                <img class="track-admin-cover-preview" src="{{ asset('storage/' . $track->images->firstWhere('type', 'cover')->path) }}" alt="{{ $track->name }} cover">
+            @endif
+
+            <fieldset class="track-admin-gallery">
+                <legend>Galerija (maksimums 4 attēli)</legend>
+                @if ($track->exists)
+                    @foreach ($track->images->where('type', 'gallery') as $image)
+                        <label class="track-admin-gallery-item">
+                            <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $track->name }} galerijas attēls">
+                            <span>{{ $image->sort_order }}. attēls</span>
+                            <input type="checkbox" name="remove_gallery_ids[]" value="{{ $image->id }}">
+                            Noņemt
+                        </label>
+                    @endforeach
+                @endif
+                <label>Pievienot attēlus<br><input type="file" name="gallery_images[]" accept="image/*" multiple></label>
+            </fieldset>
 
             <p>
                 <label>Saimnieks<br>
@@ -31,7 +52,7 @@
             </p>
 
             <button type="submit">Saglabāt</button>
-            <a href="{{ route('admin.tracks.index') }}">Atcelt</a>
+            <a class="button button-secondary" href="{{ route('admin.tracks.index') }}">Atcelt</a>
         </form>
     </section></div>
 </x-layout>

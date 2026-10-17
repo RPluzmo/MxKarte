@@ -13,11 +13,11 @@ class Club extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'club_id');
     }
 
     public function riders()
     {
-        return $this->hasMany(Rider::class);
+        return $this->hasMany(Rider::class, 'club_id');
     }
 }

@@ -17,7 +17,7 @@
 
             <p>
                 <button type="submit">Saglabāt un publicēt</button>
-                <a href="{{ route('admin.announcements.index') }}">Atcelt</a>
+                <a class="button button-secondary" href="{{ route('admin.announcements.index') }}">Atcelt</a>
             </p>
         </form>
     </section></div>

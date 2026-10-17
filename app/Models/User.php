@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'surname', 'email', 'password', 'role', 'club', 'category', 'experience_level'])]
+#[Fillable(['name', 'surname', 'email', 'password', 'role', 'club_id', 'category', 'experience_level'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -20,6 +20,11 @@ class User extends Authenticatable
     public function riders()
     {
         return $this->hasMany(Rider::class);
+    }
+
+    public function club()
+    {
+        return $this->belongsTo(Club::class);
     }
 
     public function tracks()
@@ -36,20 +41,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(TrackAnnouncement::class);
     }
-    
+
     public function preferredTracks()
     {
         return $this->belongsToMany(Track::class, 'user_track_preferences')
             ->withTimestamps();
     }
 
-
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-
     protected function casts(): array
     {
         return [
