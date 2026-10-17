@@ -61,21 +61,62 @@
     color: #111827;
 }
 
+.track-map-popup {
+    align-items: stretch;
+    display: flex;
+    gap: 0.875rem;
+    max-width: 27rem;
+    min-width: 17rem;
+}
+
+.track-map-popup--without-cover {
+    min-width: 14rem;
+}
+
 .popup-cover {
     border-radius: var(--radius-sm);
-    height: 7.5rem;
+    flex: 0 0 10rem;
+    height: 8rem;
     object-fit: cover;
-    width: 11.25rem;
+    width: 10rem;
+}
+
+.track-map-popup-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.track-map-popup-details > strong {
+    overflow-wrap: anywhere;
 }
 
 .popup-link {
     display: inline-block;
-    margin-top: 0.375rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
 }
 
 .track-popup-description {
-    margin: 0.25rem 0 0;
+    margin: 0.375rem 0 0;
+    max-height: 5rem;
+    overflow-y: auto;
     white-space: pre-line;
+}
+
+@media (max-width: 480px) {
+    .track-map-popup {
+        gap: 0.5rem;
+        max-width: calc(100vw - 5rem);
+        min-width: 0;
+    }
+
+    .popup-cover {
+        flex-basis: 7rem;
+        height: 6.5rem;
+        width: 7rem;
+    }
 }
 
 .announcement-toolbar {

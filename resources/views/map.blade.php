@@ -218,7 +218,7 @@
         const latviaCenter = [56.8796, 24.6032];
         const latviaBounds = L.latLngBounds(
             [55.6, 20.8],
-            [58.1, 28.3]
+            [59.0, 28.3]
         );
         const map = L.map('map', {
             maxBounds: latviaBounds,
@@ -275,6 +275,9 @@
         const trackMarkers = tracks.map(track => {
             const coverImage = track.images?.[0];
             const popupContent = document.createElement('div');
+            popupContent.className = coverImage
+                ? 'track-map-popup'
+                : 'track-map-popup track-map-popup--without-cover';
 
             if (coverImage) {
                 const image = document.createElement('img');
@@ -284,26 +287,34 @@
                 popupContent.append(image);
             }
 
+            const details = document.createElement('div');
+            details.className = 'track-map-popup-details';
+
             const name = document.createElement('strong');
             name.textContent = track.name;
-            popupContent.append(name, document.createElement('br'));
+            details.append(name);
 
             const description = document.createElement('p');
             description.className = 'track-popup-description';
             description.textContent = track.description ?? '';
-            popupContent.append(description);
+            details.append(description);
 
             const link = document.createElement('a');
             link.className = 'popup-link';
             link.href = `/tracks/${Number(track.id)}`;
             link.textContent = 'Apskatīt';
-            popupContent.append(link);
+            details.append(link);
+            popupContent.append(details);
 
             const marker = L.marker([track.lat, track.lng], {
                 icon: createTrackIcon(track),
             })
                 .addTo(map)
-                .bindPopup(popupContent);
+                .bindPopup(popupContent, {
+                    maxWidth: 460,
+                    minWidth: 280,
+                    autoPanPadding: [16, 16],
+                });
 
             return { track, marker };
         });
