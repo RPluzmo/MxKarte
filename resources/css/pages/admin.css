@@ -39,3 +39,23 @@
     font-weight: 800;
     margin: 0;
 }
+
+.track-location-field {
+    border: 0;
+    margin: 1.25rem 0;
+    padding: 0;
+}
+
+.track-location-field legend {
+    font-weight: 700;
+}
+
+.track-location-hint,
+.track-location-coordinates {
+    color: var(--ink-muted);
+    margin: 0.5rem 0;
+}
+
+.track-location-map {
+    height: clamp(20rem, 50vh, 34rem);
+}

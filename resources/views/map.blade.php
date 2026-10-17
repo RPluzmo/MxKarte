@@ -11,6 +11,9 @@
             crossorigin=""
         />
     @endpush
+    @push('scripts')
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    @endpush
 
     <div class="page-shell">
         @auth
@@ -28,7 +31,7 @@
         @endauth
 
         <div class="map-panel">
-            <div id="map" class="map-canvas"></div>
+            <div id="map" class="map-canvas" data-latvia-map="tracks"></div>
         </div>
 
         @if ($siteAnnouncements->isNotEmpty())
@@ -184,7 +187,9 @@
             </article>
 
             @foreach ($tracks as $track)
-                @php($coverImage = $track->images->first())
+                @php
+                    $coverImage = $track->images->first();
+                @endphp
                 <article class="track-picker-card" data-track-search-option data-track-name="{{ $track->name }}">
                     <button class="track-picker-filter" type="button" data-track-filter data-track-id="{{ $track->id }}" data-track-label="{{ $track->name }}" aria-pressed="{{ $announcementTrackId === $track->id ? 'true' : 'false' }}">
                         @if ($coverImage)
@@ -218,127 +223,5 @@
         <p id="track-picker-empty" hidden>Trases nav atrastas.</p>
     </dialog>
 
-    <!-- Leaflet JS bibliotēka kartes attēlošanau -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        const latviaCenter = [56.8796, 24.6032];
-        const latviaBounds = L.latLngBounds(
-            [55.6, 20.8],
-            [59.0, 28.3]
-        );
-        const map = L.map('map', {
-            maxBounds: latviaBounds,
-            maxBoundsViscosity: 1,
-            minZoom: 7,
-            maxZoom: 18,
-        }).setView(latviaCenter, 7);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        const tracks = @json($tracks);
-        const storageUrl = @json(asset('storage'));
-        const clubTrackIds = @json($clubTrackIds);
-        const clubName = @json($clubName);
-        const clubMarkersToggle = document.getElementById('toggle-club-markers');
-        const colorVisionToggle = document.getElementById('toggle-color-vision')
-        let clubMarkersEnabled = false;
-        let colorVisionMode = localStorage.getItem('mxkarte-color-vision') === 'true';
-
-        function setColorVisionMode(enabled) {
-            colorVisionMode = enabled;
-            document.body.classList.toggle('color-vision-mode', colorVisionMode);
-
-            if (colorVisionToggle) {
-                colorVisionToggle.setAttribute('aria-pressed', String(colorVisionMode));
-                const tooltip = colorVisionMode
-                    ? 'Krāsu pieejamības režīms: ieslēgts'
-                    : 'Krāsu pieejamības režīms: izslēgts';
-                colorVisionToggle.setAttribute('aria-label', tooltip);
-                colorVisionToggle.dataset.tooltip = tooltip;
-            }
-        }
-
-        setColorVisionMode(colorVisionMode);
-
-        colorVisionToggle?.addEventListener('click', () => {
-            setColorVisionMode(!colorVisionMode);
-            localStorage.setItem('mxkarte-color-vision', String(colorVisionMode));
-        });
-
-        const markerSize = 2 * parseFloat(getComputedStyle(document.documentElement).fontSize);
-
-        function createTrackIcon(track, isClubMarker = false) {
-            return L.divIcon({
-                className: '',
-                html: `<span class="track-marker${isClubMarker ? ' club-marker' : ''}">${track.riders_count}</span>`,
-                iconSize: [markerSize, markerSize],
-                iconAnchor: [markerSize / 2, markerSize / 2],
-            });
-        }
-
-        const trackMarkers = tracks.map(track => {
-            const coverImage = track.images?.[0];
-            const popupContent = document.createElement('div');
-            popupContent.className = coverImage
-                ? 'track-map-popup'
-                : 'track-map-popup track-map-popup--without-cover';
-
-            if (coverImage) {
-                const image = document.createElement('img');
-                image.className = 'popup-cover';
-                image.src = `${storageUrl}/${coverImage.path}`;
-                image.alt = track.name;
-                popupContent.append(image);
-            }
-
-            const details = document.createElement('div');
-            details.className = 'track-map-popup-details';
-
-            const name = document.createElement('strong');
-            name.textContent = track.name;
-            details.append(name);
-
-            const description = document.createElement('p');
-            description.className = 'track-popup-description';
-            description.textContent = track.description ?? '';
-            details.append(description);
-
-            const link = document.createElement('a');
-            link.className = 'popup-link';
-            link.href = `/tracks/${Number(track.id)}`;
-            link.textContent = 'Apskatīt';
-            details.append(link);
-            popupContent.append(details);
-
-            const marker = L.marker([track.lat, track.lng], {
-                icon: createTrackIcon(track),
-            })
-                .addTo(map)
-                .bindPopup(popupContent, {
-                    maxWidth: 460,
-                    minWidth: 280,
-                    autoPanPadding: [16, 16],
-                });
-
-            return { track, marker };
-        });
-
-        function updateClubMarkers() {
-            trackMarkers.forEach(({ track, marker }) => {
-                const isClubMarker = clubMarkersEnabled && clubTrackIds.includes(Number(track.id));
-                marker.setIcon(createTrackIcon(track, isClubMarker));
-            });
-        }
-
-        clubMarkersToggle?.addEventListener('click', () => {
-            clubMarkersEnabled = !clubMarkersEnabled;
-            clubMarkersToggle.setAttribute('aria-pressed', String(clubMarkersEnabled));
-            clubMarkersToggle.textContent = clubMarkersEnabled
-                ? 'Noņemt motokluba biedru izcēlumu'
-                : `Izcelt ${clubName} biedru pieteikumus`;
-            updateClubMarkers();
-        });
-    </script>
+    <script id="map-data" type="application/json">{!! \Illuminate\Support\Js::encode($mapData) !!}</script>
 </x-layout>

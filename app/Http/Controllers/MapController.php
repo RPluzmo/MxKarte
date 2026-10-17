@@ -76,10 +76,17 @@ class MapController extends Controller
                 ->all();
         }
 
+        $mapData = [
+            'tracks' => $tracks,
+            'storageUrl' => asset('storage'),
+            'clubTrackIds' => $clubTrackIds,
+            'clubName' => $clubName,
+        ];
+
         return view('map', compact(
             'tracks',
+            'mapData',
             'siteAnnouncements',
-            'clubTrackIds',
             'clubName',
             'announcements',
             'announcementSearch',

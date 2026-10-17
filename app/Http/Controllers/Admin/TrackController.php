@@ -102,6 +102,7 @@ class TrackController extends Controller
 
     private function saveImages(Request $request, Track $track, array $validated): void
     {
+        $trackImageDirectory = "tracks/{$track->slug}";
         $removeIds = $validated['remove_gallery_ids'] ?? [];
         $imagesToRemove = $track->images()
             ->where('type', 'gallery')
@@ -122,7 +123,7 @@ class TrackController extends Controller
         }
 
         if ($cover = $request->file('cover_image')) {
-            $path = $cover->store("tracks/{$track->id}", 'public');
+            $path = $cover->store($trackImageDirectory, 'public');
             $oldCover = $track->images()->where('type', 'cover')->first();
             $track->images()->updateOrCreate(
                 ['type' => 'cover'],
@@ -137,7 +138,7 @@ class TrackController extends Controller
         $usedOrders = $track->images()->where('type', 'gallery')->pluck('sort_order')->all();
         foreach ($newGalleryImages as $image) {
             $sortOrder = collect(range(1, 4))->first(fn (int $order) => ! in_array($order, $usedOrders, true));
-            $path = $image->store("tracks/{$track->id}", 'public');
+            $path = $image->store($trackImageDirectory, 'public');
 
             $track->images()->create([
                 'type' => 'gallery',

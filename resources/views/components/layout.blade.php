@@ -14,6 +14,7 @@
         {{ $slot }}
     </main>
 
+    @stack('scripts')
     @stack('dialogs')
 </body>
 </html>
