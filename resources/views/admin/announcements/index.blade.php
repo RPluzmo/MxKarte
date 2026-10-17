@@ -1,6 +1,6 @@
 <x-layout>
     <div class="page-shell"><section class="panel">
-        <h1>Admin ziņojumi</h1>
+        <h1>Sistēmas ziņojumi</h1>
         @include('admin.partials.nav')
 
         <x-alerts />
@@ -20,7 +20,7 @@
                         <td>{{ $announcement->expires_at?->format('d.m.Y H:i') ?? 'Bez termiņa' }}</td>
                         <td>
                             <a class="button button-secondary" href="{{ route('admin.announcements.edit', $announcement) }}">Rediģēt</a>
-                            <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" class="inline-form" onsubmit="return confirm('Dzēst šo admin ziņojumu?');">
+                            <form method="POST" action="{{ route('admin.announcements.destroy', $announcement) }}" class="inline-form" onsubmit="return confirm('Dzēst šo sistēmas ziņojumu?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit">Dzēst</button>
@@ -29,7 +29,7 @@
                     </tr>
                     <tr><td colspan="5">{{ $announcement->body }}</td></tr>
                 @empty
-                    <tr><td colspan="5">Admin ziņojumu vēl nav.</td></tr>
+                    <tr><td colspan="5">Sistēmas ziņojumu vēl nav.</td></tr>
                 @endforelse
             </tbody>
         </table>

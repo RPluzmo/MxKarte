@@ -39,11 +39,13 @@
                     <p>
                         <label>Vārds<br>
                             <input type="text" name="name" value="{{ old('name') }}" required>
+                            <x-field-error field="name" />
                         </label>
                     </p>
                     <p>
                         <label>Uzvārds<br>
                             <input type="text" name="surname" value="{{ old('surname') }}" required>
+                            <x-field-error field="surname" />
                         </label>
                     </p>
                     <x-choice-picker
@@ -91,11 +93,13 @@
                                     <option value="{{ $date }}" @selected(old('ride_date', array_key_first($rideDates)) === $date)>{{ $label }}</option>
                                 @endforeach
                             </select>
+                            <x-field-error field="ride_date" />
                         </label>
                     </p>
                     <p>
                         <label>Ierašanās laiks<br>
                             <input type="time" name="ride_time" value="{{ old('ride_time') }}" min="06:00" max="23:59" required>
+                            <x-field-error field="ride_time" />
                         </label>
                     </p>
                     <button type="submit">Pieteikties</button>
@@ -121,16 +125,19 @@
                             <p>
                                 <label>Virsraksts<br>
                                     <input type="text" name="title" value="{{ old('title') }}" maxlength="255" required>
+                                    <x-field-error field="title" />
                                 </label>
                             </p>
                             <p>
                                 <label>Ziņojums<br>
                                     <textarea name="body" rows="5" maxlength="5000" required>{{ old('body') }}</textarea>
+                                    <x-field-error field="body" />
                                 </label>
                             </p>
                             <p>
                                 <label>Rādīt līdz<br>
                                     <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}">
+                                    <x-field-error field="expires_at" />
                                 </label><br>
                                 <small>Atstāj tukšu, lai rādītu bez termiņa.</small>
                             </p>
@@ -138,6 +145,7 @@
                                 <input type="checkbox" name="is_pinned" value="1">
                                 Atzīmēt kā svarīgu
                             </label>
+                            <x-field-error field="is_pinned" />
                             <button type="submit">Publicēt</button>
                         </form>
                     @endif
@@ -169,12 +177,16 @@
                                         @csrf
                                         @method('PUT')
                                         <input type="text" name="title" value="{{ $announcement->title }}" maxlength="255" required>
+                                        <x-field-error field="title" />
                                         <textarea name="body" rows="5" maxlength="5000" required>{{ $announcement->body }}</textarea>
+                                        <x-field-error field="body" />
                                         <input type="datetime-local" name="expires_at" value="{{ $announcement->expires_at?->format('Y-m-d\\TH:i') }}">
+                                        <x-field-error field="expires_at" />
                                         <label>
                                             <input type="checkbox" name="is_pinned" value="1" @checked($announcement->is_pinned)>
                                             Svarīgs
                                         </label>
+                                        <x-field-error field="is_pinned" />
                                         <button type="submit">Saglabāt</button>
                                     </form>
                                     <form method="POST" action="{{ route('announcements.destroy', $announcement) }}">
@@ -198,7 +210,9 @@
                     <form method="POST" action="{{ route('comments.store', $track) }}">
                         @csrf
                         <label for="comment-body">Pievienot komentāru</label><br>
-                        <textarea id="comment-body" name="body" rows="4" maxlength="2000" required>{{ old('body') }}</textarea><br>
+                        <textarea id="comment-body" name="body" rows="4" maxlength="2000" required>{{ old('body') }}</textarea>
+                        <x-field-error field="body" />
+                        <br>
                         <button type="submit">Publicēt</button>
                     </form>
                 @else

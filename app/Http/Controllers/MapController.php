@@ -7,11 +7,18 @@ use App\Models\SiteAnnouncement;
 use App\Models\Track;
 use App\Models\TrackAnnouncement;
 use App\Support\RiderChoices;
+use Illuminate\Http\Request;
 
 class MapController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $filters = $request->validate([
+            'announcement_search' => ['nullable', 'string', 'max:255'],
+            'track_id' => ['nullable', 'integer', 'exists:tracks,id'],
+            'prioritize_pinned' => ['sometimes', 'boolean'],
+        ]);
+
         $siteAnnouncements = SiteAnnouncement::active()
             ->orderByDesc('published_at')
             ->limit(5)
@@ -22,9 +29,9 @@ class MapController extends Controller
             ->withCount('riders')
             ->get();
         $announcementQuery = TrackAnnouncement::with('track')->active();
-        $announcementSearch = trim((string) request('announcement_search', ''));
-        $announcementTrackId = request()->integer('track_id') ?: null;
-        $prioritizePinned = request()->boolean('prioritize_pinned');
+        $announcementSearch = trim($filters['announcement_search'] ?? '');
+        $announcementTrackId = isset($filters['track_id']) ? (int) $filters['track_id'] : null;
+        $prioritizePinned = $request->boolean('prioritize_pinned');
 
         if ($announcementSearch !== '') {
             $announcementQuery->where(function ($query) use ($announcementSearch) {

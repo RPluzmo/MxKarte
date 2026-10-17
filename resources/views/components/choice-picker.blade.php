@@ -32,6 +32,7 @@
         </div>
         <button id="open-{{ $key }}-picker" class="button-secondary" type="button">{{ $button }}</button>
     </div>
+    <x-field-error :field="$name" />
 </div>
 
 @push('dialogs')

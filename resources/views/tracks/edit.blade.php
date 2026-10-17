@@ -17,14 +17,17 @@
 
                 <label>Nosaukums
                     <input type="text" name="name" value="{{ old('name', $track->name) }}" required>
+                    <x-field-error field="name" />
                 </label>
 
                 <label>Apraksts
                     <textarea name="description" rows="5">{{ old('description', $track->description) }}</textarea>
+                    <x-field-error field="description" />
                 </label>
 
                 <label>Segums
                     <input name="surface_type" value="{{ old('surface_type', $track->surface_type) }}" maxlength="255">
+                    <x-field-error field="surface_type" />
                 </label>
 
                 <div class="form-actions">

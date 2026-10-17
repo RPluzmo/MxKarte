@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Rules\PersonName;
 use App\Support\RiderChoices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,10 +26,14 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = $request->user();
+        $request->merge([
+            'name' => PersonName::normalize($request->input('name')),
+            'surname' => PersonName::normalize($request->input('surname')),
+        ]);
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', new PersonName(), 'max:255'],
+            'surname' => ['required', 'string', new PersonName(), 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($user->id)],
             'current_password' => [
                 Rule::requiredIf(fn () => $request->input('email') !== $user->email || $request->filled('password')),

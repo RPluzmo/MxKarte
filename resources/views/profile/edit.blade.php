@@ -13,18 +13,22 @@
 
                 <label class="field">Vārds
                     <input name="name" value="{{ old('name', $user->name) }}" autocomplete="given-name" required>
+                    <x-field-error field="name" />
                 </label>
 
                 <label class="field">Uzvārds
                     <input name="surname" value="{{ old('surname', $user->surname ?? '') }}" autocomplete="family-name" required>
+                    <x-field-error field="surname" />
                 </label>
 
                 <label class="field">E-pasts
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" autocomplete="email" required>
+                    <x-field-error field="email" />
                 </label>
 
                 <label class="field">Pašreizējā parole (nepieciešama, mainot e-pastu vai paroli)
                     <input type="password" name="current_password" autocomplete="current-password">
+                    <x-field-error field="current_password" />
                 </label>
 
                 <x-choice-picker
@@ -71,10 +75,12 @@
 
                 <label class="field">Jauna parole
                     <input type="password" name="password" autocomplete="new-password">
+                    <x-field-error field="password" />
                 </label>
 
                 <label class="field">Jauna parole atkārtoti
                     <input type="password" name="password_confirmation" autocomplete="new-password">
+                    <x-field-error field="password_confirmation" />
                 </label>
 
                 <button type="submit">Saglabāt</button>

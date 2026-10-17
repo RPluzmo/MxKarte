@@ -3,9 +3,5 @@
 @endif
 
 @if ($errors->any())
-    <ul class="alert alert-error" role="alert">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+    <p class="alert alert-error" role="alert">Ir kļūda. Lūdzu, pārbaudi norādi pie attiecīgā lauka.</p>
 @endif

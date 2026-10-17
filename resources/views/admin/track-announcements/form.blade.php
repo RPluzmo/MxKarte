@@ -21,12 +21,14 @@
                             </option>
                         @endforeach
                     </select>
+                    <x-field-error field="track_id" />
                 </label>
             </p>
-            <p><label>Virsraksts<br><input name="title" value="{{ old('title', $announcement->title) }}" maxlength="255" required></label></p>
-            <p><label>Ziņojums<br><textarea name="body" rows="6" maxlength="5000" required>{{ old('body', $announcement->body) }}</textarea></label></p>
-            <p><label>Rādīt līdz<br><input type="datetime-local" name="expires_at" value="{{ old('expires_at', $announcement->expires_at?->format('Y-m-d\\TH:i')) }}"></label><br><small>Atstāj tukšu, lai rādītu bez termiņa.</small></p>
+            <p><label>Virsraksts<br><input name="title" value="{{ old('title', $announcement->title) }}" maxlength="255" required><x-field-error field="title" /></label></p>
+            <p><label>Ziņojums<br><textarea name="body" rows="6" maxlength="5000" required>{{ old('body', $announcement->body) }}</textarea><x-field-error field="body" /></label></p>
+            <p><label>Rādīt līdz<br><input type="datetime-local" name="expires_at" value="{{ old('expires_at', $announcement->expires_at?->format('Y-m-d\\TH:i')) }}"><x-field-error field="expires_at" /></label><br><small>Atstāj tukšu, lai rādītu bez termiņa.</small></p>
             <label><input type="checkbox" name="is_pinned" value="1" @checked(old('is_pinned', $announcement->is_pinned))> Atzīmēt kā svarīgu</label>
+            <x-field-error field="is_pinned" />
 
             <p>
                 <button type="submit">Saglabāt</button>

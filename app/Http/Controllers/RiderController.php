@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rider;
 use App\Models\Track;
+use App\Rules\PersonName;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -29,9 +30,14 @@ class RiderController extends Controller
             ]);
         }
 
+        $request->merge([
+            'name' => PersonName::normalize($request->input('name')),
+            'surname' => PersonName::normalize($request->input('surname')),
+        ]);
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', new PersonName(), 'max:255'],
+            'surname' => ['required', 'string', new PersonName(), 'max:255'],
             'club_id' => ['nullable', 'integer', 'exists:clubs,id'],
             'category' => ['required', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'])],
             'experience_level' => ['required', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'])],

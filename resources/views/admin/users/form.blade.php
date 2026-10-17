@@ -11,11 +11,11 @@
                 @method('PUT')
             @endif
 
-            <p><label>Vārds<br><input name="name" value="{{ old('name', $user->name) }}" required></label></p>
-            <p><label>Uzvārds<br><input name="surname" value="{{ old('surname', $user->surname) }}" required></label></p>
-            <p><label>E-pasts<br><input type="email" name="email" value="{{ old('email', $user->email) }}" required></label></p>
+            <p><label>Vārds<br><input name="name" value="{{ old('name', $user->name) }}" required><x-field-error field="name" /></label></p>
+            <p><label>Uzvārds<br><input name="surname" value="{{ old('surname', $user->surname) }}" required><x-field-error field="surname" /></label></p>
+            <p><label>E-pasts<br><input type="email" name="email" value="{{ old('email', $user->email) }}" required><x-field-error field="email" /></label></p>
             @if ($user->exists && auth()->id() === $user->id)
-                <p><label>Pašreizējā parole (nepieciešama, mainot e-pastu vai paroli)<br><input type="password" name="current_password" autocomplete="current-password"></label></p>
+                <p><label>Pašreizējā parole (nepieciešama, mainot e-pastu vai paroli)<br><input type="password" name="current_password" autocomplete="current-password"><x-field-error field="current_password" /></label></p>
             @endif
 
             <p>
@@ -25,6 +25,7 @@
                             <option value="{{ $role }}" @selected(old('role', $user->role ?? 'user') === $role)>{{ $label }}</option>
                         @endforeach
                     </select>
+                    <x-field-error field="role" />
                 </label>
             </p>
 
@@ -36,6 +37,7 @@
                             <option value="{{ $club->id }}" @selected((string) old('club_id', $user->club_id) === (string) $club->id)>{{ $club->name }}</option>
                         @endforeach
                     </select>
+                    <x-field-error field="club_id" />
                 </label>
             </p>
 
@@ -47,6 +49,7 @@
                             <option value="{{ $category }}" @selected(old('category', $user->category) === $category)>{{ $category }}</option>
                         @endforeach
                     </select>
+                    <x-field-error field="category" />
                 </label>
             </p>
 
@@ -58,10 +61,11 @@
                             <option value="{{ $level }}" @selected(old('experience_level', $user->experience_level) === $level)>{{ $level }}</option>
                         @endforeach
                     </select>
+                    <x-field-error field="experience_level" />
                 </label>
             </p>
 
-            <p><label>Parole {{ $user->exists ? '(atstāj tukšu, lai nemainītu)' : '' }}<br><input type="password" name="password" {{ $user->exists ? '' : 'required' }}></label></p>
+            <p><label>Parole {{ $user->exists ? '(atstāj tukšu, lai nemainītu)' : '' }}<br><input type="password" name="password" {{ $user->exists ? '' : 'required' }}><x-field-error field="password" /></label></p>
             <p><label>Parole atkārtoti<br><input type="password" name="password_confirmation" {{ $user->exists ? '' : 'required' }}></label></p>
 
             <button type="submit">Saglabāt</button>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Club;
 use App\Models\User;
+use App\Rules\PersonName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -110,9 +111,14 @@ class UserController extends Controller
 
     private function validateUser(Request $request, ?User $user = null): array
     {
+        $request->merge([
+            'name' => PersonName::normalize($request->input('name')),
+            'surname' => PersonName::normalize($request->input('surname')),
+        ]);
+
         return $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', new PersonName(), 'max:255'],
+            'surname' => ['required', 'string', new PersonName(), 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user?->id)],
             'current_password' => [
                 Rule::requiredIf(fn () => $user?->is($request->user())

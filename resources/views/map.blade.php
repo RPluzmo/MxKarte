@@ -62,9 +62,11 @@
                         id="announcement-search"
                         type="search"
                         name="announcement_search"
+                        maxlength="255"
                         value="{{ $announcementSearch }}"
                         placeholder="Piemēram, slēgta vai lietus"
                     >
+                    <x-field-error field="announcement_search" />
                 </div>
 
                 <div>
@@ -73,6 +75,7 @@
                     <button id="open-track-picker" class="button-secondary" type="button" aria-haspopup="dialog" aria-controls="track-picker-dialog" aria-label="Trase: {{ $tracks->firstWhere('id', $announcementTrackId)?->name ?? 'Visas trases' }}">
                         {{ $tracks->firstWhere('id', $announcementTrackId)?->name ?? 'Visas trases' }}
                     </button>
+                    <x-field-error field="track_id" />
                 </div>
 
                 <div class="inline-checkbox">
@@ -80,6 +83,7 @@
                         <input type="checkbox" name="prioritize_pinned" value="1" @checked($prioritizePinned)>
                         Rādīt svarīgos pirmos
                     </label>
+                    <x-field-error field="prioritize_pinned" />
                 </div>
 
                 <div>
@@ -208,6 +212,8 @@
 
         @auth
             <button class="track-priority-save" type="submit" form="track-preferences-form">Saglabāt prioritātes</button>
+            <x-field-error field="track_ids" />
+            <x-field-error field="track_ids.*" />
         @endauth
         <p id="track-picker-empty" hidden>Trases nav atrastas.</p>
     </dialog>
