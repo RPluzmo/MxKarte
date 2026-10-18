@@ -39,10 +39,11 @@ class Rider extends Model
     {
         $identity = ! empty($attributes['user_id'])
             ? 'user:'.$attributes['user_id']
-            : 'guest:'.mb_strtolower(trim($attributes['name'] ?? '')).':'.mb_strtolower(trim($attributes['surname'] ?? ''));
+            : (! empty($attributes['guest_key'])
+                ? 'guest-session:'.$attributes['guest_key']
+                : 'guest:'.mb_strtolower(trim($attributes['name'] ?? '')).':'.mb_strtolower(trim($attributes['surname'] ?? '')));
 
         return hash('sha256', implode('|', [
-            $attributes['track_id'] ?? '',
             $attributes['ride_date'] instanceof \DateTimeInterface
                 ? $attributes['ride_date']->format('Y-m-d')
                 : substr((string) ($attributes['ride_date'] ?? ''), 0, 10),

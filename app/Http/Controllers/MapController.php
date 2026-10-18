@@ -118,10 +118,33 @@ class MapController extends Controller
             ->latest()
             ->paginate(25, ['*'], 'comments_page')
             ->withQueryString();
+        $guestRiderIds = array_map('intval', session('guest_rider_ids', []));
+        $userId = auth()->id();
+        $myRiders = $track->riders()
+            ->upcoming()
+            ->where(function ($query) use ($userId, $guestRiderIds) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                }
+
+                if ($guestRiderIds !== []) {
+                    $query->orWhere(fn ($guestQuery) => $guestQuery
+                        ->whereNull('user_id')
+                        ->whereIn('id', $guestRiderIds));
+                }
+
+                if (! $userId && $guestRiderIds === []) {
+                    $query->whereRaw('1 = 0');
+                }
+            })
+            ->orderBy('ride_date')
+            ->orderBy('ride_time')
+            ->get();
 
         return view('tracks.show', [
             'track' => $track,
             'riders' => $riders,
+            'myRiders' => $myRiders,
             'comments' => $comments,
             'clubs' => RiderChoices::clubs(),
             'categories' => RiderChoices::categories(),

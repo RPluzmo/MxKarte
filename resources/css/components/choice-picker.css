@@ -26,8 +26,8 @@
 .choice-dialog {
     background: var(--surface);
     background-image: var(--surface-checker);
-    background-position: 0 0, 6rem 6rem;
-    background-size: 12rem 12rem;
+    background-position: 0 0, 4.5rem 4.5rem;
+    background-size: 9rem 9rem;
     border: 0;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -70,8 +70,8 @@
     align-items: center;
     background: var(--surface);
     background-image: var(--surface-checker);
-    background-position: 0 0, 6rem 6rem;
-    background-size: 12rem 12rem;
+    background-position: 0 0, 4.5rem 4.5rem;
+    background-size: 9rem 9rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--ink);

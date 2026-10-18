@@ -20,7 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [MapController::class, 'index'])->name('home');
 
 Route::get('/tracks/{track}', [MapController::class, 'show'])->name('tracks.show');
-Route::post('/tracks/{track}', [RiderController::class, 'store'])->name('riders.store');
+Route::post('/tracks/{track}', [RiderController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('riders.store');
+Route::delete('/riders/{rider}', [RiderController::class, 'destroy'])->name('riders.destroy');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');

@@ -39,7 +39,20 @@ class RiderSeeder extends Seeder
                     ? $faker->randomElement($clubs)
                     : null;
 
-                $rideDate = $faker->randomElement(array_keys(Rider::bookableDates()));
+                $availableDates = array_values(array_filter(
+                    array_keys(Rider::bookableDates()),
+                    fn ($date) => ! Rider::where('registration_key', Rider::registrationKeyFor([
+                        'ride_date' => $date,
+                        'name' => $name,
+                        'surname' => $surname,
+                    ]))->exists()
+                ));
+
+                if ($availableDates === []) {
+                    continue;
+                }
+
+                $rideDate = $faker->randomElement($availableDates);
 
                 $track->riders()->firstOrCreate(
                     [

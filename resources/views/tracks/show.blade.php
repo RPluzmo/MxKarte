@@ -104,6 +104,29 @@
                     </p>
                     <button type="submit">Pieteikties</button>
                 </form>
+
+                @if ($riderConflict = session('rider_conflict'))
+                    <div class="alert alert-error" role="alert">
+                        <p>Datumā {{ $riderConflict['ride_date_label'] }} jums jau ir pieteikums trasē <strong>{{ $riderConflict['track_name'] }}</strong> plkst. {{ $riderConflict['ride_time'] }}.</p>
+                        <p>Vai vēlaties to aizstāt ar pieteikumu trasei <strong>{{ $track->name }}</strong>?</p>
+                        <form method="POST" action="{{ route('riders.store', $track) }}">
+                            @csrf
+                            @guest
+                                <input type="hidden" name="name" value="{{ old('name') }}">
+                                <input type="hidden" name="surname" value="{{ old('surname') }}">
+                                <input type="hidden" name="club_id" value="{{ old('club_id') }}">
+                                <input type="hidden" name="category" value="{{ old('category') }}">
+                                <input type="hidden" name="experience_level" value="{{ old('experience_level') }}">
+                            @endguest
+                            <input type="hidden" name="ride_date" value="{{ old('ride_date', $riderConflict['ride_date']) }}">
+                            <input type="hidden" name="ride_time" value="{{ old('ride_time') }}">
+                            <div class="form-actions">
+                                <button type="submit" name="replace_existing" value="1">Jā, aizstāt pieteikumu</button>
+                                <a class="button button-light" href="{{ route('tracks.show', $track) }}">Atstāt esošo</a>
+                            </div>
+                        </form>
+                    </div>
+                @endif
             </section>
 
             <section class="track-panel">
@@ -112,6 +135,25 @@
                 <p><strong>Segums:</strong> {{ $track->surface_type ?? 'Nav norādīts' }}</p>
             </section>
         </div>
+
+        @if ($myRiders->isNotEmpty())
+            <section class="track-panel">
+                <h2>Mani pieteikumi</h2>
+                @foreach ($myRiders as $myRider)
+                    <div class="form-actions">
+                        <p>
+                            <strong>{{ $rideDates[$myRider->ride_date->toDateString()] ?? $myRider->ride_date->format('d.m.Y') }}</strong>
+                            · plkst. {{ substr($myRider->ride_time, 0, 5) }}
+                        </p>
+                        <form method="POST" action="{{ route('riders.destroy', $myRider) }}" onsubmit="return confirm('Vai tiešām vēlies atsaukt šo pieteikumu?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">Atsaukt pieteikumu</button>
+                        </form>
+                    </div>
+                @endforeach
+            </section>
+        @endif
 
         <div class="track-grid">
             <section class="track-panel">
