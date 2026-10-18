@@ -3,7 +3,7 @@
 
     <div class="page-shell page-shell-narrow">
         <div class="page-actions">
-            <a class="button button-ghost" href="{{ route('tracks.show', $track) }}">&larr; Atpakaļ uz trasi</a>
+            <a class="button button-ghost" href="{{ route('tracks.show', $track) }}">Atpakaļ uz trasi</a>
         </div>
 
         <section class="panel">

@@ -25,6 +25,9 @@
 
 .choice-dialog {
     background: var(--surface);
+    background-image: var(--surface-checker);
+    background-position: 0 0, 6rem 6rem;
+    background-size: 12rem 12rem;
     border: 0;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -66,6 +69,9 @@
 .choice-option {
     align-items: center;
     background: var(--surface);
+    background-image: var(--surface-checker);
+    background-position: 0 0, 6rem 6rem;
+    background-size: 12rem 12rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--ink);
@@ -98,6 +104,10 @@
     justify-content: center;
     object-fit: contain;
     width: 100%;
+}
+
+.choice-option[hidden] {
+    display: none;
 }
 
 .choice-option-label {

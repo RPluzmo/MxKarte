@@ -29,6 +29,9 @@ if (tracksMapElement) {
     );
     const clubMarkersToggle = document.getElementById('toggle-club-markers');
     const colorVisionToggle = document.getElementById('toggle-color-vision');
+    const trackSearchInput = document.getElementById('map-track-search');
+    const trackSearchResults = document.getElementById('map-track-search-results');
+    const trackSearchEmpty = document.getElementById('map-track-search-empty');
     let clubMarkersEnabled = false;
     let colorVisionMode = localStorage.getItem('mxkarte-color-vision') === 'true';
 
@@ -109,6 +112,45 @@ if (tracksMapElement) {
             });
 
         return { track, marker };
+    });
+
+    trackSearchInput?.addEventListener('input', () => {
+        const search = trackSearchInput.value.toLocaleLowerCase('lv').trim();
+        trackSearchResults.replaceChildren();
+
+        if (!search) {
+            trackSearchResults.hidden = true;
+            trackSearchEmpty.hidden = true;
+            trackSearchInput.setAttribute('aria-expanded', 'false');
+
+            return;
+        }
+
+        const matches = trackMarkers
+            .filter(({ track }) => track.name.toLocaleLowerCase('lv').includes(search))
+            .slice(0, 8);
+
+        matches.forEach(({ track, marker }) => {
+            const item = document.createElement('li');
+            const button = document.createElement('button');
+            button.className = 'map-track-search-result';
+            button.type = 'button';
+            button.textContent = track.name;
+            button.addEventListener('click', () => {
+                trackSearchInput.value = track.name;
+                trackSearchResults.hidden = true;
+                trackSearchEmpty.hidden = true;
+                trackSearchInput.setAttribute('aria-expanded', 'false');
+                map.flyTo([track.lat, track.lng], Math.max(map.getZoom(), 13));
+                marker.openPopup();
+            });
+            item.append(button);
+            trackSearchResults.append(item);
+        });
+
+        trackSearchResults.hidden = matches.length === 0;
+        trackSearchEmpty.hidden = matches.length > 0;
+        trackSearchInput.setAttribute('aria-expanded', String(matches.length > 0));
     });
 
     function updateClubMarkers() {

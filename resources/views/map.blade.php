@@ -31,6 +31,18 @@
         @endauth
 
         <div class="map-panel">
+            <div class="map-track-search">
+                <input
+                    id="map-track-search"
+                    type="search"
+                    autocomplete="off"
+                    aria-controls="map-track-search-results"
+                    aria-expanded="false"
+                    placeholder="Meklēt trasi"
+                >
+                <ul id="map-track-search-results" class="map-track-search-results" aria-label="Trašu meklēšanas rezultāti" hidden></ul>
+                <p id="map-track-search-empty" class="map-track-search-empty" role="status" hidden>Trase ar šādu nosaukumu nav atrasta.</p>
+            </div>
             <div id="map" class="map-canvas" data-latvia-map="tracks"></div>
         </div>
 

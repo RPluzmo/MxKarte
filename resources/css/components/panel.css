@@ -27,6 +27,9 @@
 .announcements-panel,
 .track-panel {
     background: var(--surface);
+    background-image: var(--surface-checker);
+    background-position: 0 0, 6rem 6rem;
+    background-size: 12rem 12rem;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -111,5 +114,18 @@ tbody tr:last-child > th {
     .announcements-panel,
     .track-panel {
         padding: 1rem;
+    }
+
+    .page-actions {
+        align-items: stretch;
+    }
+
+    .page-actions > * {
+        max-width: 100%;
+    }
+
+    .table-scroll,
+    .panel {
+        -webkit-overflow-scrolling: touch;
     }
 }

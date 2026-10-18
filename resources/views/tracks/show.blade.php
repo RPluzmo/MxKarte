@@ -1,7 +1,7 @@
 <x-layout>
     <div class="page-shell">
         <div class="page-actions">
-            <a class="button button-ghost" href="{{ route('home') }}">&larr; Atpakaļ uz karti</a>
+            <a class="button button-ghost" href="{{ route('home') }}">Atpakaļ uz karti</a>
 
             @auth
                 @if ($track->user_id === auth()->id())
