@@ -9,7 +9,7 @@
         <section class="panel">
             <h1>Rediģēt trasi</h1>
 
-            <form class="stack-form" method="POST" action="{{ route('tracks.update', $track) }}">
+            <form class="stack-form" method="POST" enctype="multipart/form-data" action="{{ route('tracks.update', $track) }}">
                 @csrf
                 @method('PUT')
 
@@ -29,6 +29,8 @@
                     <input name="surface_type" value="{{ old('surface_type', $track->surface_type) }}" maxlength="255">
                     <x-field-error field="surface_type" />
                 </label>
+
+                @include('tracks.partials.image-manager', ['track' => $track])
 
                 <div class="form-actions">
                     <button type="submit">Saglabāt izmaiņas</button>

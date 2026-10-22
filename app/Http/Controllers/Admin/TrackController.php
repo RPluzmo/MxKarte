@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Track;
 use App\Models\User;
+use App\Support\TrackImageManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class TrackController extends Controller
 {
@@ -34,7 +35,14 @@ class TrackController extends Controller
         $validated['slug'] = Str::slug($validated['slug']);
 
         $track = Track::create($this->trackAttributes($validated));
-        $this->saveImages($request, $track, $validated);
+
+        try {
+            app(TrackImageManager::class)->sync($track, $request, $validated);
+        } catch (Throwable $exception) {
+            $track->delete();
+
+            throw $exception;
+        }
 
         return redirect()->route('admin.tracks.index')->with('status', 'Trase izveidota.');
     }
@@ -51,9 +59,12 @@ class TrackController extends Controller
     {
         $validated = $this->validateTrack($request, $track);
         $validated['slug'] = Str::slug($validated['slug']);
-        $this->assertGalleryCapacity($track, $validated);
-        $track->update($this->trackAttributes($validated));
-        $this->saveImages($request, $track, $validated);
+        app(TrackImageManager::class)->sync(
+            $track,
+            $request,
+            $validated,
+            $this->trackAttributes($validated)
+        );
 
         return redirect()->route('admin.tracks.index')->with('status', 'Trase atjaunota.');
     }
@@ -86,6 +97,7 @@ class TrackController extends Controller
             'surface_type' => ['nullable', 'string', 'max:255'],
             'user_id' => ['nullable', 'integer', $ownerRule],
             'cover_image' => ['nullable', 'image', 'max:5120'],
+            'remove_cover' => ['nullable', 'boolean'],
             'gallery_images' => ['nullable', 'array', 'max:4'],
             'gallery_images.*' => ['image', 'max:5120'],
             'remove_gallery_ids' => ['nullable', 'array'],
@@ -100,69 +112,4 @@ class TrackController extends Controller
         ]));
     }
 
-    private function saveImages(Request $request, Track $track, array $validated): void
-    {
-        $trackImageDirectory = "tracks/{$track->slug}";
-        $removeIds = $validated['remove_gallery_ids'] ?? [];
-        $imagesToRemove = $track->images()
-            ->where('type', 'gallery')
-            ->whereIn('id', $removeIds)
-            ->get();
-        $remainingGalleryCount = $track->images()->where('type', 'gallery')->count() - $imagesToRemove->count();
-        $newGalleryImages = $request->file('gallery_images', []);
-
-        if ($remainingGalleryCount + count($newGalleryImages) > 4) {
-            throw ValidationException::withMessages([
-                'gallery_images' => 'Galerijā drīkst būt ne vairāk kā četri attēli.',
-            ]);
-        }
-
-        Storage::disk('public')->delete($imagesToRemove->pluck('path')->all());
-        foreach ($imagesToRemove as $image) {
-            $image->delete();
-        }
-
-        if ($cover = $request->file('cover_image')) {
-            $path = $cover->store($trackImageDirectory, 'public');
-            $oldCover = $track->images()->where('type', 'cover')->first();
-            $track->images()->updateOrCreate(
-                ['type' => 'cover'],
-                ['path' => $path, 'sort_order' => 0]
-            );
-
-            if ($oldCover && $oldCover->path !== $path) {
-                Storage::disk('public')->delete($oldCover->path);
-            }
-        }
-
-        $usedOrders = $track->images()->where('type', 'gallery')->pluck('sort_order')->all();
-        foreach ($newGalleryImages as $image) {
-            $sortOrder = collect(range(1, 4))->first(fn (int $order) => ! in_array($order, $usedOrders, true));
-            $path = $image->store($trackImageDirectory, 'public');
-
-            $track->images()->create([
-                'type' => 'gallery',
-                'path' => $path,
-                'sort_order' => $sortOrder,
-            ]);
-            $usedOrders[] = $sortOrder;
-        }
-    }
-
-    private function assertGalleryCapacity(Track $track, array $validated): void
-    {
-        $removeIds = $validated['remove_gallery_ids'] ?? [];
-        $removedCount = $track->images()
-            ->where('type', 'gallery')
-            ->whereIn('id', $removeIds)
-            ->count();
-        $remainingCount = $track->images()->where('type', 'gallery')->count() - $removedCount;
-        $newCount = count($validated['gallery_images'] ?? []);
-
-        if ($remainingCount + $newCount > 4) {
-            throw ValidationException::withMessages([
-                'gallery_images' => 'Galerijā drīkst būt ne vairāk kā četri attēli.',
-            ]);
-        }
-    }
 }

@@ -4,7 +4,7 @@
             <a class="button button-ghost" href="{{ route('home') }}">Atpakaļ uz karti</a>
 
             @auth
-                @if ($track->user_id === auth()->id())
+                @if (auth()->user()->role === 'owner' && $track->user_id === auth()->id())
                     <a class="button button-light" href="{{ route('tracks.edit', $track) }}">Rediģēt trasi</a>
                 @endif
             @endauth
@@ -160,7 +160,7 @@
                 <h2>Trases paziņojumi</h2>
 
                 @auth
-                    @if ($track->user_id === auth()->id())
+                    @if (auth()->user()->role === 'owner' && $track->user_id === auth()->id())
                         <h3>Publicēt paziņojumu</h3>
                         <form method="POST" action="{{ route('announcements.store', $track) }}">
                             @csrf
@@ -212,7 +212,7 @@
                         </small>
 
                         @auth
-                            @if ($track->user_id === auth()->id())
+                            @if (auth()->user()->role === 'owner' && $track->user_id === auth()->id())
                                 <details>
                                     <summary>Rediģēt</summary>
                                     <form method="POST" action="{{ route('announcements.update', $announcement) }}">
@@ -268,7 +268,7 @@
                         <p>{{ $comment->body }}</p>
 
                         @auth
-                            @if ($comment->user_id === auth()->id() || $track->user_id === auth()->id() || auth()->user()->role === 'admin')
+                            @if ($comment->user_id === auth()->id() || (auth()->user()->role === 'owner' && $track->user_id === auth()->id()) || auth()->user()->role === 'admin')
                                 <form method="POST" action="{{ route('comments.destroy', $comment) }}">
                                     @csrf
                                     @method('DELETE')

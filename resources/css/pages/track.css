@@ -50,6 +50,197 @@
     width: 100%;
 }
 
+.track-image-manager {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin: 0;
+    min-width: 0;
+    padding: 1rem;
+}
+
+.track-image-manager legend {
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0 0.4rem;
+}
+
+.track-image-manager-hint,
+.track-upload-selection {
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0.75rem;
+}
+
+.track-upload-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.track-upload-field {
+    min-width: 0;
+}
+
+.track-upload-card {
+    align-items: center;
+    background: linear-gradient(135deg, var(--surface), var(--red-100));
+    border: 1px dashed var(--red-600);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 9rem;
+    overflow: hidden;
+    padding: 1rem;
+    position: relative;
+    text-align: center;
+    transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.track-upload-card:hover,
+.track-upload-card:focus-within {
+    background: var(--red-100);
+    border-color: var(--red-800);
+    box-shadow: 0 0 0 3px rgb(143 27 40 / 12%);
+}
+
+.track-upload-card:focus-within {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.track-upload-icon {
+    align-items: center;
+    background: var(--red-700);
+    border-radius: 50%;
+    color: #ffffff;
+    display: inline-flex;
+    font-size: 1.5rem;
+    height: 2.5rem;
+    justify-content: center;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    width: 2.5rem;
+}
+
+.track-upload-title {
+    color: var(--red-800);
+    font-weight: 700;
+}
+
+.track-upload-hint {
+    color: var(--ink-muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.track-upload-input {
+    cursor: pointer;
+    height: 100%;
+    inset: 0;
+    opacity: 0;
+    padding: 0 !important;
+    position: absolute;
+    width: 100%;
+}
+
+.track-upload-selection {
+    overflow-wrap: anywhere;
+}
+
+.track-upload-preview {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+}
+
+.track-upload-preview:empty {
+    display: none;
+}
+
+.track-upload-preview figure {
+    margin: 0;
+    min-width: 0;
+}
+
+.track-upload-preview img {
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: block;
+    object-fit: cover;
+    width: 100%;
+}
+
+.track-upload-preview figcaption {
+    color: var(--ink-muted);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.track-current-cover {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.track-current-cover > img {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    width: min(100%, 34rem);
+}
+
+.track-remove-image,
+.track-edit-gallery-label {
+    align-items: center;
+    display: flex;
+    font-size: 0.875rem;
+    gap: 0.375rem;
+}
+
+.track-remove-image {
+    justify-content: center;
+    text-align: center;
+}
+
+.track-edit-gallery {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    margin-top: 1rem;
+}
+
+.track-edit-gallery-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.track-edit-gallery-item > img {
+    aspect-ratio: 4 / 3;
+    display: block;
+    object-fit: cover;
+    width: 100%;
+}
+
+.track-edit-gallery-label {
+    background: var(--surface);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .track-upload-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .track-image-viewer {
     align-items: center;
     background: rgb(20 12 13 / 96%);

@@ -49,30 +49,7 @@
             <p><label>Apraksts<br><textarea name="description" rows="4">{{ old('description', $track->description) }}</textarea><x-field-error field="description" /></label></p>
             <p><label>Segums<br><input name="surface_type" value="{{ old('surface_type', $track->surface_type) }}" maxlength="255"><x-field-error field="surface_type" /></label></p>
 
-            <p><label>Cover attēls<br><input type="file" name="cover_image" accept="image/*"><x-field-error field="cover_image" /></label></p>
-            @if ($track->exists && $track->images->firstWhere('type', 'cover'))
-                <img class="track-admin-cover-preview" src="{{ asset('storage/' . $track->images->firstWhere('type', 'cover')->path) }}" alt="{{ $track->name }} cover">
-            @endif
-
-            <fieldset class="track-admin-gallery">
-                <legend>Galerija, maksimums 4 attēli</legend>
-                @if ($track->exists)
-                    @foreach ($track->images->where('type', 'gallery') as $image)
-                        <label class="track-admin-gallery-item">
-                            <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $track->name }} galerijas attēls">
-                            <span>{{ $image->sort_order }}. attēls</span>
-                            <input type="checkbox" name="remove_gallery_ids[]" value="{{ $image->id }}">
-                            Noņemt
-                        </label>
-                        <x-field-error :field="'remove_gallery_ids.' . $loop->index" />
-                    @endforeach
-                @endif
-                <label>Pievienot attēlus<br><input type="file" name="gallery_images[]" accept="image/*" multiple></label>
-                <x-field-error field="gallery_images" />
-                <x-field-error field="gallery_images.*" />
-                <x-field-error field="remove_gallery_ids" />
-                <x-field-error field="remove_gallery_ids.*" />
-            </fieldset>
+            @include('tracks.partials.image-manager', ['track' => $track])
 
             <p>
                 <label>Saimnieks<br>
