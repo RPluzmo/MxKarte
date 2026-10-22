@@ -7,10 +7,9 @@ use App\Models\Track;
 use App\Models\User;
 use App\Support\TrackImageManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class TrackController extends Controller
 {
@@ -34,15 +33,10 @@ class TrackController extends Controller
         $validated = $this->validateTrack($request);
         $validated['slug'] = Str::slug($validated['slug']);
 
-        $track = Track::create($this->trackAttributes($validated));
-
-        try {
+        DB::transaction(function () use ($validated, $request): void {
+            $track = Track::create($this->trackAttributes($validated));
             app(TrackImageManager::class)->sync($track, $request, $validated);
-        } catch (Throwable $exception) {
-            $track->delete();
-
-            throw $exception;
-        }
+        });
 
         return redirect()->route('admin.tracks.index')->with('status', 'Trase izveidota.');
     }
@@ -71,9 +65,7 @@ class TrackController extends Controller
 
     public function destroy(Track $track)
     {
-        $paths = $track->images()->pluck('path')->all();
-        $track->delete();
-        Storage::disk('public')->delete($paths);
+        app(TrackImageManager::class)->deleteTrack($track);
 
         return redirect()->route('admin.tracks.index')->with('status', 'Trase izdzēsta.');
     }

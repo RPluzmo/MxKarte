@@ -6,6 +6,7 @@ use App\Models\Track;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -14,7 +15,6 @@ class TrackImageManager
 {
     public function sync(Track $track, Request $request, array $validated, array $attributes = []): void
     {
-        $disk = Storage::disk('public');
         $stagedPaths = [];
         $coverPath = null;
         $galleryPaths = [];
@@ -107,16 +107,28 @@ class TrackImageManager
                 return array_values(array_unique($pathsToDelete));
             });
         } catch (Throwable $exception) {
-            if ($stagedPaths !== []) {
-                $disk->delete($stagedPaths);
-            }
+            $this->deleteFiles($stagedPaths);
 
             throw $exception;
         }
 
-        if ($pathsToDelete !== []) {
-            $disk->delete($pathsToDelete);
-        }
+        $this->deleteFiles($pathsToDelete);
+    }
+
+    public function deleteTrack(Track $track): void
+    {
+        $pathsToDelete = DB::transaction(function () use ($track): array {
+            $lockedTrack = Track::query()
+                ->whereKey($track->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+            $paths = $lockedTrack->images()->pluck('path')->all();
+            $lockedTrack->delete();
+
+            return $paths;
+        });
+
+        $this->deleteFiles($pathsToDelete);
     }
 
     private function store(UploadedFile $image, string $directory, string $field): string
@@ -130,5 +142,27 @@ class TrackImageManager
         }
 
         return $path;
+    }
+
+    private function deleteFiles(array $paths): void
+    {
+        if ($paths === []) {
+            return;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (array_unique($paths) as $path) {
+            try {
+                if (! $disk->delete($path)) {
+                    Log::warning('Neizdevās izdzēst trases attēla failu.', ['path' => $path]);
+                }
+            } catch (Throwable $exception) {
+                Log::warning('Neizdevās izdzēst trases attēla failu.', [
+                    'path' => $path,
+                    'exception' => $exception->getMessage(),
+                ]);
+            }
+        }
     }
 }
