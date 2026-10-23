@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Trases</x-slot:title>
     <div class="page-shell"><section class="panel">
         <h1>Trases</h1>
         @include('admin.partials.nav')

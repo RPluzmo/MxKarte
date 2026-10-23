@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>{{ $track->name }}</x-slot:title>
     <div class="page-shell">
         <div class="page-actions">
             <a class="button button-ghost" href="{{ route('home') }}">Atpakaļ uz karti</a>

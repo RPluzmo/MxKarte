@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Sistēmas ziņojumi</x-slot:title>
     <div class="page-shell"><section class="panel">
         <h1>Sistēmas ziņojumi</h1>
         @include('admin.partials.nav')

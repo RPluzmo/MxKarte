@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>{{ $announcement->exists ? 'Rediģēt admin ziņojumu' : 'Publicēt admin ziņojumu' }}</x-slot:title>
     <div class="page-shell page-shell-narrow"><section class="panel">
         <h1>{{ $announcement->exists ? 'Rediģēt admin ziņojumu' : 'Publicēt admin ziņojumu' }}</h1>
         @include('admin.partials.nav')

@@ -128,3 +128,31 @@ button:disabled {
     flex-direction: column;
     gap: 1rem;
 }
+
+.password-input-group {
+    align-items: stretch;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.password-input-group input {
+    flex: 1;
+    min-width: 0;
+}
+
+.password-visibility-toggle {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+    padding-inline: 0.75rem;
+}
+
+@media (max-width: 420px) {
+    .password-input-group {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .password-visibility-toggle {
+        margin-top: 0;
+    }
+}

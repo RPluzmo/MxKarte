@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot:title>
-        MxKarte
+        Karte
     </x-slot:title>
 
     @push('styles')

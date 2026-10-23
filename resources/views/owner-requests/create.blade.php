@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Pieteikties trases saimnieka piekļuvei</x-slot:title>
     <div class="page-shell page-shell-narrow"><section class="panel">
         <h1>Pieteikties trases saimnieka piekļuvei</h1>
         <x-alerts />

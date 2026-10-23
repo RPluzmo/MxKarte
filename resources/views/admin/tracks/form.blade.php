@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>{{ $track->exists ? 'Rediģēt trasi' : 'Izveidot trasi' }}</x-slot:title>
     @push('styles')
         <link
             rel="stylesheet"

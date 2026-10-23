@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>{{ $title }}</x-slot:title>
     <div class="page-shell page-shell-narrow">
         <section class="panel error-page">
             <p class="error-page-code">{{ $status }}</p>

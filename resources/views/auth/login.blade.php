@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Ienākt</x-slot:title>
     <div class="page-shell page-shell-narrow">
     <section class="panel">
     <h1>Ienākt</h1>
@@ -14,7 +15,12 @@
         </label>
 
         <label>Parole
-            <input type="password" name="password" autocomplete="current-password" required>
+            <span class="password-input-group">
+                <input type="password" name="password" autocomplete="current-password" required data-password-visibility-input>
+                <button class="button-secondary password-visibility-toggle" type="button" data-password-visibility-toggle aria-pressed="false">
+                    Rādīt paroli
+                </button>
+            </span>
             <x-field-error field="password" />
         </label>
 

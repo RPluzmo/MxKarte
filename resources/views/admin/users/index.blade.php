@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Lietotāji</x-slot:title>
     <div class="page-shell"><section class="panel">
         <h1>Lietotāji</h1>
         @include('admin.partials.nav')

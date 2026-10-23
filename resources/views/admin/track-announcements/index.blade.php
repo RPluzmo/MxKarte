@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Trases paziņojumi</x-slot:title>
     <div class="page-shell"><section class="panel">
         <h1>Trases paziņojumi</h1>
         @include('admin.partials.nav')

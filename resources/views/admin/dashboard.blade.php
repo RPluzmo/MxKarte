@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Administratora panelis</x-slot:title>
     <div class="page-shell">
         <section class="panel">
         <h1>Administratora panelis</h1>
