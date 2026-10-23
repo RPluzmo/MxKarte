@@ -21,7 +21,8 @@
             <p>
                 <label>Loma<br>
                     <select name="role" required>
-                        @foreach (['user' => 'Lietotājs', 'owner' => 'Trases saimnieks', 'admin' => 'Administrators'] as $role => $label)
+                        @foreach (['user' => 'Lietotājs', 'owner' => ($user->role ?? null) === 'owner' ? 'Trases saimnieks' : null, 'admin' => 'Administrators'] as $role => $label)
+                            @continue($label === null)
                             <option value="{{ $role }}" @selected(old('role', $user->role ?? 'user') === $role)>{{ $label }}</option>
                         @endforeach
                     </select>
@@ -65,7 +66,7 @@
                 </label>
             </p>
 
-            <p><label>Parole {{ $user->exists ? '(atstāj tukšu, lai nemainītu)' : '' }}<br><input type="password" name="password" {{ $user->exists ? '' : 'required' }}><x-field-error field="password" /></label></p>
+            <p><label>Parole {{ $user->exists ? '(atstāj tukšu, lai nemainītu)' : '' }}<br><input type="password" name="password" {{ $user->exists ? '' : 'required' }}><small>Vismaz 9 rakstzīmes, tajā skaitā burti, cipari un īpašais simbols.</small><x-field-error field="password" /></label></p>
             <p><label>Parole atkārtoti<br><input type="password" name="password_confirmation" {{ $user->exists ? '' : 'required' }}></label></p>
 
             <button type="submit">Saglabāt</button>

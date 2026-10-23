@@ -57,7 +57,7 @@
                         <option value="">Nav piešķirts</option>
                         @foreach ($owners as $owner)
                             <option value="{{ $owner->id }}" @selected((string) old('user_id', $track->user_id) === (string) $owner->id)>
-                                {{ $owner->name }} {{ $owner->surname }} ({{ $owner->role }})
+                                {{ $owner->name }} {{ $owner->surname }}
                             </option>
                         @endforeach
                     </select>

@@ -75,6 +75,7 @@
 
                 <label class="field">Jauna parole
                     <input type="password" name="password" autocomplete="new-password">
+                    <small>Vismaz 9 rakstzīmes, tajā skaitā burti, cipari un īpašais simbols.</small>
                     <x-field-error field="password" />
                 </label>
 

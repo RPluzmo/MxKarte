@@ -11,6 +11,7 @@ use App\Policies\TrackPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(fn () => Password::min(9)->letters()->numbers()->symbols());
+
         Paginator::defaultView('pagination.default');
         Gate::policy(Track::class, TrackPolicy::class);
         Gate::policy(TrackAnnouncement::class, TrackAnnouncementPolicy::class);

@@ -24,7 +24,7 @@ class TrackController extends Controller
     {
         return view('admin.tracks.form', [
             'track' => new Track,
-            'owners' => User::whereIn('role', ['owner', 'admin'])->orderBy('name')->get(),
+            'owners' => User::where('role', 'owner')->orderBy('name')->get(),
         ]);
     }
 
@@ -45,7 +45,7 @@ class TrackController extends Controller
     {
         return view('admin.tracks.form', [
             'track' => $track,
-            'owners' => User::whereIn('role', ['owner', 'admin'])->orderBy('name')->get(),
+            'owners' => User::where('role', 'owner')->orderBy('name')->get(),
         ]);
     }
 
@@ -77,7 +77,7 @@ class TrackController extends Controller
         ]);
 
         $ownerRule = Rule::exists('users', 'id')->where(function ($query) {
-            $query->whereIn('role', ['owner', 'admin']);
+            $query->where('role', 'owner');
         });
 
         return $request->validate([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Club;
+use App\Models\Track;
 use App\Models\User;
 use App\Rules\PersonName;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -66,6 +68,22 @@ class UserController extends Controller
                 && $validated['role'] !== 'admin'
                 && $admins->count() <= 1) {
                 abort(422, 'Sistēmā jābūt vismaz vienam administratoram.');
+            }
+
+            if ($validated['role'] !== 'owner') {
+                Track::where('user_id', $target->id)->update(['user_id' => null]);
+            }
+
+            if ($validated['role'] !== 'owner' && $target->role === 'owner') {
+                DB::table('track_owner_access_requests')
+                    ->where('user_id', $target->id)
+                    ->where('status', 'pending')
+                    ->update([
+                        'status' => 'rejected',
+                        'reviewed_by' => $request->user()->id,
+                        'reviewed_at' => now(),
+                        'updated_at' => now(),
+                    ]);
             }
 
             if ($password) {
@@ -126,11 +144,11 @@ class UserController extends Controller
                 'nullable',
                 'current_password',
             ],
-            'role' => ['required', Rule::in(['user', 'owner', 'admin'])],
+            'role' => ['required', Rule::in($user?->role === 'owner' ? ['user', 'owner', 'admin'] : ['user', 'admin'])],
             'club_id' => ['nullable', 'integer', 'exists:clubs,id'],
             'category' => ['nullable', Rule::in(['MX 50', 'MX 65', 'MX 85', 'MX 125', 'MX 250', 'MX 450', 'Kvadri', 'Blakusvāģi'])],
             'experience_level' => ['nullable', Rule::in(['Iesācējs', 'Amatieris', 'Veterāns', 'Profesionālis'])],
-            'password' => [$user ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
+            'password' => [$user ? 'nullable' : 'required', 'string', Password::defaults(), 'confirmed'],
         ]);
     }
 }

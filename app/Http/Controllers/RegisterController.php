@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Rules\PersonName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
@@ -25,7 +26,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', new PersonName(), 'max:255'],
             'surname' => ['required', 'string', new PersonName(), 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:1', 'confirmed'],
+            'password' => ['required', 'string', Password::defaults(), 'confirmed'],
         ]);
 
         $user = User::create($validated);

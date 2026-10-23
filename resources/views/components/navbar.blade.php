@@ -8,6 +8,9 @@
 
             @auth
                 <li><a href="{{ route('profile.edit') }}" @if (request()->routeIs('profile.edit')) aria-current="page" @endif>Profils</a></li>
+                @if (auth()->user()->role !== 'admin')
+                    <li><a href="{{ route('owner-requests.index') }}" @if (request()->routeIs('owner-requests.*')) aria-current="page" @endif>Saimnieka pieteikumi</a></li>
+                @endif
                 @if (auth()->user()->role === 'admin')
                     <li><a href="{{ route('admin.dashboard') }}">Admin</a></li>
                 @endif
