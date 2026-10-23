@@ -44,18 +44,19 @@ DB_PASSWORD=</code></pre>
 <p>Izveidoju datubāzes tabulas ar migrācijām:</p>
 <pre><code>php artisan migrate</code></pre>
 
-<p>Lai jaunā datubāzē pievienotu sākuma datus — trases, klubus, attēlus un nejauši izveidotus demonstrācijas pieteikumus — palaižu parasto seed komandu:</p>
+<p>Lai datubāzē pievienotu sākuma datus — trases, klubus un pieejamos trases attēlus — palaižu parasto seed komandu:</p>
 <pre><code>php artisan db:seed</code></pre>
-<p>Šī komanda pievieno sākuma datus un nedzēš esošās tabulas. Tā neveido administratora vai trases saimnieku kontus, nepiešķir lietotājiem trases un neveido trases paziņojumus. Sēklotāji nav paredzēti atkārtotai palaišanai: trases jau var būt datubāzē, bet demonstrācijas pieteikumi tiek ģenerēti nejauši. Tāpēc komandu palaižu vienu reizi jaunā, tukšā datubāzē. Ikdienas lokālai palaišanai <i>php artisan migrate:fresh --seed</i> nav vajadzīga, jo <i>migrate:fresh</i> dzēš tabulas un to datus.</p>
+<p>Šī komanda pievieno trūkstošos sākuma datus un nedzēš esošās tabulas. Atkārtoti to palaižot, trases un klubi netiek dublēti vai pārrakstīti, un lietotāju pieteikumi un paziņojumi netiek mainīti. Tā neveido administratora vai trases saimnieku kontus un nepiešķir lietotājiem trases. Ikdienas lokālai palaišanai <i>php artisan migrate:fresh --seed</i> nav vajadzīga, jo <i>migrate:fresh</i> dzēš tabulas un to datus.</p>
 
 <p>Pēc migrācijām un sākuma datu ielādes droši izveidoju administratoru Laragon terminālī:</p>
 <pre><code>php artisan mxkarte:admin:setup</code></pre>
-<p>Komanda terminālī pieprasa administratora e-pastu, vārdu, uzvārdu un jaunu paroli. Parole netiek glabāta projekta kodā vai sēklotājos, un tai jāatbilst kopīgajām paroles prasībām. Drošības migrācija nomaina kontiem ar veco zināmo paroli <i>1</i> paroli uz nejaušu, lietotājam nezināmu vērtību, noņem to saimnieka lomu un trases piesaisti un izbeidz šo kontu sesijas. Tādēļ pēc migrācijas pirms pirmās administratora pieteikšanās jāpalaiž iepriekš minētā komanda.</p>
+<p>Komanda terminālī pieprasa administratora e-pastu, vārdu, uzvārdu un jaunu paroli. Parole netiek glabāta projekta kodā vai sēklotājos, un tai jāatbilst kopīgajām paroles prasībām. Administratora piekļuvi saņem tikai šādi izveidots vai atjaunots konts.</p>
 
 <p>Trases saimnieks vispirms izveido savu lietotāja kontu, tad iesniedz pieteikumu konkrētai brīvai trasei sadaļā <i>Saimnieka pieteikumi</i>. Administrators pārbauda lietotāja saistību ar trasi, piemēram, sazinoties ar trases pārstāvi, un tikai pēc tam apstiprina pieteikumu. Pēc apstiprināšanas lietotājs iegūst saimnieka lomu un norādītās trases piekļuvi. Lomas noņemšanas gadījumā trases tiek atsaistītas no lietotāja.</p><br>
 
 <p>Lai pārlūkā būtu redzami attēli, izveidoju saiti:</p>
 <pre><code>php artisan storage:link</code></pre><br>
+<p>Ja veca trases attēla faila dzēšana īslaicīgi neizdodas, tā ceļš tiek saglabāts atkārtotas dzēšanas rindā. Komanda <i>php artisan tracks:cleanup-image-files</i> mēģina dzēšanu vēlreiz; tā tiek ieplānota reizi stundā. Lai plānotie uzdevumi darbotos serverī, jāizsauc Laravel plānotājs ar <i>php artisan schedule:run</i> katru minūti.</p>
 
 <h3>Palaišana pārlūkā</h3>
 
@@ -65,7 +66,7 @@ DB_PASSWORD=</code></pre>
 <p>Pēc noklusējuma projektu atveru adresē <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>.</p>
 
 <h3>Publiskās vides sagatavošana</h3>
-<p>Publiskā vidē <b>.env</b> failā iestatu <i>APP_ENV=production</i>, <i>APP_DEBUG=false</i>, īsto HTTPS <i>APP_URL</i>, unikālu slepenu <i>APP_KEY</i> un drošus datubāzes piekļuves datus. Pirms nodošanas palaižu migrācijas ar <i>php artisan migrate --force</i>, izveidoju administratoru no servera termināļa ar <i>php artisan mxkarte:admin:setup</i> un sagatavoju resursus ar <i>npm ci</i> un <i>npm run build</i>. Pārliecinos arī, ka servera <i>storage</i> un <i>bootstrap/cache</i> mapēs Laravel var rakstīt. Publiskā vidē parasto <i>php artisan db:seed</i> nepalaižu, jo tas paredzēts sākuma un demonstrācijas datiem.</p>
+<p>Publiskā vidē <b>.env</b> failā iestatu <i>APP_ENV=production</i>, <i>APP_DEBUG=false</i>, īsto HTTPS <i>APP_URL</i>, unikālu slepenu <i>APP_KEY</i> un drošus datubāzes piekļuves datus. Pirms nodošanas palaižu migrācijas ar <i>php artisan migrate --force</i>, izveidoju administratoru no servera termināļa ar <i>php artisan mxkarte:admin:setup</i> un sagatavoju resursus ar <i>npm ci</i> un <i>npm run build</i>. Pārliecinos arī, ka servera <i>storage</i> un <i>bootstrap/cache</i> mapēs Laravel var rakstīt. Publiskā vidē parasto <i>php artisan db:seed</i> palaižu tikai tad, ja apzināti vēlos pievienot projektā definētos sākuma datus.</p>
 
 <h2>Pest testi</h2>
 

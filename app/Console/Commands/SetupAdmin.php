@@ -60,4 +60,5 @@ class SetupAdmin extends Command
 
         return self::SUCCESS;
     }
+
 }

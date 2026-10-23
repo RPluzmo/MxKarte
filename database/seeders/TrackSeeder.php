@@ -304,6 +304,11 @@ class TrackSeeder extends Seeder
             ],
         ];
 
-        Track::insert($tracks);
+        foreach ($tracks as $track) {
+            Track::firstOrCreate(
+                ['slug' => $track['slug']],
+                $track
+            );
+        }
     }
 }

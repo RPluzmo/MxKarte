@@ -3,7 +3,11 @@
 use App\Models\Track;
 use App\Models\TrackImage;
 use App\Models\User;
+use App\Support\TrackImageManager;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
@@ -225,4 +229,43 @@ it('noņem trases ierakstus un attēlu failus, kad administrators izdzēš trasi
     foreach ($images as $image) {
         Storage::disk('public')->assertMissing($image->path);
     }
+});
+
+it('reģistrē faila dzēšanas kļūmi, bet saglabā konsekventus trases datus', function () {
+    $track = createTrackForImageTest();
+    $image = addTrackImageForTest($track, 'gallery', 1, 'neizdzestais-fails.jpg');
+    $disk = Mockery::mock(Filesystem::class);
+    $disk->shouldReceive('delete')
+        ->once()
+        ->with($image->path)
+        ->andReturn(false);
+
+    Storage::shouldReceive('disk')->once()->with('public')->andReturn($disk);
+    Log::shouldReceive('warning')
+        ->once()
+        ->with('Neizdevās izdzēst trases attēla failu.', [
+            'path' => $image->path,
+            'exception' => 'Storage refused to delete the file.',
+        ]);
+
+    app(TrackImageManager::class)->deleteTrack($track);
+
+    $this->assertDatabaseMissing('tracks', ['id' => $track->id]);
+    $this->assertDatabaseMissing('track_images', ['id' => $image->id]);
+    $this->assertDatabaseHas('pending_file_deletions', ['path' => $image->path]);
+});
+
+it('atkārtoti izdzēš un noņem no rindas iepriekš neizdzēstu attēla failu', function () {
+    $path = 'tracks/neizdzesta-trase/vecais-attels.jpg';
+    Storage::disk('public')->put($path, 'test-image');
+    DB::table('pending_file_deletions')->insert([
+        'path' => $path,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $this->artisan('tracks:cleanup-image-files')->assertSuccessful();
+
+    Storage::disk('public')->assertMissing($path);
+    $this->assertDatabaseMissing('pending_file_deletions', ['path' => $path]);
 });

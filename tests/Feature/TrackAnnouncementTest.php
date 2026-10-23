@@ -1,11 +1,10 @@
 <?php
 
 use App\Models\Track;
-use App\Models\TrackAnnouncement;
 use App\Models\User;
 
 it('pārbauda trases saimnieka paziņojuma publicēšanu un attēlošanu', function () {
-    $owner = User::factory()->create();
+    $owner = User::factory()->create(['role' => 'owner']);
     $track = Track::create([
         'user_id' => $owner->id,
         'name' => 'Paziņojuma testa trase',

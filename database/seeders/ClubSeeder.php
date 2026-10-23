@@ -108,7 +108,7 @@ class ClubSeeder extends Seeder
                 $logoPath = null;
             }
 
-            Club::updateOrCreate(
+            Club::firstOrCreate(
                 ['name' => $club['name']],
                 ['logo_path' => $logoPath]
             );

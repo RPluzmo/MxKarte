@@ -29,12 +29,20 @@ class ExpiredContentPruner
 
     public function pruneOncePerDay(): ?array
     {
-        $key = 'expired-content-pruned-'.today()->toDateString();
+        $date = today()->toDateString();
+        $key = 'expired-content-pruned-'.$date;
 
-        if (! Cache::add($key, true, now()->endOfDay())) {
-            return null;
-        }
+        $result = Cache::lock('expired-content-pruning-'.$date, 300)->get(function () use ($key): ?array {
+            if (Cache::has($key)) {
+                return null;
+            }
 
-        return $this->prune();
+            $result = $this->prune();
+            Cache::put($key, true, now()->endOfDay());
+
+            return $result;
+        });
+
+        return is_array($result) ? $result : null;
     }
 }

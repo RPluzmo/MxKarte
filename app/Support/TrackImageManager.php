@@ -131,6 +131,32 @@ class TrackImageManager
         $this->deleteFiles($pathsToDelete);
     }
 
+    public function retryPendingDeletes(): int
+    {
+        $disk = Storage::disk('public');
+        $deletedCount = 0;
+
+        DB::table('pending_file_deletions')->orderBy('id')->chunkById(100, function ($pendingFiles) use ($disk, &$deletedCount): void {
+            foreach ($pendingFiles as $pendingFile) {
+                try {
+                    if ($disk->exists($pendingFile->path) && ! $disk->delete($pendingFile->path)) {
+                        throw new \RuntimeException('Storage refused to delete the file.');
+                    }
+
+                    DB::table('pending_file_deletions')->where('id', $pendingFile->id)->delete();
+                    $deletedCount++;
+                } catch (Throwable $exception) {
+                    Log::warning('Neizdevās atkārtoti izdzēst trases attēla failu.', [
+                        'path' => $pendingFile->path,
+                        'exception' => $exception->getMessage(),
+                    ]);
+                }
+            }
+        });
+
+        return $deletedCount;
+    }
+
     private function store(UploadedFile $image, string $directory, string $field): string
     {
         $path = $image->store($directory, 'public');
@@ -155,13 +181,27 @@ class TrackImageManager
         foreach (array_unique($paths) as $path) {
             try {
                 if (! $disk->delete($path)) {
-                    Log::warning('Neizdevās izdzēst trases attēla failu.', ['path' => $path]);
+                    throw new \RuntimeException('Storage refused to delete the file.');
                 }
+
+                DB::table('pending_file_deletions')->where('path', $path)->delete();
             } catch (Throwable $exception) {
                 Log::warning('Neizdevās izdzēst trases attēla failu.', [
                     'path' => $path,
                     'exception' => $exception->getMessage(),
                 ]);
+
+                try {
+                    DB::table('pending_file_deletions')->updateOrInsert(
+                        ['path' => $path],
+                        ['created_at' => now(), 'updated_at' => now()]
+                    );
+                } catch (Throwable $queueException) {
+                    Log::error('Neizdevās reģistrēt trases attēla faila dzēšanas atkārtojumu.', [
+                        'path' => $path,
+                        'exception' => $queueException->getMessage(),
+                    ]);
+                }
             }
         }
     }
